@@ -126,7 +126,7 @@ public class SubjectsPageController implements LanguageSupport {
 
         FilterService filterService = new FilterService();
         FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(searchText, subjectTypeEnum, studyTypeEnum, semesterEnum);
-        List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+        List<Subject> filteredSubjects = FilterService.filterSubjects(searchForm);
 
         System.out.println("Filtered subjects: " + filteredSubjects.size());
 

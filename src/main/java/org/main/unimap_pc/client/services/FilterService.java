@@ -7,6 +7,7 @@ import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.Teacher;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -21,14 +22,18 @@ public class FilterService {
 
     private static String removeDiacritics(String input) {
         return Normalizer.normalize(input, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", ""); // Remove diacritical marks
+                .replaceAll("\\p{M}", "")
+                .replace("\"", "")
+                .replace("{", "")
+                .replace("}", "");
     }
 
-    private JSONArray SubjectArray;
-    private JSONArray TeacherArray;
+    private static JSONArray SubjectArray;
+    private static JSONArray TeacherArray;
 
     private void getSubjects() {
         Object subjects = CacheService.get("SUBJECTS");
+        System.out.println("HAAAAAA"+subjects);
 
         if (subjects instanceof String) {
             try {
@@ -47,7 +52,6 @@ public class FilterService {
         Object teachers = CacheService.get("TEACHERS");
         System.out.println("HAAAAAA"+teachers);
 
-        // TODO: make here correct output
         if (teachers instanceof String) {
             try {
                 TeacherArray = new JSONObject((String) teachers).getJSONArray("teachers");
@@ -63,22 +67,17 @@ public class FilterService {
 
 
     // FilterService.java
-    public List<Teacher> filterTeachers(teacherSearchForm searchForm) {
-        getTeachers();
-
+    public static List<Teacher> filterTeachers(teacherSearchForm searchForm) {
         List<Teacher> TeacherList = TeacherArray.toList().stream()
                 .map(obj -> new JSONObject((Map<String, Object>) obj))
                 .filter(searchForm.teachesSubject)
-                .filter(searchForm.isGuarantor)
                 .filter(searchForm.nameSearch)
                 .map(Teacher::new)
                 .collect(Collectors.toList());
         return TeacherList;
     }
 
-    public List<Subject> filterSubjects(subjectSearchForm searchForm){
-        getSubjects();
-
+    public static List<Subject> filterSubjects(subjectSearchForm searchForm){
         List<Subject> SubjectList = SubjectArray.toList().stream()
                 .map(obj -> new JSONObject((Map<String, Object>)  obj))
                 .filter(searchForm.semesterPredicate)
@@ -94,9 +93,8 @@ public class FilterService {
     public static class teacherSearchForm {
         private final Predicate<JSONObject> nameSearch;
         private final Predicate<JSONObject> teachesSubject;
-        private final Predicate<JSONObject> isGuarantor;
 
-        public teacherSearchForm(String searchTerm, String targetSubjectCode) {
+        public teacherSearchForm(String searchTerm, String targetSubjectCode, boolean lookForGuarantor) {
             teachesSubject = teacher -> {
                 if (targetSubjectCode.isBlank()) {
                     return true;
@@ -104,19 +102,22 @@ public class FilterService {
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
-                    if (subject.getString("subjectCode").equals(targetSubjectCode)) {
-                        return true;
-                    }
-                }
-                return false;
-            };
+                    if (subject.getString("subjectName").equals(targetSubjectCode)) {
+                        if(lookForGuarantor){
+                            JSONArray roles = subject.getJSONArray("roles");
+                            for(int j = 0;j < roles.length();j++){
+                                String role = roles.getString(j);
+                                System.out.println("CHECKING ROLE FOR " + teacher.getString("name")+": "+role);
+                                if(removeDiacritics(role).equalsIgnoreCase("zodpovedny za predmet")){
+                                    System.out.println("found a guarantor");
+                                    return true;
+                                }
 
-            isGuarantor = teacher -> {
-                JSONArray subjects = teacher.getJSONArray("subjects");
-                for (int i = 0; i < subjects.length(); i++) {
-                    JSONObject subject = subjects.getJSONObject(i);
-                    if (subject.getString("subjectCode").equals(targetSubjectCode) && subject.getBoolean("isGuarantor")) {
-                        return true;
+                            }
+                            return false;
+                        }else{
+                            return true;
+                        }
                     }
                 }
                 return false;
@@ -146,7 +147,9 @@ public class FilterService {
                 String normalizedName = removeDiacritics(originalName).toLowerCase();
                 String normalizedCode = removeDiacritics(originalCode).toLowerCase();
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
-                return normalizedName.contains(normalizedSearchTerm) || normalizedCode.contains(normalizedSearchTerm);
+                return normalizedName.contains(normalizedSearchTerm)
+                        || normalizedCode.contains(normalizedSearchTerm)
+                        || !filterTeachers(new teacherSearchForm(searchTerm,originalCode,true)).isEmpty();
             };
             subjectTypePredicate = subject ->{
                 String type = subject.getString("type");
