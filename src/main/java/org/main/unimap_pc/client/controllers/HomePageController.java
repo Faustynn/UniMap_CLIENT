@@ -244,6 +244,8 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private MFXButton btn_settingspage;
     @FXML
+    private FontAwesomeIcon refresh_news;
+    @FXML
     private Label buycoffe;
     @FXML
     private Label news_upd_text;
@@ -343,6 +345,16 @@ public class HomePageController implements LanguageSupport {
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
+
+    @FXML
+    public void handleRefreshNewsClick() {
+        try {
+            loadNews();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @FXML
     public void handleSubjectPageClick() {
         try {
@@ -389,10 +401,4 @@ public class HomePageController implements LanguageSupport {
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
-
-    @FXML
-    public void handleRefreshNewsClick() {
-
-    }
-
 }
