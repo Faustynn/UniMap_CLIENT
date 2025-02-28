@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.ProfilePageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.ProfilePageController">
     <children>
         <VBox prefHeight="640.0" prefWidth="240.0" style="-fx-background-color: #1F222A;">
             <children>
@@ -19,19 +19,19 @@
                         <Font name="Outfit Bold" size="24.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="24.0" />
+                        <Insets left="66.0" top="24.0" />
                     </VBox.margin></Text>
                 <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #1F222A;">
                     <VBox.margin>
                         <Insets top="24.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Home">
+                <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" prefHeight="32.0" prefWidth="88.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Home">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="70.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
                 <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
@@ -39,12 +39,12 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Profile">
+                <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" prefHeight="32.0" prefWidth="91.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Profile">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="70.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
                 <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
@@ -52,12 +52,12 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Subject">
+                <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" prefHeight="32.0" prefWidth="90.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Subject">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="70.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
                 <Pane prefHeight="48.0" prefWidth="200.0">
@@ -70,7 +70,7 @@
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="70.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
                 <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
@@ -78,12 +78,12 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Settings">
+                <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" prefHeight="32.0" prefWidth="91.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Settings">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="70.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
                 <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Log Out">
@@ -91,7 +91,7 @@
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="286.0" />
+                        <Insets bottom="80.0" left="70.0" top="206.0" />
                     </VBox.margin>
                 </MFXButton>
             </children>
@@ -101,20 +101,6 @@
                 <Image url="@../../../../../../../../1.jpg" />
             </image>
         </ImageView>
-        <Text fill="WHITE" layoutX="910.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazar Meredov" textAlignment="RIGHT">
-            <font>
-                <Font name="Outfit Regular" size="13.0" />
-            </font>
-        </Text>
-        <Text fill="#848da0" layoutX="920.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@xmeredov" textAlignment="RIGHT" x="28.0">
-            <font>
-                <Font name="Outfit Regular" size="10.0" />
-            </font>
-        </Text>
-        <Text fill="WHITE" layoutX="840.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EN" textAlignment="CENTER">
-            <font>
-                <Font name="Outfit SemiBold" size="14.0" />
-            </font>
-        </Text>
+      <VBox alignment="TOP_RIGHT" layoutX="240.0" prefHeight="640.0" prefWidth="840.0" />
     </children>
 </AnchorPane>

@@ -158,10 +158,12 @@ public class HomePageController implements LanguageSupport {
 
 
     private void displayNews(List<NewsModel> newsList) {
-        pane_for_news.getChildren().clear(); // Clear existing news items
-        VBox newsContainer = new VBox(10); // Add spacing between news items
-        newsContainer.setPadding(new Insets(10, 10, 10, 10));
-        pane_for_news.getChildren().add(newsContainer);
+        // Create a VBox to hold the news items
+        VBox newsContainer = new VBox(10); // 10 pixels spacing between items
+        newsContainer.setPadding(new Insets(10)); // Add padding around the VBox
+
+        // Clear any existing content in the scroll pane
+        scrollPane_news.setContent(newsContainer);
 
         for (NewsModel news : newsList) {
             AnchorPane newsItem = createNewsItem(news);
