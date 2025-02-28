@@ -94,6 +94,7 @@ public class MainApp extends Application {
                         stage.show();
                     } catch (IOException e) {
                         handleLoginPageLoadError(e);
+                        e.printStackTrace();
                     }
                 });
             }

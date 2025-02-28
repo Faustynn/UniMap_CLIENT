@@ -1,12 +1,10 @@
 package org.main.unimap_pc.client.controllers;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
-import java.util.prefs.Preferences;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -30,17 +28,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.Data;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.NewsModel;
 import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.DataFetcher;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 
 public class HomePageController implements LanguageSupport {
@@ -75,10 +73,10 @@ public class HomePageController implements LanguageSupport {
             System.out.println("Loaded News");
             languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
             loadCurrentLanguage();
-            accessToken = prefs.get("ACCESS_TOKEN", null);
-            refreshToken = prefs.get("REFRESH_TOKEN", null);
-            userData = prefs.get("USER_DATA", null);
-            cachedLanguage = prefs.get("LANGUAGE", "en");
+            accessToken = PreferenceServise.get("ACCESS_TOKEN").toString();
+            refreshToken = PreferenceServise.get("REFRESH_TOKEN").toString();
+            userData = PreferenceServise.get("USER_DATA").toString();
+            cachedLanguage = PreferenceServise.get("LANGUAGE").toString();
             UserService.getInstance().setAccessToken(accessToken);
             UserService.getInstance().setRefreshToken(refreshToken);
             UserService.getInstance().setDefLang(cachedLanguage);
@@ -113,7 +111,7 @@ public class HomePageController implements LanguageSupport {
         }
     }
     private void loadCurrentLanguage() {
-        String selectedLanguage = prefs.get(AppConfig.getLANGUAGE_KEY(), AppConfig.getDEFAULT_LANGUAGE());
+        String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
         languageComboBox.setValue(selectedLanguage);
 
         // listener for lang. editing
@@ -218,12 +216,12 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
-        Preferences prefs = Preferences.userNodeForPackage(HomePageController.class);
-        prefs.remove("ACCESS_TOKEN");
-        prefs.remove("REFRESH_TOKEN");
-        prefs.remove("USER_DATA");
-        prefs.remove("SUBJECTS");
-        prefs.remove("TEACHERS");
+        PreferenceServise.remove("ACCESS_TOKEN");
+        PreferenceServise.remove("REFRESH_TOKEN");
+        PreferenceServise.remove("USER_DATA");
+        CacheService.remove("SUBJECTS");
+        CacheService.remove("TEACHERS");
+
 
         // Change scene to login
         Stage stage = (Stage) logoutbtn.getScene().getWindow();
@@ -403,10 +401,4 @@ public class HomePageController implements LanguageSupport {
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
-
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
-
 }

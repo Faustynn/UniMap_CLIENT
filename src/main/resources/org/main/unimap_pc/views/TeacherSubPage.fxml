@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
+    <children>
+        <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="student_amount" layoutX="3.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="email">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature" layoutX="2.0" layoutY="18.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature1" layoutX="3.0" layoutY="54.0" style="-fx-text-fill: #9fa6b7;" text="phone">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature2" layoutX="3.0" layoutY="72.0" style="-fx-text-fill: #9fa6b7;" text="office">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature3" layoutX="3.0" layoutY="90.0" style="-fx-text-fill: #9fa6b7;" text="subjects">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature311111111" layoutX="35.0" layoutY="108.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature3111111111" layoutX="38.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+      <Label fx:id="closebtn" layoutX="511.0" layoutY="7.0" text="X" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="abreviature3111111112" layoutX="27.0" layoutY="160.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="abreviature31111111111" layoutX="38.0" layoutY="178.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
+      <ScrollPane layoutX="198.0" layoutY="90.0" prefHeight="163.0" prefWidth="332.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Pane prefHeight="153.0" prefWidth="312.0">
+                     <children>
+                        <Label layoutX="1.0" layoutY="12.0" text="COMMENTS:" />
+                        <Pane layoutY="28.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: green;">
+                           <children>
+                              <Label layoutX="27.0" layoutY="10.0" text="UserName">
+                                 <font>
+                                    <Font size="8.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="7.0" layoutY="11.0" text="avatar">
+                                 <font>
+                                    <Font size="6.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="259.0" layoutY="10.0" text="Звезды от 0 дл 6">
+                                 <font>
+                                    <Font size="6.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="72.0" layoutY="5.0" text="Описание" />
+                           </children>
+                        </Pane>
+                        <Pane layoutY="61.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: blue;" />
+                        <Pane layoutY="94.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: grey;" />
+                        <Pane layoutY="129.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: grey;" />
+                        <Label layoutX="282.0" layoutY="10.0" text="refreshIMG">
+                           <font>
+                              <Font size="8.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="173.0" layoutY="6.0" text="AVG Rating" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <AnchorPane layoutX="196.0" layoutY="253.0" prefHeight="39.0" prefWidth="334.0" style="-fx-background-color: yellow;">
+         <children>
+            <Button layoutX="296.0" layoutY="12.0" mnemonicParsing="false" text="ADD">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Button>
+            <Label layoutX="1.0" layoutY="-2.0" text="Добавить новый комментарий">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+            <MFXTextField layoutX="4.0" layoutY="9.0" prefHeight="53.0" prefWidth="265.0" />
+            <Label layoutX="280.0" layoutY="33.0" text="Set stars here">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+    </children>
+</AnchorPane>

@@ -3,9 +3,11 @@ package org.main.unimap_pc.client.models;
 import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.main.unimap_pc.client.services.FilterService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Builder
 @NoArgsConstructor
@@ -128,8 +130,8 @@ public class Subject {
             languages = new ArrayList<String>();
         }
         try {
-            garant = jsonBase.getString("garant"); // Add this field
-        } catch (org.json.JSONException e) {
+            garant = FilterService.filterTeachers(new FilterService.teacherSearchForm("",name,true)).getFirst().getName();
+        } catch (NoSuchElementException e) {
             garant = "";
         }
     }

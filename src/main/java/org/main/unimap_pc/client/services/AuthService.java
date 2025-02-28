@@ -5,7 +5,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
-import java.util.prefs.Preferences;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,9 +12,11 @@ import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.utils.TokenRefresher;
 
+import org.main.unimap_pc.client.services.CacheService;
+import org.main.unimap_pc.client.services.PreferenceServise;
+
 public class AuthService {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
-    public static final Preferences prefs = Preferences.userNodeForPackage(AuthService.class);
     private static TokenRefresher tokenRefresher;
     private static final DataFetcher dataFetcher = new DataFetcher();
 
@@ -65,9 +66,9 @@ public class AuthService {
                                     }).orElse(null);
 
                             if (accessToken != null && refreshToken != null) {
-                                prefs.put("ACCESS_TOKEN", accessToken);
-                                prefs.put("REFRESH_TOKEN", refreshToken);
-                                prefs.put("USER_DATA", userNode.toString());
+                                PreferenceServise.put("ACCESS_TOKEN", accessToken);
+                                PreferenceServise.put("REFRESH_TOKEN", refreshToken);
+                                PreferenceServise.put("USER_DATA", userNode.toString());
                                 tokenRefresher = new TokenRefresher(new JWTService());
                                 tokenRefresher.startTokenRefreshTask();
 
@@ -95,7 +96,7 @@ public class AuthService {
     }
 
     public static CompletableFuture<Boolean> refreshAccessToken() {
-        String refreshToken = prefs.get("REFRESH_TOKEN", null);
+        String refreshToken = PreferenceServise.get("REFRESH_TOKEN").toString();
         if (refreshToken == null) {
             return CompletableFuture.completedFuture(false);
         }
@@ -119,7 +120,7 @@ public class AuthService {
                             String newAccessToken = jsonNode.get("accessToken").asText();
 
                             if (newAccessToken != null) {
-                                prefs.put("ACCESS_TOKEN", newAccessToken);
+                                PreferenceServise.put("ACCESS_TOKEN", newAccessToken);
                                 return true;
                             } else {
                                 System.err.println("New access token not found in the response.");

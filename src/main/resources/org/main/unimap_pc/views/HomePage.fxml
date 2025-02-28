@@ -282,7 +282,12 @@
                         </children>
                     </Pane>
                 </content>
-            </MFXScrollPane>         </children>
+            </MFXScrollPane>
+            <FontAwesomeIcon fx:id="refresh_news" glyphName="REFRESH" layoutX="661.0" layoutY="186.0" onMouseClicked="#handleRefreshNewsClick" size="30">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </FontAwesomeIcon>         </children>
       </Pane>
    </children>
 </HBox>

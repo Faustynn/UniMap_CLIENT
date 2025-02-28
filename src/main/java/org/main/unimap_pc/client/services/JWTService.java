@@ -33,9 +33,9 @@ public class JWTService {
         if (tokenRefresher != null) {
             tokenRefresher.stopTokenRefreshTask();
         }
-        AuthService.prefs.remove("ACCESS_TOKEN");
-        AuthService.prefs.remove("REFRESH_TOKEN");
-        AuthService.prefs.remove("USER_DATA");
+        PreferenceServise.remove("ACCESS_TOKEN");
+        PreferenceServise.remove("REFRESH_TOKEN");
+        PreferenceServise.remove("USER_DATA");
 
         redirectToLoginPage();
     }

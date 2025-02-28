@@ -55,7 +55,7 @@ public class AppConfig {
 
     private static final String SUBJECTS_URL = API_URL + "resources/subjects";
     private static final String TEACHERS_URL = API_URL + "resources/teachers";
-
+    private static final String COMMENTS_URL = API_URL + "comments/";
     // Getters
     public static String getLoginPagePath() {
         return LOGIN_PAGE_PATH;
@@ -111,7 +111,9 @@ public class AppConfig {
     public static String getSettingsPagePath() {
         return SETTINGS_PAGE_PATH;
     }
-
+    public static String getCommentsUrl() {
+        return COMMENTS_URL;
+    }
     @Getter
     private static final String DEFAULT_LANGUAGE = "English";
     @Getter

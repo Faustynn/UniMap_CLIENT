@@ -9,15 +9,13 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.RegistrationService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.PropertyResourceBundle;
-
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class SignUpController implements LanguageSupport {
     @FXML
@@ -51,7 +49,7 @@ public class SignUpController implements LanguageSupport {
     }
     @FXML
     private void initialize() {
-        String lang = prefs.get("LANGUAGE", "en");
+        String lang = PreferenceServise.get("LANGUAGE").toString();
         LanguageManager.getInstance().registerController(this);
 
         LanguageManager.changeLanguage(lang);
