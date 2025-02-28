@@ -29,12 +29,10 @@ public class FilterService {
 
     private void getSubjects() {
         Object subjects = CacheService.get("SUBJECTS");
-        System.out.println("HAAAAAA"+subjects);
 
-        // TODO: make here correct output
         if (subjects instanceof String) {
             try {
-                SubjectArray = new JSONArray((String) subjects);
+                SubjectArray = new JSONObject((String) subjects).getJSONArray("subjects");
             } catch (JSONException e) {
                 SubjectArray = new JSONArray();
             }
@@ -52,7 +50,7 @@ public class FilterService {
         // TODO: make here correct output
         if (teachers instanceof String) {
             try {
-                TeacherArray = new JSONArray((String) teachers);
+                TeacherArray = new JSONObject((String) teachers).getJSONArray("teachers");
             } catch (JSONException e) {
                 TeacherArray = new JSONArray();
             }
