@@ -46,12 +46,14 @@ public class FilterService {
     }
 
 
-    public List<Teacher> filterTeachers(teacherSearchForm searchForm){
+    // FilterService.java
+    public List<Teacher> filterTeachers(teacherSearchForm searchForm) {
         getTeachers();
 
         List<Teacher> TeacherList = TeacherArray.toList().stream()
-                .map(obj -> new JSONObject((Map<String, Object>)  obj))
+                .map(obj -> new JSONObject((Map<String, Object>) obj))
                 .filter(searchForm.teachesSubject)
+                .filter(searchForm.isGuarantor)
                 .filter(searchForm.nameSearch)
                 .map(Teacher::new)
                 .collect(Collectors.toList());
@@ -72,18 +74,32 @@ public class FilterService {
         return SubjectList;
     }
 
-    public static class teacherSearchForm{
+    // FilterService.java
+    public static class teacherSearchForm {
         private final Predicate<JSONObject> nameSearch;
         private final Predicate<JSONObject> teachesSubject;
-        public teacherSearchForm(String searchTerm,String targetSubject){
+        private final Predicate<JSONObject> isGuarantor;
+
+        public teacherSearchForm(String searchTerm, String targetSubjectCode) {
             teachesSubject = teacher -> {
-                if(targetSubject.isBlank()){
+                if (targetSubjectCode.isBlank()) {
                     return true;
                 }
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
-                    if (subject.getString("subjectName").equals(targetSubject)) {
+                    if (subject.getString("subjectCode").equals(targetSubjectCode)) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            isGuarantor = teacher -> {
+                JSONArray subjects = teacher.getJSONArray("subjects");
+                for (int i = 0; i < subjects.length(); i++) {
+                    JSONObject subject = subjects.getJSONObject(i);
+                    if (subject.getString("subjectCode").equals(targetSubjectCode) && subject.getBoolean("isGuarantor")) {
                         return true;
                     }
                 }
@@ -97,7 +113,6 @@ public class FilterService {
                 return normalizedName.contains(normalizedSearchTerm);
             };
         }
-
     }
     public static class subjectSearchForm{
         public enum subjectTypeEnum{POV,POV_VOL,VOL,NONE}

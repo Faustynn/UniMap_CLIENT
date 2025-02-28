@@ -13,8 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.SubjectModel;
+import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.FilterService;
 import org.main.unimap_pc.client.services.UserService;
 import javafx.scene.image.ImageView;
 import org.main.unimap_pc.client.utils.LanguageManager;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import  javafx.scene.text.Font;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -273,9 +275,32 @@ public class SubjectsPageController implements LanguageSupport {
         String studyLevel = studyLevelCombo.getValue();
         String semester = semesterCombo.getValue();
 
+        FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = switch (subjectType) {
+            case "Povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
+            case "Povinno Volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
+            case "Volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
+            default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+        };
 
-     //    updateSubjectList(filteredSubjects);
+        FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = switch (studyLevel) {
+            case "Bacalaver" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
+            case "Ingeneer" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
+            default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
+        };
+
+        FilterService.subjectSearchForm.semesterEnum semesterEnum = switch (semester) {
+            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
+            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
+            default -> FilterService.subjectSearchForm.semesterEnum.NONE;
+        };
+
+        FilterService filterService = new FilterService();
+        FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(searchText, subjectTypeEnum, studyTypeEnum, semesterEnum);
+        List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+
+        updateSubjectList(filteredSubjects);
     }
+
     private void resetFilters() {
         searchField.clear();
         subjectTypeCombo.setValue("All Types");
@@ -285,8 +310,42 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
 
-    private void updateSubjectList(List<SubjectModel> subjects) {
+    private void updateSubjectList(List<Subject> subjects) {
+        anchorScrollPane.getChildren().clear();
 
+        for (Subject subject : subjects) {
+            Pane subjectPane = new Pane();
+            subjectPane.setPrefHeight(48.0);
+            subjectPane.setPrefWidth(774.0);
+            subjectPane.setStyle("-fx-background-color: #1F222A;");
+
+            Label codeLabel = new Label(subject.getCode());
+            codeLabel.setLayoutX(14.0);
+            codeLabel.setLayoutY(29.0);
+            codeLabel.setStyle("-fx-text-fill: WHITE;");
+            codeLabel.setFont(new Font("Outfit Bold", 14.0));
+
+            Label nameLabel = new Label(subject.getName());
+            nameLabel.setLayoutX(89.0);
+            nameLabel.setLayoutY(29.0);
+            nameLabel.setStyle("-fx-text-fill: WHITE;");
+            nameLabel.setFont(new Font("Outfit Bold", 14.0));
+
+            Label garantLabel = new Label(subject.getGarant());
+            garantLabel.setLayoutX(330.0);
+            garantLabel.setLayoutY(29.0);
+            garantLabel.setStyle("-fx-text-fill: WHITE;");
+            garantLabel.setFont(new Font("Outfit Regular", 14.0));
+
+            Label studentsLabel = new Label(String.valueOf(subject.getStudentCount()));
+            studentsLabel.setLayoutX(551.0);
+            studentsLabel.setLayoutY(29.0);
+            studentsLabel.setStyle("-fx-text-fill: WHITE;");
+            studentsLabel.setFont(new Font("Outfit Regular", 14.0));
+
+            subjectPane.getChildren().addAll(codeLabel, nameLabel, garantLabel, studentsLabel);
+            anchorScrollPane.getChildren().add(subjectPane);
+        }
     }
 
     @FXML
