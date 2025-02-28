@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.SubjectModel;
+import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.UserService;
 import javafx.scene.image.ImageView;
@@ -285,7 +285,7 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
 
-    private void updateSubjectList(List<SubjectModel> subjects) {
+    private void updateSubjectList(List<Subject> subjects) {
 
     }
 
