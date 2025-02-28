@@ -118,4 +118,39 @@ public class DataFetcher {
                     return false;
                 });
     }
+
+
+
+
+    private CompletableFuture<Boolean> fetchComments(String code){
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(AppConfig.getCommentsUrl()+code))
+                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
+                .GET()
+                .build();
+
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            JsonNode jsonNode = objectMapper.readTree(response.body());
+
+                            System.out.println("COMMENTS "+jsonNode);
+                            return true;
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse JSON response: " + e.getMessage());
+                            return false;
+                        }
+                    } else {
+                        System.err.println("Failed to fetch Comments with status code: " + response.statusCode());
+                        return false;
+                    }
+                })
+                .exceptionally(throwable -> {
+                    System.err.println("Comments fetch request failed: " + throwable.getMessage());
+                    return false;
+                });
+    }
+
 }
