@@ -35,6 +35,7 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.NewsModel;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.DataFetcher;
+import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -78,12 +79,15 @@ public class HomePageController implements LanguageSupport {
             refreshToken = prefs.get("REFRESH_TOKEN", null);
             userData = prefs.get("USER_DATA", null);
             cachedLanguage = prefs.get("LANGUAGE", "en");
+            UserService.getInstance().setAccessToken(accessToken);
+            UserService.getInstance().setRefreshToken(refreshToken);
+            UserService.getInstance().setDefLang(cachedLanguage);
 
             UserModel user = initUser(userData);
             if (user != null) {
+                UserService.getInstance().setCurrentUser(user);
                 navi_username_text.setText(user.getUsername());
                 navi_login_text.setText(user.getLogin());
-                System.out.println(user.getAvatar());
                 navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
             }
 
@@ -278,8 +282,7 @@ public class HomePageController implements LanguageSupport {
         buycoffe.setText(languageBundle.getString("buycoffe"));
 
         languageComboBox.setText(languageBundle.getString("language.combobox"));
-        navi_login_text.setText(languageBundle.getString("login"));
-        navi_username_text.setText(languageBundle.getString("username"));
+
 
         if (news_title != null) {
             news_title.setText(languageBundle.getString("news.title"));
@@ -353,6 +356,7 @@ public class HomePageController implements LanguageSupport {
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
+            e.printStackTrace();
         }
     }
     @FXML

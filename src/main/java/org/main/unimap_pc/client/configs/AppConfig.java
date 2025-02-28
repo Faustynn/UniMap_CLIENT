@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 // TODO: Rewrite prop file with lombok
@@ -167,12 +169,19 @@ public class AppConfig {
 
 
     public static Image getAvatar(String avatarID) {
-        String imagePath = "../images/avatares/" + avatarID + ".png";
-        return new Image(imagePath);
+        String imagePath = "/org/main/unimap_pc/images/avatares/" + avatarID + ".png";
+        System.out.println(imagePath);
+
+        URL resource = AppConfig.class.getResource(imagePath);
+        if (resource == null) {
+            System.err.println("Avatar image not found: " + imagePath);
+            return null; // or return a default image
+        }
+
+        return new Image(resource.toExternalForm());
     }
 
     public static String getNewsUrl() {
         return GET_NEWS_URL;
     }
 }
-
