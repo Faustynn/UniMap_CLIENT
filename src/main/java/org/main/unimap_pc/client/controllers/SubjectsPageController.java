@@ -237,8 +237,30 @@ public class SubjectsPageController implements LanguageSupport {
         AnchorPane.setTopAnchor(studentsLabel, 55.0);
         AnchorPane.setRightAnchor(studentsLabel, 10.0);
 
+        // Добавляем обработчик клика
+        card.setOnMouseClicked(event -> openSubjectSubPage(subject));
+
         return card;
     }
+
+    private void openSubjectSubPage(Subject subject) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getSubjectsSubPagePath()));
+            Parent root = loader.load();
+
+            // Pass the subject to the subpage controller
+            SubjectsSubPageController controller = loader.getController();
+            controller.setSubject(subject);
+            controller.loadSubjectData();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {

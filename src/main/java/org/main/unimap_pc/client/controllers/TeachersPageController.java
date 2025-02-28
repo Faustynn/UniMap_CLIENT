@@ -119,13 +119,13 @@ public class TeachersPageController implements LanguageSupport {
         FilterService filterService = new FilterService();
 
         //TODO: change teacherSearchForm
-        FilterService.subjectSearchForm searchForm = new FilterService.teacherSearchForm(searchText);
-        List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+    //    FilterService.subjectSearchForm searchForm = new FilterService.teacherSearchForm(searchText);
+    //    List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
 
-        System.out.println("Filtered subjects: " + filteredSubjects.size());
+    //    System.out.println("Filtered subjects: " + filteredSubjects.size());
 
-        updateSubjectList(filteredSubjects);
-        updateSelectedFiltersText();
+     //   updateSubjectList(filteredSubjects);
+     //   updateSelectedFiltersText();
     }
 
 

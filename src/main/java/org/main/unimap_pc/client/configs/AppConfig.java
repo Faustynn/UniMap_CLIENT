@@ -33,7 +33,8 @@ public class AppConfig {
     private static final String PROFILE_PAGE_PATH = "/org/main/unimap_pc/views/ProfilePage.fxml";
     private static final String SETTINGS_PAGE_PATH = "/org/main/unimap_pc/views/SettingsPage.fxml";
 
-
+    private static final String SUBJECTS_SUB_PAGE_PATH = "/org/main/unimap_pc/views/SubjectSubPage.fxml";
+    private static final String TEACHERS_SUB_PAGE_PATH = "/org/main/unimap_pc/views/TeacherSubPage.fxml";
 
     // APIs
     private static final String API_URL = "http://localhost:8080/api/unimap_pc/";
@@ -113,6 +114,12 @@ public class AppConfig {
     }
     public static String getCommentsUrl() {
         return COMMENTS_URL;
+    }
+    public static String getSubjectsSubPagePath() {
+        return SUBJECTS_SUB_PAGE_PATH;
+    }
+    public static String getTeachersSubPagePath() {
+        return TEACHERS_SUB_PAGE_PATH;
     }
     @Getter
     private static final String DEFAULT_LANGUAGE = "English";

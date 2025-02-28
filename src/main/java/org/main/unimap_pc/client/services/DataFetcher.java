@@ -122,7 +122,7 @@ public class DataFetcher {
 
 
 
-    private CompletableFuture<Boolean> fetchComments(String code){
+    public static CompletableFuture<Boolean> fetchComments(String code){
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getCommentsUrl()+code))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
