@@ -394,5 +394,4 @@ public class HomePageController implements LanguageSupport {
     public void handleRefreshNewsClick() {
 
     }
-
 }

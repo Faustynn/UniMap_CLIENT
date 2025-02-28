@@ -9,8 +9,10 @@ import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
 
 import java.io.IOException;
+import javafx.scene.control.Label;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -20,8 +22,20 @@ public class ProfilePageController {
 
 
     @FXML
-    private void initialize() {
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label surnameLabel;
+    @FXML
+    private Label avatarLabel;
 
+    @FXML
+    private void initialize() {
+        nameLabel.setText("Username: " + UserService.getInstance().getCurrentUser().getUsername());
+        surnameLabel.setText("Surname: " + UserService.getInstance().getCurrentUser().getLogin());
+        emailLabel.setText("Email: " + UserService.getInstance().getCurrentUser().getEmail());
+        avatarLabel.setText("Avatar num: " + UserService.getInstance().getCurrentUser().getAvatar());
     }
 
     //   @Override

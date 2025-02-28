@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -101,6 +102,41 @@
                 <Image url="@../../../../../../../../1.jpg" />
             </image>
         </ImageView>
-      <VBox alignment="TOP_RIGHT" layoutX="240.0" prefHeight="640.0" prefWidth="840.0" />
+        <VBox alignment="TOP_RIGHT" layoutX="240.0" prefHeight="640.0" prefWidth="840.0">
+            <children>
+                <Label fx:id="nameLabel" text="Name: " textFill="WHITE">
+                    <font>
+                        <Font name="Outfit Regular" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets right="20.0" top="20.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="surnameLabel" text="Surname: " textFill="WHITE">
+                    <font>
+                        <Font name="Outfit Regular" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets right="20.0" top="10.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="emailLabel" text="Email: " textFill="WHITE">
+                    <font>
+                        <Font name="Outfit Regular" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets right="20.0" top="10.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="avatarLabel" text="Avatar: " textFill="WHITE">
+                    <font>
+                        <Font name="Outfit Regular" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets right="20.0" top="10.0" />
+                    </VBox.margin>
+                </Label>
+            </children>
+        </VBox>
     </children>
 </AnchorPane>
