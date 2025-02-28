@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsSubPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsSubPageController">
     <children>
           <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="Name:">
               <font>
@@ -104,6 +104,11 @@
       <Label fx:id="abreviature31111111132" layoutX="319.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="FX:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="closebtn" layoutX="509.0" layoutY="3.0" text="X" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
          </font>
       </Label>
     </children>

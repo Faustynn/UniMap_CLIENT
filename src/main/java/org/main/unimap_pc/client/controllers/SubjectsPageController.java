@@ -93,7 +93,6 @@ public class SubjectsPageController implements LanguageSupport {
 
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
-
     private void applyFilters() {
         String searchText = searchField.getText().trim();
 
@@ -159,7 +158,6 @@ public class SubjectsPageController implements LanguageSupport {
             searchField.setStyle("");
         }
     }
-
     private void updateSubjectList(List<Subject> subjects) {
         anchorScrollPane.getChildren().clear();
 

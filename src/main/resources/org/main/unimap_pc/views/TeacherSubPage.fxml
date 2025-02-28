@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
+    <children>
+        <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="student_amount" layoutX="3.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="email">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature" layoutX="2.0" layoutY="18.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature1" layoutX="3.0" layoutY="54.0" style="-fx-text-fill: #9fa6b7;" text="phone">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature2" layoutX="3.0" layoutY="72.0" style="-fx-text-fill: #9fa6b7;" text="office">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature3" layoutX="3.0" layoutY="90.0" style="-fx-text-fill: #9fa6b7;" text="subjects">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature311111111" layoutX="35.0" layoutY="108.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="abreviature3111111111" layoutX="38.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+            <font>
+                <Font name="Outfit Bold" size="14.0" />
+            </font>
+        </Label>
+      <Label fx:id="closebtn" layoutX="511.0" layoutY="7.0" text="X" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="abreviature3111111112" layoutX="27.0" layoutY="160.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="abreviature31111111111" layoutX="38.0" layoutY="178.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>

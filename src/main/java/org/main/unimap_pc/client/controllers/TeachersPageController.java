@@ -1,12 +1,22 @@
 package org.main.unimap_pc.client.controllers;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.UserService;
+import org.main.unimap_pc.client.utils.LanguageManager;
+import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -15,31 +25,87 @@ import java.util.prefs.Preferences;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
-public class TeachersPageController {
+public class TeachersPageController implements LanguageSupport {
+    @FXML
+    private Label navi_username_text, navi_login_text,ais_id_teach,name_teach,status_teach,room_teach,teach_list,id_ais_entity,id_name,id_status,id_room;
+    @FXML
+    private ImageView navi_avatar;
+    @FXML
+    private MFXComboBox<String> languageComboBox;
+    @FXML
+    private MFXTextField searchField;
+    @FXML
+    private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private AnchorPane anchorScrollPane;
 
+
+
+    private String defLang;
+    private String accessToken;
 
     @FXML
     private void initialize() {
+        languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+        loadCurrentLanguage();
 
+
+        defLang = UserService.getInstance().getDefLang();
+        UserModel user = UserService.getInstance().getCurrentUser();
+        if (user != null) {
+            navi_username_text.setText(user.getUsername());
+            navi_login_text.setText(user.getLogin());
+            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+        }
+        LanguageManager.changeLanguage(defLang);
+        LanguageManager.getInstance().registerController(this);
+        updateUILanguage(LanguageManager.getCurrentBundle());
+    }
+    private void loadCurrentLanguage() {
+        languageComboBox.setValue(defLang);
+        languageComboBox.setOnAction(event -> {
+            try {
+                String newLanguage = languageComboBox.getValue();
+                String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
+                LanguageManager.changeLanguage(languageCode);
+                updateUILanguage(LanguageManager.getCurrentBundle());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    //   @Override
+
+    @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
+        logoutbtn.setText(languageBundle.getString("logout"));
+        btn_homepage.setText(languageBundle.getString("homepage"));
+        btn_profilepage.setText(languageBundle.getString("profilepage"));
+        btn_subjectpage.setText(languageBundle.getString("subjectpage"));
+        btn_teacherspage.setText(languageBundle.getString("teacherspage"));
+        btn_settingspage.setText(languageBundle.getString("settingspage"));
+        languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
+        searchField.setPromptText(languageBundle.getString("search"));
 
+        ais_id_teach.setText(languageBundle.getString("ais_id"));
+        name_teach.setText(languageBundle.getString("name"));
+        status_teach.setText(languageBundle.getString("status"));
+        room_teach.setText(languageBundle.getString("room"));
+        teach_list.setText(languageBundle.getString("teachers"));
     }
 
 
 
-    @FXML
-    private MFXButton btn_homepage;
-    @FXML
-    private MFXButton btn_profilepage;
-    @FXML
-    private MFXButton btn_subjectpage;
-    @FXML
-    private MFXButton btn_teacherspage;
-    @FXML
-    private MFXButton btn_settingspage;
+
+
+
+
+
+
+
+
 
     @FXML
     public void handleHomePageClick() {
@@ -116,10 +182,6 @@ public class TeachersPageController {
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
-
-
-    @FXML
-    private MFXButton logoutbtn;
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data

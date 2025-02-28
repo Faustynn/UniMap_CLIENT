@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,15 +16,21 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
    <children>
+      <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+         <image>
+            <Image url="@../images/avatares/0.png" />
+         </image>
+      </ImageView>
       <VBox prefHeight="640.0" prefWidth="240.0" style="-fx-background-color: #1F222A;">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
+            <Text style="-fx-fill: WHITE;" text="UNIMAP">
                <font>
                   <Font name="Outfit Bold" size="24.0" />
                </font>
                <VBox.margin>
                   <Insets left="24.0" top="24.0" />
-               </VBox.margin></Text>
+               </VBox.margin>
+            </Text>
             <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #1F222A;">
                <VBox.margin>
                   <Insets top="24.0" />
@@ -99,139 +106,82 @@
             </MFXButton>
          </children>
       </VBox>
-      <ImageView id="profile-picture" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
-         <image>
-            <Image url="@../../../../../../../../1.jpg" />
-         </image>
-      </ImageView>
-      <Text fill="WHITE" layoutX="910.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazar Meredov" textAlignment="RIGHT">
-         <font>
-            <Font name="Outfit Regular" size="13.0" />
-         </font>
-      </Text>
-      <Text fill="#848da0" layoutX="920.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@xmeredov" textAlignment="RIGHT" x="28.0">
-         <font>
-            <Font name="Outfit Regular" size="10.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutX="840.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EN" textAlignment="CENTER">
-         <font>
-            <Font name="Outfit SemiBold" size="14.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutX="266.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teachers">
-         <font>
-            <Font name="Outfit Bold" size="20.0" />
-         </font></Text>
-      <TextField layoutX="266.0" layoutY="110.0" prefHeight="48.0" prefWidth="709.0" promptText="Type a Teacher's name" style="-fx-background-color: #1F222A;">
-         <font>
-            <Font name="Outfit Light" size="12.0" />
-         </font>
-      </TextField>
-      <Text fill="#828ca1" layoutX="289.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AIS_ID">
+      <Label fx:id="ais_id_teach" layoutX="289.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="AIS_ID">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
-      </Text>
-      <Text fill="#828ca1" layoutX="398.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name and Surname">
+      </Label>
+      <Label fx:id="name_teach" layoutX="398.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Name and Surname">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
-      </Text>
-      <Text fill="#828ca1" layoutX="615.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
+      </Label>
+      <Label fx:id="status_teach" layoutX="615.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Status">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
-      </Text>
-      <Text fill="#828ca1" layoutX="962.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room">
+      </Label>
+      <Label fx:id="room_teach" layoutX="962.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Room">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
-      </Text>
-      <ScrollPane layoutX="266.0" layoutY="235.0" prefHeight="382.0" prefWidth="791.0" style="-fx-background-color: #191C22;">
+      </Label>
+      <ScrollPane fx:id="scrollPane" layoutX="266.0" layoutY="275.0" prefHeight="342.0" prefWidth="791.0" style="-fx-background-color: #191C22;">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="775.0" style="-fx-background-color: #191C22;">
+          <AnchorPane fx:id="anchorScrollPane" minHeight="0.0" minWidth="0.0" prefHeight="419.0" prefWidth="775.0" style="-fx-background-color: #191C22;">
                <children>
                   <Pane prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
                      <children>
-                        <Text fill="WHITE" layoutX="20.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="103175">
+                        <Label fx:id="id_ais" layoutX="20.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="103175">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="128.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ing. Patrik Velčický">
+                        </Label>
+                        <Label fx:id="id_name" layoutX="128.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Ing. Patrik Velčický">
                            <font>
                               <Font name="Outfit Regular" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="347.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doktorský typ studia, denní presenční forma">
+                        </Label>
+                        <Label fx:id="id_status" layoutX="347.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Doktorský typ studia, denní presenční forma">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="692.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NO ROOM">
+                        </Label>
+                        <Label fx:id="id_room" layoutX="692.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="NO ROOM">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="57.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="20.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="103175">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="128.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ing. Patrik Velčický">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="347.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doktorský typ studia, denní presenční forma">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="692.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NO ROOM">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="113.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="20.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="103175">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="128.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ing. Patrik Velčický">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="347.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doktorský typ studia, denní presenční forma">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="692.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NO ROOM">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
+                        </Label>
                      </children>
                   </Pane>
                </children>
             </AnchorPane>
         </content>
       </ScrollPane>
-      <Button layoutX="971.0" layoutY="110.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="86.0" style="-fx-background-color: #323642;" text="Search" textFill="WHITE">
+      <MFXComboBox fx:id="languageComboBox" layoutX="760.0" layoutY="16.0" text="EN">
          <font>
-            <Font name="Outfit Bold" size="14.0" />
+            <Font name="Outfit SemiBold" size="14.0" />
          </font>
-      </Button>
+      </MFXComboBox>
+      <Label fx:id="navi_login_text" layoutX="910.0" layoutY="17.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="10.0" />
+         </font>
+      </Label>
+      <Label fx:id="navi_username_text" layoutX="895.0" layoutY="30.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="teach_list" layoutX="266.0" layoutY="171.0" style="-fx-text-fill: WHITE;" text="Teachers List">
+         <font>
+            <Font name="Outfit Bold" size="24.0" />
+         </font>
+      </Label>
+      <MFXTextField fx:id="searchField" layoutX="273.0" layoutY="100.0" prefHeight="54.0" prefWidth="773.0" promptText="Type a Teacher's name " style="-fx-background-color: #262A35;">
+         <font>
+            <Font name="Outfit Regular" size="14.0" />
+         </font>
+      </MFXTextField>
    </children>
 </AnchorPane>
