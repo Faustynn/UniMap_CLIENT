@@ -4,15 +4,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.prefs.Preferences;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.NewsModel;
 
 public class DataFetcher {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
@@ -32,10 +28,10 @@ public class DataFetcher {
     private CompletableFuture<Boolean> fetchSubjects() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getSubjectsUrl()))
-                .header("Authorization", "Bearer " + AuthService.prefs.get("ACCESS_TOKEN", ""))
+                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
-        System.out.println("Subjects token sended "+AuthService.prefs.get("ACCESS_TOKEN", ""));
+        System.out.println("Subjects token sended "+PreferenceServise.get("ACCESS_TOKEN"));
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
@@ -45,7 +41,7 @@ public class DataFetcher {
                             JsonNode jsonNode = objectMapper.readTree(response.body());
 
                             System.out.println(jsonNode);
-                            AuthService.prefs.put("SUBJECTS_DATA", jsonNode.toString());
+                            CacheService.put("SUBJECTS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
                             System.err.println("Failed to parse JSON response: " + e.getMessage());
@@ -65,7 +61,7 @@ public class DataFetcher {
     public static CompletableFuture<String> fetchNews() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getNewsUrl()))
-                .header("Authorization", "Bearer " + AuthService.prefs.get("ACCESS_TOKEN", ""))
+                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
 
@@ -93,10 +89,10 @@ public class DataFetcher {
     private CompletableFuture<Boolean> fetchTeachers() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getTeachersUrl()))
-                .header("Authorization", "Bearer " + AuthService.prefs.get("ACCESS_TOKEN", ""))
+                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
-        System.out.println("Teacher token sended "+AuthService.prefs.get("ACCESS_TOKEN", ""));
+        System.out.println("Teacher token sended "+PreferenceServise.get("ACCESS_TOKEN"));
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
@@ -106,7 +102,7 @@ public class DataFetcher {
                             JsonNode jsonNode = objectMapper.readTree(response.body());
 
                             System.out.println(jsonNode);
-                            AuthService.prefs.put("TEACHERS_DATA", jsonNode.toString());
+                            CacheService.put("TEACHERS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
                             System.err.println("Failed to parse JSON response: " + e.getMessage());

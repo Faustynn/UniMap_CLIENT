@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.EmailService;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -22,7 +23,6 @@ import java.util.ResourceBundle;
 
 import static org.main.unimap_pc.client.configs.AppConfig.getForgotPassPagePath2;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class ForgotPassController implements LanguageSupport {
     @FXML
@@ -83,7 +83,7 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private void initialize() {
-        String lang = prefs.get("LANGUAGE", "en");
+        String lang = PreferenceServise.get("LANGUAGE").toString();
         LanguageManager.getInstance().registerController(this);
 
         LanguageManager.changeLanguage(lang);

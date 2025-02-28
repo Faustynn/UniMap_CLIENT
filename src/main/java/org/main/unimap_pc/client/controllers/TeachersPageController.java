@@ -14,6 +14,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.CacheService;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
@@ -21,7 +23,6 @@ import org.main.unimap_pc.client.utils.LanguageSupport;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -184,13 +185,11 @@ public class TeachersPageController implements LanguageSupport {
     }
     @FXML
     private void handleLogout() throws IOException {
-        // Clear the user data
-        Preferences prefs = Preferences.userNodeForPackage(HomePageController.class);
-        prefs.remove("ACCESS_TOKEN");
-        prefs.remove("REFRESH_TOKEN");
-        prefs.remove("USER_DATA");
-        prefs.remove("SUBJECTS");
-        prefs.remove("TEACHERS");
+        PreferenceServise.remove("ACCESS_TOKEN");
+        PreferenceServise.remove("REFRESH_TOKEN");
+        PreferenceServise.remove("USER_DATA");
+        CacheService.remove("SUBJECTS");
+        CacheService.remove("TEACHERS");
 
         // Change scene to login
         Stage stage = (Stage) logoutbtn.getScene().getWindow();

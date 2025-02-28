@@ -28,11 +28,10 @@ import javafx.stage.StageStyle;
 
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.AuthService;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.ErrorScreens;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
-
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class LogInController implements LanguageSupport {
     public Label downlApp;
@@ -69,13 +68,15 @@ public class LogInController implements LanguageSupport {
     @FXML
     private void initialize() {
         languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+        PreferenceServise.put(AppConfig.getLANGUAGE_KEY(), "EN");
+
         loadCurrentLanguage();
         dragArea.setOnMousePressed(this::handleMousePressed);
         dragArea.setOnMouseDragged(this::handleMouseDragged);
         LanguageManager.getInstance().registerController(this);
     }
     private void loadCurrentLanguage() {
-        String selectedLanguage = prefs.get(AppConfig.getLANGUAGE_KEY(), AppConfig.getDEFAULT_LANGUAGE());
+        String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
         languageComboBox.setValue(selectedLanguage);
 
         // listener for lang. editing
@@ -275,7 +276,6 @@ public class LogInController implements LanguageSupport {
         AuthService.login(username, password).thenAccept(isLoginSuccessful -> Platform.runLater(() -> {
             if (isLoginSuccessful) {
                 try {
-               //     prefs.put("LANGUAGE", languageComboBox.getValue());
                     Stage currentStage = (Stage) btnSignin.getScene().getWindow();
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
                     Scene mainScene = new Scene(root);

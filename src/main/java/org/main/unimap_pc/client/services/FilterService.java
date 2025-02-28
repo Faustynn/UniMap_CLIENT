@@ -1,6 +1,7 @@
 package org.main.unimap_pc.client.services;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.Teacher;
@@ -10,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class FilterService {
 
@@ -29,21 +28,39 @@ public class FilterService {
     private JSONArray TeacherArray;
 
     private void getSubjects() {
-        String subjectJson = prefs.get("SUBJECTS", "");
-        if (subjectJson == null || subjectJson.isBlank()) {
+        Object subjects = CacheService.get("SUBJECTS");
+        System.out.println("HAAAAAA"+subjects);
+
+        // TODO: make here correct output
+        if (subjects instanceof String) {
+            try {
+                SubjectArray = new JSONArray((String) subjects);
+            } catch (JSONException e) {
+                SubjectArray = new JSONArray();
+            }
+        } else if (subjects instanceof JSONArray) {
+            SubjectArray = (JSONArray) subjects;
+        } else {
             SubjectArray = new JSONArray();
-            return;
         }
-        SubjectArray = new JSONObject(subjectJson).getJSONArray("subjects");
     }
 
     private void getTeachers() {
-        String teacherJson = prefs.get("TEACHERS", "");
-        if (teacherJson == null || teacherJson.isBlank()) {
+        Object teachers = CacheService.get("TEACHERS");
+        System.out.println("HAAAAAA"+teachers);
+
+        // TODO: make here correct output
+        if (teachers instanceof String) {
+            try {
+                TeacherArray = new JSONArray((String) teachers);
+            } catch (JSONException e) {
+                TeacherArray = new JSONArray();
+            }
+        } else if (teachers instanceof JSONArray) {
+            TeacherArray = (JSONArray) teachers;
+        } else {
             TeacherArray = new JSONArray();
-            return;
         }
-        TeacherArray = new JSONObject(teacherJson).getJSONArray("teachers");
     }
 
 
