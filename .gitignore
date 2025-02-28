@@ -1,7 +1,4 @@
 config.properties
-org/main/unimap_pc/views/new/*.fxml
-
-org/main/unimap_pc/views/new/*
 
 target/
 !.mvn/wrapper/maven-wrapper.jar

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -97,277 +103,176 @@
             </MFXButton>
          </children>
       </VBox>
-      <ImageView id="profile-picture" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+      <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
          <image>
-            <Image url="@../../../../../../../../1.jpg" />
+            <Image url="@../images/avatares/0.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="910.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazar Meredov" textAlignment="RIGHT">
-         <font>
-            <Font name="Outfit Regular" size="13.0" />
-         </font>
-      </Text>
-      <Text fill="#848da0" layoutX="920.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@xmeredov" textAlignment="RIGHT" x="28.0">
-         <font>
-            <Font name="Outfit Regular" size="10.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutX="840.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EN" textAlignment="CENTER">
-         <font>
-            <Font name="Outfit SemiBold" size="14.0" />
-         </font>
-      </Text>
-      <Text fill="WHITE" layoutX="269.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject List">
+      <Label fx:id="navi_username_text" layoutX="964.0" layoutY="74.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+          <font>
+              <Font name="Outfit Regular" size="13.0" />
+          </font>
+      </Label>
+      <Label fx:id="navi_login_text" layoutX="972.0" layoutY="63.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+          <font>
+              <Font name="Outfit Regular" size="10.0" />
+          </font>
+      </Label>
+      <Label fx:id="subj_list" layoutX="269.0" layoutY="250.0" style="-fx-text-fill: WHITE;" text="Subject List">
          <font>
             <Font name="Outfit Bold" size="24.0" />
-         </font></Text>
-      <Pane layoutX="269.0" layoutY="105.0" prefHeight="48.0" prefWidth="774.0">
+         </font>
+      </Label>
+      <Pane layoutX="250.0" layoutY="300.0" prefHeight="48.0" prefWidth="774.0">
          <children>
-            <Text fill="#9fa6b7" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+            <Label fx:id="name_code" layoutX="89.0" layoutY="29.0" style="-fx-text-fill: #9fa6b7;" text="Name">
                <font>
                   <Font name="Outfit Bold" size="14.0" />
                </font>
-            </Text>
-            <Text fill="#9fa6b7" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Guarant">
+            </Label>
+            <Label fx:id="garant" layoutX="330.0" layoutY="29.0" style="-fx-text-fill: #9fa6b7;" text="Guarant">
                <font>
                   <Font name="Outfit Bold" size="14.0" />
                </font>
-            </Text>
-            <Text fill="#9fa6b7" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student amount this year">
+            </Label>
+            <Label fx:id="student_amount" layoutX="551.0" layoutY="29.0" style="-fx-text-fill: #9fa6b7;" text="Student amount this year">
                <font>
                   <Font name="Outfit Bold" size="14.0" />
                </font>
-            </Text>
-            <Text fill="#9fa6b7" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Abbr">
+            </Label>
+            <Label fx:id="abreviature" layoutX="14.0" layoutY="29.0" style="-fx-text-fill: #9fa6b7;" text="Abbr">
                <font>
                   <Font name="Outfit Bold" size="14.0" />
                </font>
-            </Text>
+            </Label>
          </children>
       </Pane>
-      <ScrollPane layoutX="269.0" layoutY="153.0" prefHeight="461.0" prefWidth="790.0" style="-fx-background-color: transparent;">
+      <ScrollPane fx:id="scrollPane" layoutX="269.0" layoutY="350.0" prefHeight="302.0" prefWidth="790.0" style="-fx-background-color: transparent;">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="542.0" prefWidth="774.0" style="-fx-background-color: #191C22;">
+          <AnchorPane fx:id="anchorScrollPane" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="774.0" style="-fx-background-color: #191C22;">
                <children>
-                  <Pane prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
+                  <Pane fx:id="subjects_entity" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
                      <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
+                        <Label fx:id="name_entity" layoutX="89.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Principy Principov Principov">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
+                        </Label>
+                        <Label fx:id="garant_entity" layoutX="330.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Doc.  Yaroslav Marochok">
                            <font>
                               <Font name="Outfit Regular" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
+                        </Label>
+                        <Label fx:id="students_entity" layoutX="551.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="304">
                            <font>
                               <Font name="Outfit Regular" size="14.0" />
                            </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
+                        </Label>
+                        <Label fx:id="code_entity" layoutX="14.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="PPP_B">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="54.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="109.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="163.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="217.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="272.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="327.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="381.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane layoutY="436.0" prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Text fill="WHITE" layoutX="89.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Principy Principov Principov">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="330.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Doc.  Yaroslav Marochok">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="551.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="304">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PPP_B">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Text>
+                        </Label>
                      </children>
                   </Pane>
                </children>
             </AnchorPane>
         </content>
       </ScrollPane>
+      <!-- Improved Filter Section -->
+      <Pane layoutX="250.0" layoutY="80.0" prefHeight="166.0" prefWidth="706.0" style="-fx-background-color: #1F222A; -fx-background-radius: 12;">
+         <children>
+            <Label fx:id="filter_subject_text" layoutX="24.0" layoutY="40.0" style="-fx-text-fill: WHITE;" text="Filter Subjects">
+               <font>
+                  <Font name="Outfit Bold" size="20.0" />
+               </font>
+            </Label>
+
+            <MFXTextField fx:id="searchField" layoutX="209.0" layoutY="12.0" prefHeight="40.0" prefWidth="300.0" promptText="Search by name or abbreviation..." style="-fx-background-color: #262A35; -fx-text-fill: white; -fx-prompt-text-fill: #9FA6B7;">
+               <font>
+                  <Font name="Outfit Regular" size="14.0" />
+               </font>
+            </MFXTextField>
+
+            <HBox layoutX="24.0" layoutY="95.0" spacing="16.0">
+               <children>
+
+                  <VBox spacing="8.0">
+                     <children>
+                        <Label fx:id="semester_text" style="-fx-text-fill: #9fa6b7;" text="Semester">
+                           <font>
+                              <Font name="Outfit Medium" size="14.0" />
+                           </font>
+                        </Label>
+                        <MFXComboBox fx:id="semesterCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="All Semesters" />
+                                 <String fx:value="LS" />
+                                 <String fx:value="ZS" />
+                              </FXCollections>
+                           </items>
+                        </MFXComboBox>
+                     </children>
+                  </VBox>
+                  <VBox spacing="8.0">
+                     <children>
+                     <Label fx:id="subject_type_text" style="-fx-text-fill: #9fa6b7;" text="Subject Type">
+                        <font>
+                           <Font name="Outfit Medium" size="14.0" />
+                        </font>
+                     </Label>
+                        <MFXComboBox fx:id="subjectTypeCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="All Types" />
+                                 <String fx:value="Povinny" />
+                                 <String fx:value="Povinno Volitelny" />
+                                 <String fx:value="Volitelny" />
+                              </FXCollections>
+                           </items>
+                        </MFXComboBox>
+                     </children>
+                  </VBox>
+
+                  <VBox spacing="8.0">
+                     <children>
+                     <Label fx:id="study_level_text" style="-fx-text-fill: #9fa6b7;" text="Study Level">
+                        <font>
+                           <Font name="Outfit Medium" size="14.0" />
+                        </font>
+                     </Label>
+                        <MFXComboBox fx:id="studyLevelCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="All Levels" />
+                                 <String fx:value="Bacalaver" />
+                                 <String fx:value="Ingeneer" />
+                              </FXCollections>
+                           </items>
+                        </MFXComboBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <MFXButton fx:id="applyFiltersBtn" layoutX="592.0" layoutY="50.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #79E3A5; -fx-text-fill: #191C22; -fx-background-radius: 8;" text="Apply">
+               <font>
+                  <Font name="Outfit Bold" size="14.0" />
+               </font>
+            </MFXButton>
+
+            <MFXButton fx:id="resetFiltersBtn" layoutX="593.0" layoutY="4.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #262A35; -fx-text-fill: white; -fx-background-radius: 8;" text="Reset">
+               <font>
+                  <Font name="Outfit Medium" size="14.0" />
+               </font>
+            </MFXButton>
+         </children>
+      </Pane>
+      <MFXComboBox fx:id="languageComboBox" layoutX="854.0" layoutY="12.0" text="EN">
+         <font>
+            <Font name="Outfit SemiBold" size="14.0" />
+         </font>
+      </MFXComboBox>
    </children>
 </AnchorPane>
