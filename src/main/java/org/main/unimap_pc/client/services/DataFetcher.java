@@ -4,12 +4,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.NewsModel;
 
 public class DataFetcher {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
@@ -17,6 +20,7 @@ public class DataFetcher {
     public CompletableFuture<Void> fetchData() {
         return fetchSubjects()
                 .thenCompose(subjectsFetched -> fetchTeachers())
+                .thenCompose(newsfetch -> fetchNews())
                 .thenAccept(teachersFetched -> {
                     System.out.println("Data fetching completed.");
                 });
@@ -57,6 +61,34 @@ public class DataFetcher {
                     return false;
                 });
     }
+
+    public static CompletableFuture<String> fetchNews() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(AppConfig.getNewsUrl()))
+                .header("Authorization", "Bearer " + AuthService.prefs.get("ACCESS_TOKEN", ""))
+                .GET()
+                .build();
+
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                           return response.body();
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse news JSON response: " + e.getMessage());
+                            return null;
+                        }
+                    } else {
+                        System.err.println("Failed to fetch news with status code: " + response.statusCode());
+                        return null;
+                    }
+                })
+                .exceptionally(throwable -> {
+                    System.err.println("News fetch request failed: " + throwable.getMessage());
+                    return null;
+                });
+    }
+
 
     private CompletableFuture<Boolean> fetchTeachers() {
         HttpRequest request = HttpRequest.newBuilder()

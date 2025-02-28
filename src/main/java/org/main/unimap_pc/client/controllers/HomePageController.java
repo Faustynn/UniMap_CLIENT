@@ -1,10 +1,17 @@
 package org.main.unimap_pc.client.controllers;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -21,9 +28,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Data;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.NewsModel;
 import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.DataFetcher;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
@@ -60,6 +71,8 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private void initialize() {
         try {
+            loadNews();
+            System.out.println("Loaded News");
             languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
             loadCurrentLanguage();
             accessToken = prefs.get("ACCESS_TOKEN", null);
@@ -81,6 +94,7 @@ public class HomePageController implements LanguageSupport {
             LanguageManager.changeLanguage(cachedLanguage);
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,6 +129,66 @@ public class HomePageController implements LanguageSupport {
             }
         });
     }
+
+    @FXML
+    private MFXScrollPane scrollPane_news;
+    @FXML
+    private Pane pane_for_news;
+
+    private void loadNews() {
+        CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
+
+        newsJsonFuture.thenAccept(newsJson -> {
+            if (newsJson != null) {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<NewsModel> newsList = objectMapper.readValue(newsJson, new TypeReference<List<NewsModel>>() {});
+                    Platform.runLater(() -> {
+                        displayNews(newsList);
+                    });
+                } catch (Exception e) {
+                    System.err.println("Failed to parse news JSON: " + e.getMessage());
+                }
+            } else {
+                System.err.println("Failed to load news.");
+            }
+        });
+
+    }
+
+
+    private void displayNews(List<NewsModel> newsList) {
+        pane_for_news.getChildren().clear(); // Clear existing news items
+        VBox newsContainer = new VBox(10); // Add spacing between news items
+        newsContainer.setPadding(new Insets(10, 10, 10, 10));
+        pane_for_news.getChildren().add(newsContainer);
+
+        for (NewsModel news : newsList) {
+            AnchorPane newsItem = createNewsItem(news);
+            newsContainer.getChildren().add(newsItem);
+        }
+    }
+
+    private AnchorPane createNewsItem(NewsModel news) {
+        AnchorPane newsItem = new AnchorPane();
+        newsItem.setPrefWidth(pane_for_news.getPrefWidth() -20);
+        newsItem.setStyle("-fx-background-color: #659ac9; -fx-background-radius: 25; -fx-border-color: #36436F; -fx-border-radius: 25; -fx-border-width: 2; -fx-border-style: solid;");
+
+        Label titleLabel = new Label(news.getTitle());
+        titleLabel.setLayoutX(20);
+        titleLabel.setLayoutY(10);
+        titleLabel.setTextFill(javafx.scene.paint.Color.WHITE);
+
+        Label descriptionLabel = new Label(news.getContent());
+        descriptionLabel.setLayoutX(20);
+        descriptionLabel.setLayoutY(50);
+        descriptionLabel.setPrefWidth(newsItem.getPrefWidth() - 40);
+        descriptionLabel.setWrapText(true);
+
+        newsItem.getChildren().addAll(titleLabel, descriptionLabel);
+        return newsItem;
+    }
+
     private UserModel initUser(String userData) {
         if (userData != null) {
             try {
@@ -231,10 +305,6 @@ public class HomePageController implements LanguageSupport {
     private FontAwesomeIcon gitHubIcon;
     @FXML
     private FontAwesomeIcon TipsIcon;
-    @FXML
-    private MFXScrollPane scrollPane_news;
-    @FXML
-    private Pane pane_for_news;
     @FXML
     private AnchorPane news1;
     @FXML

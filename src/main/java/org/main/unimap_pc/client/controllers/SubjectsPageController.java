@@ -129,9 +129,6 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
 
-
-
-
     @FXML
     private MFXButton btn_homepage;
     @FXML

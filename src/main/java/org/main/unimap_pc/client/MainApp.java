@@ -48,6 +48,7 @@ public class MainApp extends Application {
         schedulePeriodicServerChecks(stage);
     }
 
+
     private void checkServerConnectionAsync(Stage stage) {
         if(!connectionEstablished){
             System.out.println("Checking server connection...");
