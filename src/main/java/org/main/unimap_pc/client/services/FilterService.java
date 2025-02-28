@@ -28,18 +28,19 @@ public class FilterService {
     private JSONArray SubjectArray;
     private JSONArray TeacherArray;
 
-    private void getSubjects(){
-        String subjectJson = prefs.get("SUBJECTS", null);
-        if(subjectJson.isBlank()){
+    private void getSubjects() {
+        String subjectJson = prefs.get("SUBJECTS", "");
+        if (subjectJson == null || subjectJson.isBlank()) {
+            SubjectArray = new JSONArray();
             return;
         }
         SubjectArray = new JSONObject(subjectJson).getJSONArray("subjects");
     }
 
-    private void getTeachers(){
-
-        String teacherJson = prefs.get("TEACHERS", null);
-        if(teacherJson.isBlank()) {
+    private void getTeachers() {
+        String teacherJson = prefs.get("TEACHERS", "");
+        if (teacherJson == null || teacherJson.isBlank()) {
+            TeacherArray = new JSONArray();
             return;
         }
         TeacherArray = new JSONObject(teacherJson).getJSONArray("teachers");

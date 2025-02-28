@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -179,7 +180,6 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <!-- Improved Filter Section -->
       <Pane layoutX="250.0" layoutY="80.0" prefHeight="166.0" prefWidth="706.0" style="-fx-background-color: #1F222A; -fx-background-radius: 12;">
          <children>
             <Label fx:id="filter_subject_text" layoutX="24.0" layoutY="40.0" style="-fx-text-fill: WHITE;" text="Filter Subjects">
@@ -188,7 +188,7 @@
                </font>
             </Label>
 
-            <MFXTextField fx:id="searchField" layoutX="209.0" layoutY="12.0" prefHeight="40.0" prefWidth="300.0" promptText="Search by name or abbreviation..." style="-fx-background-color: #262A35; -fx-text-fill: white; -fx-prompt-text-fill: #9FA6B7;">
+            <MFXTextField fx:id="searchField" layoutX="209.0" layoutY="12.0" prefHeight="40.0" prefWidth="300.0" promptText="Search by name or abbreviation..." style="-fx-background-color: #262A35;">
                <font>
                   <Font name="Outfit Regular" size="14.0" />
                </font>
@@ -204,7 +204,7 @@
                               <Font name="Outfit Medium" size="14.0" />
                            </font>
                         </Label>
-                        <MFXComboBox fx:id="semesterCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                        <MFXComboBox fx:id="semesterCombo" accessibleRole="COMBO_BOX" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35;" text="All Semesters">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="All Semesters" />
@@ -212,6 +212,9 @@
                                  <String fx:value="ZS" />
                               </FXCollections>
                            </items>
+                           <textFill>
+                              <Color />
+                           </textFill>
                         </MFXComboBox>
                      </children>
                   </VBox>
@@ -222,7 +225,7 @@
                            <Font name="Outfit Medium" size="14.0" />
                         </font>
                      </Label>
-                        <MFXComboBox fx:id="subjectTypeCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                        <MFXComboBox fx:id="subjectTypeCombo" accessibleRole="COMBO_BOX" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35;" text="All Types">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="All Types" />
@@ -231,6 +234,9 @@
                                  <String fx:value="Volitelny" />
                               </FXCollections>
                            </items>
+                           <textFill>
+                              <Color />
+                           </textFill>
                         </MFXComboBox>
                      </children>
                   </VBox>
@@ -242,7 +248,7 @@
                            <Font name="Outfit Medium" size="14.0" />
                         </font>
                      </Label>
-                        <MFXComboBox fx:id="studyLevelCombo" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+                        <MFXComboBox fx:id="studyLevelCombo" accessibleRole="COMBO_BOX" floatMode="DISABLED" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #262A35;" text="All Levels">
                            <items>
                               <FXCollections fx:factory="observableArrayList">
                                  <String fx:value="All Levels" />
@@ -250,23 +256,14 @@
                                  <String fx:value="Ingeneer" />
                               </FXCollections>
                            </items>
+                           <textFill>
+                              <Color />
+                           </textFill>
                         </MFXComboBox>
                      </children>
                   </VBox>
                </children>
             </HBox>
-
-            <MFXButton fx:id="applyFiltersBtn" layoutX="592.0" layoutY="50.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #79E3A5; -fx-text-fill: #191C22; -fx-background-radius: 8;" text="Apply">
-               <font>
-                  <Font name="Outfit Bold" size="14.0" />
-               </font>
-            </MFXButton>
-
-            <MFXButton fx:id="resetFiltersBtn" layoutX="593.0" layoutY="4.0" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #262A35; -fx-text-fill: white; -fx-background-radius: 8;" text="Reset">
-               <font>
-                  <Font name="Outfit Medium" size="14.0" />
-               </font>
-            </MFXButton>
          </children>
       </Pane>
       <MFXComboBox fx:id="languageComboBox" layoutX="854.0" layoutY="12.0" text="EN">
