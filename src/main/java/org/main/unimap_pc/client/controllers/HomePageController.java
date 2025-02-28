@@ -390,5 +390,9 @@ public class HomePageController implements LanguageSupport {
         }
     }
 
+    @FXML
+    public void handleRefreshNewsClick() {
+
+    }
 
 }
