@@ -1,43 +1,36 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.FilterService;
 import org.main.unimap_pc.client.services.UserService;
-import javafx.scene.image.ImageView;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
-
 public class SubjectsPageController implements LanguageSupport {
-    @FXML
-    private Label navi_username_text;
-    @FXML
-    private Label navi_login_text;
-    @FXML
-    private ImageView navi_avatar;
-
-    @FXML
-    private MFXComboBox languageComboBox;
+    @FXML private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code, garant, student_amount, study_level_text, subject_type_text, semester_text, filter_subject_text;
+    @FXML private ImageView navi_avatar;
+    @FXML private MFXComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
+    @FXML private MFXTextField searchField;
+    @FXML private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage;
+    @FXML private ScrollPane scrollPane;
+    @FXML private AnchorPane anchorScrollPane;
 
     private String defLang;
     private String accessToken;
@@ -46,62 +39,111 @@ public class SubjectsPageController implements LanguageSupport {
     private void initialize() {
         languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
         loadCurrentLanguage();
-
         setupFilters();
+        applyFilters();
 
-        accessToken=UserService.getInstance().getAccessToken();
-        defLang=UserService.getInstance().getDefLang();
+        defLang = UserService.getInstance().getDefLang();
         UserModel user = UserService.getInstance().getCurrentUser();
         if (user != null) {
             navi_username_text.setText(user.getUsername());
             navi_login_text.setText(user.getLogin());
             navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
-
         }
         LanguageManager.changeLanguage(defLang);
         LanguageManager.getInstance().registerController(this);
         updateUILanguage(LanguageManager.getCurrentBundle());
     }
+
     private void loadCurrentLanguage() {
         languageComboBox.setValue(defLang);
-
-        // listener for lang. editing
         languageComboBox.setOnAction(event -> {
             try {
-                String newLanguage = (String) languageComboBox.getValue();
+                String newLanguage = languageComboBox.getValue();
                 String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
-                showErrorDialog("Error changing language: " + e.getMessage());
-                loadCurrentLanguage();
+                e.printStackTrace();
             }
         });
     }
 
+    private void setupFilters() {
+        subjectTypeCombo.getItems().setAll("All Types", "Povinny", "Povinno Volitelny", "Volitelny");
+        studyLevelCombo.getItems().setAll("All Levels", "Bacalaver", "Ingeneer");
+        semesterCombo.getItems().setAll("All Semesters", "ZS", "LS");
 
-    @FXML
-    private Label subj_list;
-    @FXML
-    private Label abreviature;
-    @FXML
-    private Label name_code;
-    @FXML
-    private Label garant;
-    @FXML
-    private Label student_amount;
-    @FXML
-    private Label study_level_text;
-    @FXML
-    private Label subject_type_text;
-    @FXML
-    private Label semester_text;
-    @FXML
-    private Label filter_subject_text;
+        subjectTypeCombo.setValue("All Types");
+        studyLevelCombo.setValue("All Levels");
+        semesterCombo.setValue("All Semesters");
+
+        subjectTypeCombo.setOnAction(event -> {
+            if (event.getSource() == subjectTypeCombo) {
+                applyFilters();
+            }
+        });
+
+        studyLevelCombo.setOnAction(event -> {
+            if (event.getSource() == studyLevelCombo) {
+                applyFilters();
+            }
+        });
+
+        semesterCombo.setOnAction(event -> {
+            if (event.getSource() == semesterCombo) {
+                applyFilters();
+            }
+        });
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.length() > 2 || newVal.isEmpty()) applyFilters();
+        });
+    }
+    private void applyFilters() {
+        String searchText = searchField.getText().toLowerCase();
+        String subjectType = subjectTypeCombo.getValue();
+        String studyLevel = studyLevelCombo.getValue();
+        String semester = semesterCombo.getValue();
+
+        FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = switch (subjectType) {
+            case "Povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
+            case "Povinno Volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
+            case "Volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
+            default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+        };
+
+        FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = switch (studyLevel) {
+            case "Bacalaver" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
+            case "Ingeneer" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
+            default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
+        };
+
+        FilterService.subjectSearchForm.semesterEnum semesterEnum = switch (semester) {
+            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
+            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
+            default -> FilterService.subjectSearchForm.semesterEnum.NONE;
+        };
+
+        FilterService filterService = new FilterService();
+        FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(searchText, subjectTypeEnum, studyTypeEnum, semesterEnum);
+        List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+
+        updateSubjectList(filteredSubjects);
+        updateSelectedFiltersText();
+    }
+
+    private void updateSelectedFiltersText() {
+    subjectTypeCombo.setStyle("-fx-text-fill: black;");
+    semesterCombo.setStyle("-fx-text-fill: black;");
+    studyLevelCombo.setStyle("-fx-text-fill: black;");
+}
 
 
+    private void updateSubjectList(List<Subject> subjects) {
 
+    }
 
+    @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
         logoutbtn.setText(languageBundle.getString("logout"));
         btn_homepage.setText(languageBundle.getString("homepage"));
@@ -123,22 +165,8 @@ public class SubjectsPageController implements LanguageSupport {
         filter_subject_text.setText(languageBundle.getString("filter.subject"));
 
 
-        applyFiltersBtn.setText(languageBundle.getString("apply.filters"));
-        resetFiltersBtn.setText(languageBundle.getString("reset.filters"));
         searchField.setPromptText(languageBundle.getString("search"));
     }
-
-
-    @FXML
-    private MFXButton btn_homepage;
-    @FXML
-    private MFXButton btn_profilepage;
-    @FXML
-    private MFXButton btn_subjectpage;
-    @FXML
-    private MFXButton btn_teacherspage;
-    @FXML
-    private MFXButton btn_settingspage;
 
     @FXML
     public void handleHomePageClick() {
@@ -152,9 +180,10 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
+
+
     @FXML
     public void handleProfilePageClick() {
         try {
@@ -167,7 +196,6 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
     @FXML
@@ -182,7 +210,6 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
     @FXML
@@ -197,7 +224,6 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
     @FXML
@@ -212,13 +238,10 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
 
 
-    @FXML
-    private MFXButton logoutbtn;
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
@@ -238,69 +261,4 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
 
-
-    @FXML
-    private MFXTextField searchField;
-    @FXML
-    private MFXComboBox<String> subjectTypeCombo;
-    @FXML
-    private MFXComboBox<String> studyLevelCombo;
-    @FXML
-    private MFXComboBox<String> semesterCombo;
-    @FXML
-    private MFXButton applyFiltersBtn;
-    @FXML
-    private MFXButton resetFiltersBtn;
-
-    private void setupFilters() {
-        subjectTypeCombo.setValue("All Types");
-        studyLevelCombo.setValue("All Levels");
-        semesterCombo.setValue("All Semesters");
-
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 2 || newValue.isEmpty()) {
-                applyFilters();
-            }
-        });
-
-        applyFiltersBtn.setOnAction(event -> applyFilters());
-        resetFiltersBtn.setOnAction(event -> resetFilters());
-    }
-
-    private void applyFilters() {
-        String searchText = searchField.getText().toLowerCase();
-        String subjectType = subjectTypeCombo.getValue();
-        String studyLevel = studyLevelCombo.getValue();
-        String semester = semesterCombo.getValue();
-
-
-     //    updateSubjectList(filteredSubjects);
-    }
-    private void resetFilters() {
-        searchField.clear();
-        subjectTypeCombo.setValue("All Types");
-        studyLevelCombo.setValue("All Levels");
-        semesterCombo.setValue("All Semesters");
-        applyFilters();
-    }
-
-
-    private void updateSubjectList(List<Subject> subjects) {
-
-    }
-
-    @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private AnchorPane anchorScrollPane;
-    @FXML
-    private Pane subjects_entity;
-    @FXML
-    private Label code_entity;
-    @FXML
-    private Label name_entity;
-    @FXML
-    private Label garant_entity;
-    @FXML
-    private Label students_entity;
 }

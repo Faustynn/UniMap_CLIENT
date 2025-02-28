@@ -33,6 +33,7 @@ public class Subject {
     private String courseContents;
     private String plannedActivities;
     private String evaluationMethods;
+    private String garant;
     public Subject(JSONObject jsonBase) {
         try {
             code = jsonBase.getString("code");
@@ -125,6 +126,11 @@ public class Subject {
                     .toList();
         } catch (org.json.JSONException e) {
             languages = new ArrayList<String>();
+        }
+        try {
+            garant = jsonBase.getString("garant"); // Add this field
+        } catch (org.json.JSONException e) {
+            garant = "";
         }
     }
 }
