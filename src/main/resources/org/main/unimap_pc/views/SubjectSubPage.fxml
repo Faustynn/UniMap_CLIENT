@@ -8,114 +8,109 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsSubPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="640.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsSubPageController">
     <children>
-          <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="Name:">
+          <Label fx:id="name_code" layoutX="375.0" layoutY="9.0" style="-fx-text-fill: #9fa6b7;" text="Name:">
               <font>
                   <Font name="Outfit Bold" size="14.0" />
               </font>
           </Label>
-          <Label fx:id="garant" layoutX="5.0" layoutY="288.0" style="-fx-text-fill: #9fa6b7;" text="Teachers:">
+          <Label fx:id="garant" layoutX="275.0" layoutY="158.0" style="-fx-text-fill: #9fa6b7;" text="Teachers:">
               <font>
                   <Font name="Outfit Bold" size="14.0" />
               </font>
           </Label>
-          <Label fx:id="student_amount" layoutX="3.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="studentCount:">
+          <Label fx:id="student_amount" layoutX="374.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="studentCount:">
               <font>
                   <Font name="Outfit Bold" size="14.0" />
               </font>
           </Label>
-          <Label fx:id="abreviature" layoutX="2.0" layoutY="18.0" style="-fx-text-fill: #9fa6b7;" text="Abbr:">
+          <Label fx:id="abreviature" layoutX="375.0" layoutY="23.0" style="-fx-text-fill: #9fa6b7;" text="Abbr:">
               <font>
                   <Font name="Outfit Bold" size="14.0" />
               </font>
           </Label>
-      <Label fx:id="abreviature1" layoutX="3.0" layoutY="54.0" style="-fx-text-fill: #9fa6b7;" text="Type:">
+      <Label fx:id="abreviature1" layoutX="375.0" layoutY="52.0" style="-fx-text-fill: #9fa6b7;" text="Type:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature2" layoutX="3.0" layoutY="72.0" style="-fx-text-fill: #9fa6b7;" text="Credits:">
+      <Label fx:id="abreviature2" layoutX="378.0" layoutY="69.0" style="-fx-text-fill: #9fa6b7;" text="Credits:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3" layoutX="3.0" layoutY="90.0" style="-fx-text-fill: #9fa6b7;" text="studyType:">
+      <Label fx:id="abreviature3" layoutX="375.0" layoutY="86.0" style="-fx-text-fill: #9fa6b7;" text="studyType:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31" layoutX="1.0" layoutY="108.0" style="-fx-text-fill: #9fa6b7;" text="semester:">
+      <Label fx:id="abreviature31" layoutX="376.0" layoutY="104.0" style="-fx-text-fill: #9fa6b7;" text="semester:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature311" layoutX="1.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="languages:">
+      <Label fx:id="abreviature311" layoutX="375.0" layoutY="122.0" style="-fx-text-fill: #9fa6b7;" text="languages:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111" layoutX="2.0" layoutY="144.0" style="-fx-text-fill: #9fa6b7;" text="completionType">
+      <Label fx:id="abreviature3111" layoutX="377.0" layoutY="140.0" style="-fx-text-fill: #9fa6b7;" text="completionType">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31111" layoutX="4.0" layoutY="162.0" style="-fx-text-fill: #9fa6b7;" text="evaluation:">
+      <Label fx:id="abreviature31111" layoutX="5.0" layoutY="8.0" prefHeight="99.0" prefWidth="280.0" style="-fx-text-fill: #9fa6b7;" text="evaluation:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature311111" layoutX="4.0" layoutY="190.0" style="-fx-text-fill: #9fa6b7;" text="assesmentMethods:">
+      <Label fx:id="abreviature311111" layoutX="4.0" layoutY="119.0" prefHeight="87.0" prefWidth="280.0" style="-fx-text-fill: #9fa6b7;" text="assesmentMethods:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111" layoutX="2.0" layoutY="217.0" style="-fx-text-fill: #9fa6b7;" text="plannedActivities:">
+      <Label fx:id="abreviature3111111" layoutX="2.0" layoutY="201.0" prefHeight="99.0" prefWidth="305.0" style="-fx-text-fill: #9fa6b7;" text="plannedActivities:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31111111" layoutX="3.0" layoutY="235.0" style="-fx-text-fill: #9fa6b7;" text="evaluationMethods:">
+      <Label fx:id="abreviature31111111" layoutX="2.0" layoutY="297.0" prefHeight="117.0" prefWidth="305.0" style="-fx-text-fill: #9fa6b7;" text="evaluationMethods:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature311111111" layoutX="319.0" layoutY="9.0" style="-fx-text-fill: #9fa6b7;" text="A:">
+      <Label fx:id="abreviature311111111" layoutX="292.0" layoutY="9.0" style="-fx-text-fill: #9fa6b7;" text="A:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111111" layoutX="319.0" layoutY="27.0" style="-fx-text-fill: #9fa6b7;" text="B:">
+      <Label fx:id="abreviature3111111111" layoutX="293.0" layoutY="27.0" style="-fx-text-fill: #9fa6b7;" text="B:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111112" layoutX="319.0" layoutY="43.0" style="-fx-text-fill: #9fa6b7;" text="C:">
+      <Label fx:id="abreviature3111111112" layoutX="292.0" layoutY="45.0" style="-fx-text-fill: #9fa6b7;" text="C:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111113" layoutX="319.0" layoutY="59.0" style="-fx-text-fill: #9fa6b7;" text="D:">
+      <Label fx:id="abreviature3111111113" layoutX="294.0" layoutY="59.0" style="-fx-text-fill: #9fa6b7;" text="D:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31111111131" layoutX="319.0" layoutY="78.0" style="-fx-text-fill: #9fa6b7;" text="E:">
+      <Label fx:id="abreviature31111111131" layoutX="295.0" layoutY="78.0" style="-fx-text-fill: #9fa6b7;" text="E:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31111111132" layoutX="319.0" layoutY="95.0" style="-fx-text-fill: #9fa6b7;" text="FX:">
+      <Label fx:id="abreviature31111111132" layoutX="295.0" layoutY="95.0" style="-fx-text-fill: #9fa6b7;" text="FX:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="closebtn" layoutX="509.0" layoutY="3.0" text="X" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="26.0" />
-         </font>
-      </Label>
-      <ScrollPane layoutX="194.0" layoutY="117.0" prefHeight="163.0" prefWidth="332.0">
+      <ScrollPane layoutX="307.0" layoutY="180.0" prefHeight="163.0" prefWidth="332.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
@@ -157,7 +152,7 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <AnchorPane layoutX="192.0" layoutY="280.0" prefHeight="39.0" prefWidth="334.0" style="-fx-background-color: yellow;">
+      <AnchorPane layoutX="307.0" layoutY="344.0" prefHeight="39.0" prefWidth="334.0" style="-fx-background-color: yellow;">
          <children>
             <Button layoutX="296.0" layoutY="12.0" mnemonicParsing="false" text="ADD">
                <font>
@@ -177,5 +172,10 @@
             </Label>
          </children>
       </AnchorPane>
+      <Label fx:id="closeApp" layoutX="610.0" layoutY="4.0" onMouseClicked="#handleCloseApp" prefWidth="16.0" style="-fx-cursor: hand;" text="X" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

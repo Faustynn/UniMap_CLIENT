@@ -64,7 +64,25 @@ public class FilterService {
             TeacherArray = new JSONArray();
         }
     }
-
+    public static String subSearchForGarant(String subjectCode) {
+        for (int i = 0; i < TeacherArray.length(); i++) {
+            JSONObject teacher = TeacherArray.getJSONObject(i);
+            JSONArray subjects = teacher.getJSONArray("subjects");
+            for (int j = 0; j < subjects.length(); j++) {
+                JSONObject subject = subjects.getJSONObject(j);
+                if (subject.getString("subjectName").equals(subjectCode)) {
+                    JSONArray roles = subject.getJSONArray("roles");
+                    for (int k = 0; k < roles.length(); k++) {
+                        String role = roles.getString(k);
+                        if (removeDiacritics(role).equalsIgnoreCase("zodpovedny za predmet")) {
+                            return teacher.getString("name");
+                        }
+                    }
+                }
+            }
+        }
+        return null; // or return an appropriate message if no guarantor is found
+    }
 
     // FilterService.java
     public static List<Teacher> filterTeachers(teacherSearchForm searchForm) {
@@ -131,6 +149,8 @@ public class FilterService {
             };
         }
     }
+
+
     public static class subjectSearchForm{
         public enum subjectTypeEnum{POV,POV_VOL,VOL,NONE}
         public enum studyTypeEnum{BC,ING,NONE}
@@ -183,7 +203,6 @@ public class FilterService {
                 };
             };
         }
-
     }
 
 }

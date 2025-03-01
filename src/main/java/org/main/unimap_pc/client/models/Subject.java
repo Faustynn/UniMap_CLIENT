@@ -129,10 +129,7 @@ public class Subject {
         } catch (org.json.JSONException e) {
             languages = new ArrayList<String>();
         }
-        try {
-            garant = FilterService.filterTeachers(new FilterService.teacherSearchForm("",name,true)).getFirst().getName();
-        } catch (NoSuchElementException e) {
-            garant = "";
-        }
+
+        garant = FilterService.subSearchForGarant(code);
     }
 }

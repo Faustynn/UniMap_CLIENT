@@ -9,10 +9,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
+import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.FilterService;
@@ -21,10 +25,13 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
 public class SubjectsPageController implements LanguageSupport {
     @FXML
@@ -36,7 +43,7 @@ public class SubjectsPageController implements LanguageSupport {
     @FXML
     private MFXTextField searchField;
     @FXML
-    private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage;
+    private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage, btnForgotPass, btnSignup;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -80,8 +87,8 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
     private void setupFilters() {
-        subjectTypeCombo.getItems().setAll("All Types", "Povinny", "Povinno Volitelny", "Volitelny");
-        studyLevelCombo.getItems().setAll("All Levels", "Bacalaver", "Ingeneer");
+        subjectTypeCombo.getItems().setAll("All Types", "povinny", "povinne volitelny", "volitelny");
+        studyLevelCombo.getItems().setAll("All Levels", "bakalarsky", "inziniersky");
         semesterCombo.getItems().setAll("All Semesters", "ZS", "LS");
 
         subjectTypeCombo.setValue("All Types");
@@ -107,27 +114,26 @@ public class SubjectsPageController implements LanguageSupport {
 
         FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = switch (subjectType) {
             case "povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
-            case "povinno volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
+            case "povinne volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
             case "volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
             default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
         };
 
         FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = switch (studyLevel) {
-            case "bacalaver" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
-            case "ingeneer" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
+            case "bakalarsky" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
+            case "inziniersky" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
             default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
         };
 
         FilterService.subjectSearchForm.semesterEnum semesterEnum = switch (semester) {
-            case "ls" -> FilterService.subjectSearchForm.semesterEnum.LS;
-            case "zs" -> FilterService.subjectSearchForm.semesterEnum.ZS;
+            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
+            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
             default -> FilterService.subjectSearchForm.semesterEnum.NONE;
         };
 
         FilterService filterService = new FilterService();
         FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(searchText, subjectTypeEnum, studyTypeEnum, semesterEnum);
         List<Subject> filteredSubjects = FilterService.filterSubjects(searchForm);
-
         System.out.println("Filtered subjects: " + filteredSubjects.size());
 
         updateSubjectList(filteredSubjects);
@@ -243,22 +249,72 @@ public class SubjectsPageController implements LanguageSupport {
         return card;
     }
 
-    private void openSubjectSubPage(Subject subject) {
+
+    // Modal Window logic
+    @FXML
+    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getSubjectsSubPagePath()));
-            Parent root = loader.load();
+            Stage parentStage = (Stage) (windowTitle.equals("SubjectPage") ? btn_subjectpage : btn_settingspage).getScene().getWindow();
 
-            // Pass the subject to the subpage controller
-            SubjectsSubPageController controller = loader.getController();
-            controller.setSubject(subject);
-            controller.loadSubjectData();
+            if (getClass().getResource(fxmlPath) == null) {
+                showErrorDialog("Resource not found: " + fxmlPath);
+                return;
+            }
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+            if (LanguageManager.getCurrentBundle() != null) {
+                loader.setResources(LanguageManager.getCurrentBundle());
+            }
+
+            try {
+                AnchorPane modalPane = loader.load();
+
+                Scene modalScene = new Scene(modalPane);
+                Stage modalStage = new Stage();
+
+                modalStage.initStyle(StageStyle.TRANSPARENT);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+                modalStage.initOwner(parentStage);
+                modalStage.setTitle(windowTitle);
+
+                modalStage.setScene(modalScene);
+
+                StackPane overlay = createOverlay(parentStage);
+
+                Scene parentScene = parentStage.getScene();
+                AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
+                parentRoot.getChildren().add(overlay);
+
+                modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
+
+                modalStage.showAndWait();
+            } catch (IOException e) {
+                System.err.println("Failed to load FXML from path: " + fxmlPath);
+                e.printStackTrace();
+                showErrorDialog(errorMessage + ": " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("Unexpected error in openModalWindow");
             e.printStackTrace();
+            showErrorDialog(errorMessage + ": " + e.getMessage());
         }
+    }
+    private StackPane createOverlay(Stage parentStage) {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlay.setPrefSize(parentStage.getWidth(), parentStage.getHeight());
+
+        overlay.setOnMouseClicked(event -> Toolkit.getDefaultToolkit().beep());
+
+        return overlay;
+    }
+    private void openSubjectSubPage(Subject subject) {
+        openModalWindow(
+                AppConfig.getSubjectsSubPagePath(),
+                "Subject: " + subject.getCode(),
+                "Error loading the forgot password window"
+        );
     }
 
 
@@ -299,7 +355,6 @@ public class SubjectsPageController implements LanguageSupport {
             System.err.println("Failed to load main page: " + e.getMessage());
         }
     }
-
     @FXML
     public void handleProfilePageClick() {
         try {
@@ -314,7 +369,6 @@ public class SubjectsPageController implements LanguageSupport {
             System.err.println("Failed to load main page: " + e.getMessage());
         }
     }
-
     @FXML
     public void handleSubjectPageClick() {
         try {
@@ -329,7 +383,6 @@ public class SubjectsPageController implements LanguageSupport {
             System.err.println("Failed to load main page: " + e.getMessage());
         }
     }
-
     @FXML
     public void handleTeachersPageClick() {
         try {
@@ -344,7 +397,6 @@ public class SubjectsPageController implements LanguageSupport {
             System.err.println("Failed to load main page: " + e.getMessage());
         }
     }
-
     @FXML
     public void handleSettingsPageClick() {
         try {
@@ -359,7 +411,6 @@ public class SubjectsPageController implements LanguageSupport {
             System.err.println("Failed to load main page: " + e.getMessage());
         }
     }
-
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
