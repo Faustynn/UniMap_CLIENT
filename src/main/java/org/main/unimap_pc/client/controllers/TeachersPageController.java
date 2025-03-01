@@ -123,15 +123,15 @@ public class TeachersPageController implements LanguageSupport {
         }
 
         FilterService.teacherSearchForm.roleEnum roleEnum = switch (role) {
-            case "garant" -> FilterService.teacherSearchForm.roleEnum.garant;
-            case "cviciaci" -> FilterService.teacherSearchForm.roleEnum.cviciaci;
-            case "prednasajuci" -> FilterService.teacherSearchForm.roleEnum.prednasajuci;
-            case "skusajuci" -> FilterService.teacherSearchForm.roleEnum.skusajuci;
+            case "garant" -> FilterService.teacherSearchForm.roleEnum.GARANT;
+            case "cviciaci" -> FilterService.teacherSearchForm.roleEnum.CVICIACI;
+            case "prednasajuci" -> FilterService.teacherSearchForm.roleEnum.PREDNASAJUCI;
+            case "skusajuci" -> FilterService.teacherSearchForm.roleEnum.SKUSAJUCI;
             default -> FilterService.teacherSearchForm.roleEnum.NONE;
         };
 
         FilterService filterService = new FilterService();
-        FilterService.teacherSearchForm searchForm = new FilterService.teacherSearchForm(searchText);
+        FilterService.teacherSearchForm searchForm = new FilterService.teacherSearchForm(searchText,roleEnum);
         List<Teacher> filteredTeachers = filterService.filterTeachers(searchForm);
 
         System.out.println("Filtered teachers: " + filteredTeachers.size());

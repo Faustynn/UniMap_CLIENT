@@ -88,8 +88,7 @@ public class FilterService {
     public static List<Teacher> filterTeachers(teacherSearchForm searchForm) {
         List<Teacher> TeacherList = TeacherArray.toList().stream()
                 .map(obj -> new JSONObject((Map<String, Object>) obj))
-                .filter(searchForm.teachesSubject)
-                .filter(searchForm.nameSearch)
+                .filter(searchForm.filterPredicate)
                 .map(Teacher::new)
                 .collect(Collectors.toList());
         return TeacherList;
@@ -111,23 +110,35 @@ public class FilterService {
     public static class teacherSearchForm {
         private final Predicate<JSONObject> nameSearch;
         private final Predicate<JSONObject> teachesSubject;
+        private final Predicate<JSONObject> filterPredicate; //THIS ONE SHOULD BE USED
+        public enum roleEnum{
+            GARANT,
+            CVICIACI,
+            PREDNASAJUCI,
+            SKUSAJUCI,
+            NONE
+        }
 
-        public teacherSearchForm(String searchTerm, String targetSubjectCode, boolean lookForGuarantor) {
+        public teacherSearchForm(String searchTerm, roleEnum targetRole) {
             teachesSubject = teacher -> {
-                if (targetSubjectCode.isBlank()) {
-                    return true;
-                }
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
-                    if (subject.getString("subjectName").equals(targetSubjectCode)) {
-                        if(lookForGuarantor){
+                    if (subject.getString("subjectName").toLowerCase().contains(removeDiacritics(searchTerm).toLowerCase())) {
+                        if(targetRole!=roleEnum.NONE){
+                            String targetRoleName = switch (targetRole){
+                                case GARANT -> "zodpovedny za predmet";
+                                case CVICIACI -> "cviciaci";
+                                case SKUSAJUCI -> "skusajuci";
+                                case PREDNASAJUCI -> "prednasajuci";
+                                default -> throw new IllegalStateException("Unexpected value: " + targetRole);
+                            };
                             JSONArray roles = subject.getJSONArray("roles");
                             for(int j = 0;j < roles.length();j++){
                                 String role = roles.getString(j);
                                 System.out.println("CHECKING ROLE FOR " + teacher.getString("name")+": "+role);
-                                if(removeDiacritics(role).equalsIgnoreCase("zodpovedny za predmet")){
-                                    System.out.println("found a guarantor");
+                                if(removeDiacritics(role).equalsIgnoreCase(targetRoleName)){
+                                    System.out.println("found a match");
                                     return true;
                                 }
 
@@ -147,6 +158,11 @@ public class FilterService {
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
                 return normalizedName.contains(normalizedSearchTerm);
             };
+            if(searchTerm.isBlank()){
+                filterPredicate = teachesSubject;
+            }else {
+                filterPredicate = teachesSubject.or(nameSearch);
+            }
         }
     }
 
@@ -169,7 +185,7 @@ public class FilterService {
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
                 return normalizedName.contains(normalizedSearchTerm)
                         || normalizedCode.contains(normalizedSearchTerm)
-                        || !filterTeachers(new teacherSearchForm(searchTerm,originalCode,true)).isEmpty();
+                        || !filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT)).isEmpty();
             };
             subjectTypePredicate = subject ->{
                 String type = subject.getString("type");
