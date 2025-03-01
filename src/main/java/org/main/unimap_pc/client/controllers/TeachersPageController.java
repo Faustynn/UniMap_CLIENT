@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
+import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.FilterService;
@@ -45,7 +46,8 @@ public class TeachersPageController implements LanguageSupport {
     private ScrollPane scrollPane;
     @FXML
     private AnchorPane anchorScrollPane;
-
+    @FXML
+    private MFXComboBox<String> roleCombo;
 
 
     private String defLang;
@@ -106,26 +108,36 @@ public class TeachersPageController implements LanguageSupport {
 
 
     private void setupFilters() {
+        roleCombo.getItems().setAll("All Roles", "garant", "cviciaci", "prednasajuci","skusajuci");
+        roleCombo.setValue("All Roles");
+        roleCombo.setOnAction(event -> applyFilters());
+
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
     private void applyFilters() {
         String searchText = searchField.getText().trim();
+        String role = roleCombo.getValue();
 
         if (searchText.isEmpty()) {
             searchText = "";
         }
 
+        FilterService.teacherSearchForm.roleEnum roleEnum = switch (role) {
+            case "garant" -> FilterService.teacherSearchForm.roleEnum.garant;
+            case "cviciaci" -> FilterService.teacherSearchForm.roleEnum.cviciaci;
+            case "prednasajuci" -> FilterService.teacherSearchForm.roleEnum.prednasajuci;
+            case "skusajuci" -> FilterService.teacherSearchForm.roleEnum.skusajuci;
+            default -> FilterService.teacherSearchForm.roleEnum.NONE;
+        };
 
         FilterService filterService = new FilterService();
+        FilterService.teacherSearchForm searchForm = new FilterService.teacherSearchForm(searchText);
+        List<Teacher> filteredTeachers = filterService.filterTeachers(searchForm);
 
-        //TODO: change teacherSearchForm
-    //    FilterService.subjectSearchForm searchForm = new FilterService.teacherSearchForm(searchText);
-    //    List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+        System.out.println("Filtered teachers: " + filteredTeachers.size());
 
-    //    System.out.println("Filtered subjects: " + filteredSubjects.size());
-
-     //   updateSubjectList(filteredSubjects);
-     //   updateSelectedFiltersText();
+        updateTeacherList(filteredTeachers);
+        updateSelectedFiltersText();
     }
 
 
@@ -135,36 +147,42 @@ public class TeachersPageController implements LanguageSupport {
         } else {
             searchField.setStyle("");
         }
+
+        if (!roleCombo.getValue().equals("All Semesters")) {
+            roleCombo.setStyle("-fx-text-fill: #1976D2;");
+        } else {
+            roleCombo.setStyle("-fx-text-fill: black;");
+        }
     }
-    private void updateSubjectList(List<Subject> subjects) {
+    private void updateTeacherList(List<Teacher> teachers) {
         anchorScrollPane.getChildren().clear();
 
 
         // контейнер для списка предметов
-        VBox subjectsContainer = new VBox(10);
-        subjectsContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
+        VBox teacherContainer = new VBox(10);
+        teacherContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
 
         // Если список пуст - показываем сообщение
-        if (subjects.isEmpty()) {
+        if (teachers.isEmpty()) {
             Label noResultsLabel = new Label("No teachers found matching your criteria");
             noResultsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
-            subjectsContainer.getChildren().add(noResultsLabel);
+            teacherContainer.getChildren().add(noResultsLabel);
         } else {
             // Создаем карточку для каждого предмета
-            for (int i = 0; i < subjects.size(); i++) {
-                Subject subject = subjects.get(i);
-                AnchorPane subjectCard = createSubjectCard(subject, i);
-                subjectsContainer.getChildren().add(subjectCard);
+            for (int i = 0; i < teachers.size(); i++) {
+                Teacher teacher = teachers.get(i);
+                AnchorPane teacherCard = createTeacherCard(teacher, i);
+                teacherContainer.getChildren().add(teacherCard);
             }
         }
 
-        anchorScrollPane.getChildren().add(subjectsContainer);
-        AnchorPane.setTopAnchor(subjectsContainer, 10.0);
-        AnchorPane.setLeftAnchor(subjectsContainer, 10.0);
-        AnchorPane.setRightAnchor(subjectsContainer, 10.0);
+        anchorScrollPane.getChildren().add(teacherContainer);
+        AnchorPane.setTopAnchor(teacherContainer, 10.0);
+        AnchorPane.setLeftAnchor(teacherContainer, 10.0);
+        AnchorPane.setRightAnchor(teacherContainer, 10.0);
     }
 
-    private AnchorPane createSubjectCard(Subject subject, int index) {
+    private AnchorPane createTeacherCard(Teacher teacher, int index) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(80);
         card.setPrefWidth(anchorScrollPane.getPrefWidth() - 20);
@@ -172,14 +190,14 @@ public class TeachersPageController implements LanguageSupport {
                 "; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
 
         // AIS ID
-        Label abbreviationLabel = new Label(subject.getCode());
+        Label abbreviationLabel = new Label(teacher.getId());
         abbreviationLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         card.getChildren().add(abbreviationLabel);
         AnchorPane.setTopAnchor(abbreviationLabel, 10.0);
         AnchorPane.setLeftAnchor(abbreviationLabel, 10.0);
 
         // Name and Surname
-        Label nameLabel = new Label(subject.getName());
+        Label nameLabel = new Label(teacher.getName());
         nameLabel.setStyle("-fx-font-size: 14px;");
         nameLabel.setMaxWidth(300);
         card.getChildren().add(nameLabel);
@@ -187,14 +205,14 @@ public class TeachersPageController implements LanguageSupport {
         AnchorPane.setLeftAnchor(nameLabel, 120.0);
 
         // Status
-        Label typeLabel = new Label(subject.getType());
+        Label typeLabel = new Label(teacher.getPhone());
         typeLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
         card.getChildren().add(typeLabel);
         AnchorPane.setTopAnchor(typeLabel, 35.0);
         AnchorPane.setLeftAnchor(typeLabel, 120.0);
 
         // Room
-        Label semesterLabel = new Label("Semester: " + subject.getSemester());
+        Label semesterLabel = new Label(teacher.getOffice());
         semesterLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
         card.getChildren().add(semesterLabel);
         AnchorPane.setTopAnchor(semesterLabel, 55.0);
