@@ -10,6 +10,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -183,9 +184,14 @@ public class FilterService {
                 String normalizedName = removeDiacritics(originalName).toLowerCase();
                 String normalizedCode = removeDiacritics(originalCode).toLowerCase();
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
+                List<String> guarantors= filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT))
+                        .stream().map(Teacher::getName)
+                        .filter(guarantor -> Objects.equals(subSearchForGarant(originalCode), guarantor))
+                        .toList();
+                System.out.println(guarantors);
                 return normalizedName.contains(normalizedSearchTerm)
                         || normalizedCode.contains(normalizedSearchTerm)
-                        || !filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT)).isEmpty();
+                        || !guarantors.isEmpty();
             };
             subjectTypePredicate = subject ->{
                 String type = subject.getString("type");
