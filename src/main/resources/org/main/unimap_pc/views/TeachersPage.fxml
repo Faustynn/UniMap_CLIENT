@@ -119,12 +119,7 @@
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="status_teach" layoutX="615.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Status">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="room_teach" layoutX="962.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Room">
+      <Label fx:id="room_teach" layoutX="959.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Room">
          <font>
             <Font name="Outfit Bold" size="14.0" />
          </font>
@@ -145,12 +140,7 @@
                               <Font name="Outfit Regular" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="id_status" layoutX="347.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Doktorský typ studia, denní presenční forma">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="id_room" layoutX="692.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="NO ROOM">
+                        <Label fx:id="id_room" layoutX="676.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="NO ROOM">
                            <font>
                               <Font name="Outfit Bold" size="14.0" />
                            </font>
@@ -161,7 +151,7 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <MFXComboBox fx:id="languageComboBox" layoutX="760.0" layoutY="16.0" text="EN">
+      <MFXComboBox fx:id="languageComboBox" layoutX="751.0" layoutY="16.0" text="EN">
          <font>
             <Font name="Outfit SemiBold" size="14.0" />
          </font>

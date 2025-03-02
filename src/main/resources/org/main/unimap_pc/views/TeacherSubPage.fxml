@@ -1,131 +1,194 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="840.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeacherSubPageController">
     <children>
-        <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
+        <Label fx:id="teacher_aisID_text" layoutX="2.0" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="student_amount" layoutX="3.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="email">
+        <Label fx:id="teacher_email_text" layoutX="3.0" layoutY="39.0" style="-fx-text-fill: #9fa6b7;" text="email">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature" layoutX="2.0" layoutY="18.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
+        <Label fx:id="teacher_fullname_text" layoutX="2.0" layoutY="20.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature1" layoutX="3.0" layoutY="54.0" style="-fx-text-fill: #9fa6b7;" text="phone">
+        <Label fx:id="teacher_phone_text" layoutX="3.0" layoutY="56.0" style="-fx-text-fill: #9fa6b7;" text="phone">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature2" layoutX="3.0" layoutY="72.0" style="-fx-text-fill: #9fa6b7;" text="office">
+        <Label fx:id="teacher_office_text" layoutX="3.0" layoutY="74.0" style="-fx-text-fill: #9fa6b7;" text="office">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature3" layoutX="3.0" layoutY="90.0" style="-fx-text-fill: #9fa6b7;" text="subjects">
+        <Label fx:id="teacher_subjects_text" layoutX="3.0" layoutY="94.0" style="-fx-text-fill: #9fa6b7;" text="subjects">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature311111111" layoutX="35.0" layoutY="108.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
-            <font>
-                <Font name="Outfit Bold" size="14.0" />
-            </font>
-        </Label>
-        <Label fx:id="abreviature3111111111" layoutX="38.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="roles">
-            <font>
-                <Font name="Outfit Bold" size="14.0" />
-            </font>
-        </Label>
-      <Label fx:id="closebtn" layoutX="511.0" layoutY="7.0" text="X" textFill="WHITE">
+      <VBox layoutX="435.0" layoutY="-1.0" prefHeight="445.0" prefWidth="405.0">
+         <children>
+            <ScrollPane prefHeight="380.0" prefWidth="405.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="323.0" prefWidth="403.0">
+                     <children>
+                        <Pane prefHeight="52.0" prefWidth="405.0">
+                           <children>
+                              <Label layoutX="5.0" layoutY="30.0" text="COMMENTS:" />
+                              <Label layoutX="329.0" layoutY="33.0" text="AVG Rating" />
+                              <FontAwesomeIcon glyphName="REFRESH" layoutX="89.0" layoutY="46.0" size="20" />
+                           </children>
+                        </Pane>
+                        <Pane layoutY="50.0" prefHeight="68.0" prefWidth="404.0" style="-fx-background-color: green;">
+                           <children>
+                              <Label layoutX="48.0" layoutY="26.0" text="UserName">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="11.0" layoutY="26.0" text="avatar">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="332.0" layoutY="10.0" text="Звезды от 0 дл 6">
+                                 <font>
+                                    <Font size="6.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="TOP_LEFT" layoutX="106.0" layoutY="5.0" prefHeight="59.0" prefWidth="224.0" text="Описание" />
+                           </children>
+                        </Pane>
+                        <Pane layoutY="122.0" prefHeight="68.0" prefWidth="404.0" style="-fx-background-color: green;">
+                           <children>
+                              <Label layoutX="48.0" layoutY="26.0" text="UserName">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="11.0" layoutY="26.0" text="avatar">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="332.0" layoutY="10.0" text="Звезды от 0 дл 6">
+                                 <font>
+                                    <Font size="6.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="TOP_LEFT" layoutX="106.0" layoutY="5.0" prefHeight="59.0" prefWidth="224.0" text="Описание" />
+                           </children>
+                        </Pane>
+                        <Pane layoutX="-1.0" layoutY="193.0" prefHeight="68.0" prefWidth="404.0" style="-fx-background-color: green;">
+                           <children>
+                              <Label layoutX="48.0" layoutY="26.0" text="UserName">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="11.0" layoutY="26.0" text="avatar">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="332.0" layoutY="10.0" text="Звезды от 0 дл 6">
+                                 <font>
+                                    <Font size="6.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="TOP_LEFT" layoutX="106.0" layoutY="5.0" prefHeight="59.0" prefWidth="224.0" text="Описание" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
+            <AnchorPane prefHeight="117.0" prefWidth="405.0" style="-fx-background-color: yellow;">
+               <children>
+                  <Button layoutX="296.0" layoutY="12.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="ADD">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="1.0" layoutY="-2.0" text="Добавить новый комментарий">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <MFXTextField layoutX="2.0" layoutY="16.0" prefHeight="68.0" prefWidth="282.0" />
+                  <Label layoutX="320.0" layoutY="43.0" text="Set stars here">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="295.0" layoutY="57.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="STARS">
+                     <font>
+                        <Font size="8.0" />
+                     </font>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <AnchorPane fx:id="subjectsAnchor" layoutX="31.0" layoutY="117.0" prefHeight="314.0" prefWidth="394.0">
+         <children>
+              <Label style="-fx-text-fill: #9fa6b7;" text="subjectName">
+                  <font>
+                      <Font name="System Bold" size="18.0" />
+                  </font>
+              </Label>
+              <Label layoutX="3.0" layoutY="21.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+                  <font>
+                      <Font name="System Bold" size="18.0" />
+                  </font>
+              </Label>
+         </children>
+      </AnchorPane>
+      <Label fx:id="teacher_aisID" layoutX="63.0" layoutY="1.0" prefHeight="23.0" prefWidth="141.0" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="teacher_fullname" layoutX="80.0" layoutY="20.0" prefHeight="23.0" prefWidth="343.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="teacher_email" layoutX="55.0" layoutY="39.0" prefHeight="23.0" prefWidth="368.0" style="-fx-text-fill: #9fa6b7;" text="email">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="teacher_phone" layoutX="57.0" layoutY="56.0" prefHeight="23.0" prefWidth="364.0" style="-fx-text-fill: #9fa6b7;" text="phone">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="teacher_office" layoutX="53.0" layoutY="74.0" prefHeight="23.0" prefWidth="375.0" style="-fx-text-fill: #9fa6b7;" text="office">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="closeApp" layoutX="412.0" layoutY="4.0" onMouseClicked="#handleCloseApp" text="X" textFill="WHITE">
          <font>
             <Font name="System Bold" size="26.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111112" layoutX="27.0" layoutY="160.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="abreviature31111111111" layoutX="38.0" layoutY="178.0" style="-fx-text-fill: #9fa6b7;" text="roles">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <ScrollPane layoutX="198.0" layoutY="90.0" prefHeight="163.0" prefWidth="332.0">
-         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <Pane prefHeight="153.0" prefWidth="312.0">
-                     <children>
-                        <Label layoutX="1.0" layoutY="12.0" text="COMMENTS:" />
-                        <Pane layoutY="28.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: green;">
-                           <children>
-                              <Label layoutX="27.0" layoutY="10.0" text="UserName">
-                                 <font>
-                                    <Font size="8.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="7.0" layoutY="11.0" text="avatar">
-                                 <font>
-                                    <Font size="6.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="259.0" layoutY="10.0" text="Звезды от 0 дл 6">
-                                 <font>
-                                    <Font size="6.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="72.0" layoutY="5.0" text="Описание" />
-                           </children>
-                        </Pane>
-                        <Pane layoutY="61.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: blue;" />
-                        <Pane layoutY="94.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: grey;" />
-                        <Pane layoutY="129.0" prefHeight="31.0" prefWidth="312.0" style="-fx-background-color: grey;" />
-                        <Label layoutX="282.0" layoutY="10.0" text="refreshIMG">
-                           <font>
-                              <Font size="8.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="173.0" layoutY="6.0" text="AVG Rating" />
-                     </children>
-                  </Pane>
-               </children>
-            </AnchorPane>
-         </content>
-      </ScrollPane>
-      <AnchorPane layoutX="196.0" layoutY="253.0" prefHeight="39.0" prefWidth="334.0" style="-fx-background-color: yellow;">
-         <children>
-            <Button layoutX="296.0" layoutY="12.0" mnemonicParsing="false" text="ADD">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Button>
-            <Label layoutX="1.0" layoutY="-2.0" text="Добавить новый комментарий">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-            <MFXTextField layoutX="4.0" layoutY="9.0" prefHeight="53.0" prefWidth="265.0" />
-            <Label layoutX="280.0" layoutY="33.0" text="Set stars here">
-               <font>
-                  <Font size="8.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
     </children>
 </AnchorPane>

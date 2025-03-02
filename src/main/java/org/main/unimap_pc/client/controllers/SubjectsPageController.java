@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
-import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.FilterService;
@@ -79,6 +78,7 @@ public class SubjectsPageController implements LanguageSupport {
                 String newLanguage = languageComboBox.getValue();
                 String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
                 LanguageManager.changeLanguage(languageCode);
+                UserService.getInstance().setDefLang(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -252,7 +252,7 @@ public class SubjectsPageController implements LanguageSupport {
 
     // Modal Window logic
     @FXML
-    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage) {
+    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage, Subject subject) {
         try {
             Stage parentStage = (Stage) (windowTitle.equals("SubjectPage") ? btn_subjectpage : btn_settingspage).getScene().getWindow();
 
@@ -269,6 +269,8 @@ public class SubjectsPageController implements LanguageSupport {
 
             try {
                 AnchorPane modalPane = loader.load();
+                SubjectsSubPageController controller = loader.getController();
+                controller.setSubject(subject);
 
                 Scene modalScene = new Scene(modalPane);
                 Stage modalStage = new Stage();
@@ -313,7 +315,8 @@ public class SubjectsPageController implements LanguageSupport {
         openModalWindow(
                 AppConfig.getSubjectsSubPagePath(),
                 "Subject: " + subject.getCode(),
-                "Error loading the forgot password window"
+                "Error loading the forgot password window",
+                subject
         );
     }
 
@@ -395,6 +398,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     @FXML

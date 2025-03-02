@@ -11,10 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
@@ -24,6 +26,7 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +36,7 @@ import static org.main.unimap_pc.client.controllers.LogInController.showErrorDia
 
 public class TeachersPageController implements LanguageSupport {
     @FXML
-    private Label navi_username_text, navi_login_text,ais_id_teach,name_teach,status_teach,room_teach,teach_list,id_ais_entity,id_name,id_status,id_room;
+    private Label navi_username_text, navi_login_text,ais_id_teach,name_teach,room_teach,teach_list;
     @FXML
     private ImageView navi_avatar;
     @FXML
@@ -101,7 +104,6 @@ public class TeachersPageController implements LanguageSupport {
 
         ais_id_teach.setText(languageBundle.getString("ais_id"));
         name_teach.setText(languageBundle.getString("name"));
-        status_teach.setText(languageBundle.getString("status"));
         room_teach.setText(languageBundle.getString("room"));
         teach_list.setText(languageBundle.getString("teachers"));
     }
@@ -204,13 +206,6 @@ public class TeachersPageController implements LanguageSupport {
         AnchorPane.setTopAnchor(nameLabel, 10.0);
         AnchorPane.setLeftAnchor(nameLabel, 120.0);
 
-        // Status
-        Label typeLabel = new Label(teacher.getPhone());
-        typeLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
-        card.getChildren().add(typeLabel);
-        AnchorPane.setTopAnchor(typeLabel, 35.0);
-        AnchorPane.setLeftAnchor(typeLabel, 120.0);
-
         // Room
         Label semesterLabel = new Label(teacher.getOffice());
         semesterLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
@@ -218,11 +213,82 @@ public class TeachersPageController implements LanguageSupport {
         AnchorPane.setTopAnchor(semesterLabel, 55.0);
         AnchorPane.setLeftAnchor(semesterLabel, 120.0);
 
+        // Добавляем обработчик клика
+        card.setOnMouseClicked(event -> openTeacherPage(teacher));
+
         return card;
     }
 
 
+    // Modal Window logic
+    @FXML
+    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage, Teacher teacher) {
+        try {
+            Stage parentStage = (Stage) (windowTitle.equals("TeacherPage") ? btn_teacherspage : btn_settingspage).getScene().getWindow();
 
+            if (getClass().getResource(fxmlPath) == null) {
+                showErrorDialog("Resource not found: " + fxmlPath);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+            if (LanguageManager.getCurrentBundle() != null) {
+                loader.setResources(LanguageManager.getCurrentBundle());
+            }
+
+            try {
+                AnchorPane modalPane = loader.load();
+                TeacherSubPageController controller = loader.getController();
+                controller.setTeacher(teacher);
+
+                Scene modalScene = new Scene(modalPane);
+                Stage modalStage = new Stage();
+
+                modalStage.initStyle(StageStyle.TRANSPARENT);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+                modalStage.initOwner(parentStage);
+                modalStage.setTitle(windowTitle);
+
+                modalStage.setScene(modalScene);
+
+                StackPane overlay = createOverlay(parentStage);
+
+                Scene parentScene = parentStage.getScene();
+                AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
+                parentRoot.getChildren().add(overlay);
+
+                modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
+
+                modalStage.showAndWait();
+            } catch (IOException e) {
+                System.err.println("Failed to load FXML from path: " + fxmlPath);
+                e.printStackTrace();
+                showErrorDialog(errorMessage + ": " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("Unexpected error in openModalWindow");
+            e.printStackTrace();
+            showErrorDialog(errorMessage + ": " + e.getMessage());
+        }
+    }
+    private StackPane createOverlay(Stage parentStage) {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlay.setPrefSize(parentStage.getWidth(), parentStage.getHeight());
+
+        overlay.setOnMouseClicked(event -> Toolkit.getDefaultToolkit().beep());
+
+        return overlay;
+    }
+    private void openTeacherPage(Teacher teacher) {
+        openModalWindow(
+                AppConfig.getTeachersSubPagePath(),
+                "Teacher: " + teacher.getId(),
+                "Error loading the forgot password window",
+                teacher
+        );
+    }
 
 
 

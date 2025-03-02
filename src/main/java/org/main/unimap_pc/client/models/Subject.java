@@ -36,6 +36,10 @@ public class Subject {
     private String plannedActivities;
     private String evaluationMethods;
     private String garant;
+    private String evaluation;
+
+    private List<TeacherSubjectRoles> teachers;
+
     public Subject(JSONObject jsonBase) {
         try {
             code = jsonBase.getString("code");
@@ -93,7 +97,7 @@ public class Subject {
             courseContents = "";
         }
         try {
-            aScore = jsonBase.getString("aScore");
+            aScore = jsonBase.getString("ascore");
         } catch (org.json.JSONException e) {
             aScore = "";
         }
@@ -130,6 +134,23 @@ public class Subject {
             languages = new ArrayList<String>();
         }
 
+        try {
+            plannedActivities = jsonBase.getString("plannedActivities");
+        } catch (org.json.JSONException e) {
+            plannedActivities = "";
+        }
         garant = FilterService.subSearchForGarant(code);
+
+        try {
+            evaluationMethods = jsonBase.getString("evaluationMethods");
+        } catch (org.json.JSONException e) {
+            evaluationMethods = "";
+        }
+
+        try {
+            evaluation = jsonBase.getString("evaluation");
+        } catch (org.json.JSONException e) {
+            evaluation = "";
+        }
     }
 }

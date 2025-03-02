@@ -40,9 +40,12 @@ public class Teacher {
             phone = "";
         }
         try {
-            office = jsonBase.getString("personalOffice");
+            office = jsonBase.getString("office");
+            if (office.equals("null")) {
+                office = "";
+            }
         } catch (org.json.JSONException e) {
-            office = "";
+            office = "None";
         }
         try {
             subjects = jsonBase.getJSONArray("subject").toList().stream().map(o -> {
