@@ -111,6 +111,7 @@ public class FilterService {
     public static class teacherSearchForm {
         private final Predicate<JSONObject> nameSearch;
         private final Predicate<JSONObject> teachesSubject;
+        private final Predicate<JSONObject> hasTargetRole;
         private final Predicate<JSONObject> filterPredicate; //THIS ONE SHOULD BE USED
         public enum roleEnum{
             GARANT,
@@ -120,14 +121,14 @@ public class FilterService {
             NONE
         }
 
-        public teacherSearchForm(String searchTerm, roleEnum targetRole) {
+        public teacherSearchForm(String searchTerm, roleEnum targetRole, boolean isStrict) {
             teachesSubject = teacher -> {
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
                     if (subject.getString("subjectName").toLowerCase().contains(removeDiacritics(searchTerm).toLowerCase())) {
-                        if(targetRole!=roleEnum.NONE){
-                            String targetRoleName = switch (targetRole){
+                        if (targetRole != roleEnum.NONE) {
+                            String targetRoleName = switch (targetRole) {
                                 case GARANT -> "zodpovedny za predmet";
                                 case CVICIACI -> "cviciaci";
                                 case SKUSAJUCI -> "skusajuci";
@@ -135,17 +136,16 @@ public class FilterService {
                                 default -> throw new IllegalStateException("Unexpected value: " + targetRole);
                             };
                             JSONArray roles = subject.getJSONArray("roles");
-                            for(int j = 0;j < roles.length();j++){
+                            for (int j = 0; j < roles.length(); j++) {
                                 String role = roles.getString(j);
-                                System.out.println("CHECKING ROLE FOR " + teacher.getString("name")+": "+role);
-                                if(removeDiacritics(role).equalsIgnoreCase(targetRoleName)){
+                                System.out.println("CHECKING ROLE FOR " + teacher.getString("name") + ": " + role);
+                                if (removeDiacritics(role).equalsIgnoreCase(targetRoleName)) {
                                     System.out.println("found a match");
                                     return true;
                                 }
-
                             }
                             return false;
-                        }else{
+                        } else {
                             return true;
                         }
                     }
@@ -159,10 +159,41 @@ public class FilterService {
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
                 return normalizedName.contains(normalizedSearchTerm);
             };
-            if(searchTerm.isBlank()){
+
+            // For strict mode when targetRole is specified
+            hasTargetRole = teacher -> {
+                JSONArray subjects = teacher.getJSONArray("subjects");
+                String targetRoleName = switch (targetRole) {
+                    case GARANT -> "zodpovedny za predmet";
+                    case CVICIACI -> "cviciaci";
+                    case SKUSAJUCI -> "skusajuci";
+                    case PREDNASAJUCI -> "prednasajuci";
+                    default -> "";
+                };
+
+                for (int i = 0; i < subjects.length(); i++) {
+                    JSONObject subject = subjects.getJSONObject(i);
+                    JSONArray roles = subject.getJSONArray("roles");
+                    for (int j = 0; j < roles.length(); j++) {
+                        String role = roles.getString(j);
+                        if (removeDiacritics(role).equalsIgnoreCase(targetRoleName)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            if (searchTerm.isBlank()) {
                 filterPredicate = teachesSubject;
-            }else {
-                filterPredicate = teachesSubject.or(nameSearch);
+            } else {
+                if (isStrict && targetRole != roleEnum.NONE) {
+                    // For strict mode: include subject+role matches OR name matches that also have the target role
+                    filterPredicate = teachesSubject.or(nameSearch.and(hasTargetRole));
+                } else {
+                    // For non-strict mode: use original logic
+                    filterPredicate = teachesSubject.or(nameSearch);
+                }
             }
         }
     }
@@ -184,7 +215,7 @@ public class FilterService {
                 String normalizedName = removeDiacritics(originalName).toLowerCase();
                 String normalizedCode = removeDiacritics(originalCode).toLowerCase();
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
-                List<String> guarantors= filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT))
+                List<String> guarantors= filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT,false))
                         .stream().map(Teacher::getName)
                         .filter(guarantor -> Objects.equals(subSearchForGarant(originalCode), guarantor))
                         .toList();
