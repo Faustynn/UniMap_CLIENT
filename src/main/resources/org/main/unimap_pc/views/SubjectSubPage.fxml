@@ -67,21 +67,6 @@
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="subject_assesmentMethods" alignment="TOP_LEFT" layoutX="161.0" layoutY="372.0" prefHeight="42.0" prefWidth="472.0" style="-fx-text-fill: #9fa6b7;" text="assesmentMethods:">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="subject_plannedActivities" alignment="TOP_LEFT" layoutX="150.0" layoutY="241.0" prefHeight="47.0" prefWidth="484.0" style="-fx-text-fill: #9fa6b7;" text="plannedActivities:" textOverrun="CLIP" wrapText="true">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="subject_evaluationMethods" alignment="TOP_LEFT" layoutX="157.0" layoutY="286.0" prefHeight="42.0" prefWidth="478.0" style="-fx-text-fill: #9fa6b7;" text="evaluationMethods:" wrapText="true">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
       <Label fx:id="subject_A_text" layoutX="575.0" layoutY="10.0" style="-fx-text-fill: #9fa6b7;" text="A:">
          <font>
             <Font name="System Bold" size="18.0" />
@@ -162,11 +147,6 @@
             <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="subject_teacher" alignment="TOP_LEFT" layoutX="354.0" layoutY="22.0" prefHeight="19.0" prefWidth="217.0" style="-fx-text-fill: #9fa6b7;" text="Teachers:" wrapText="true">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
       <Label fx:id="subject_A" layoutX="593.0" layoutY="13.0" style="-fx-text-fill: #9fa6b7;" text="A:">
          <font>
             <Font name="Outfit Bold" size="14.0" />
@@ -220,16 +200,6 @@
       <Label fx:id="subject_learnoutcomes_text" layoutY="403.0" prefHeight="47.0" prefWidth="154.0" style="-fx-text-fill: #9fa6b7;" text="Learning outcomes:">
          <font>
             <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="subject_learnoutcomes" alignment="TOP_LEFT" layoutX="154.0" layoutY="419.0" prefHeight="20.0" prefWidth="483.0" style="-fx-text-fill: #9fa6b7;" text="learn outcomes:" wrapText="true">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="subject_courseContents" alignment="TOP_LEFT" layoutX="136.0" layoutY="330.0" prefHeight="42.0" prefWidth="495.0" style="-fx-text-fill: #9fa6b7;" text="courseContents" wrapText="true">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
          </font>
       </Label>
       <Label fx:id="subject_courseContents_text" layoutX="6.0" layoutY="320.0" prefHeight="34.0" prefWidth="133.0" style="-fx-text-fill: #9fa6b7;" text="Course contents:">
@@ -341,5 +311,75 @@
             </AnchorPane>
          </children>
       </VBox>
+      <ScrollPane layoutX="155.0" layoutY="221.0" prefHeight="64.0" prefWidth="476.0">
+        <content>
+          <AnchorPane fx:id="plannedActivAnchor" minHeight="0.0" minWidth="0.0" prefHeight="59.0" prefWidth="458.0">
+               <children>
+                  <Label fx:id="subject_plannedActivities" alignment="TOP_LEFT" layoutX="4.0" layoutY="6.0" prefHeight="47.0" prefWidth="448.0" style="-fx-text-fill: #9fa6b7;" text="plannedActivities:" textOverrun="CLIP" wrapText="true">
+                     <font>
+                        <Font name="Outfit Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <ScrollPane layoutX="279.0" layoutY="166.0" prefHeight="52.0" prefWidth="328.0">
+         <content>
+            <AnchorPane fx:id="learn_outcomesAnchor" minHeight="0.0" minWidth="0.0" prefHeight="59.0" prefWidth="443.0">
+               <children>
+                  <Label fx:id="subject_learnoutcomes" alignment="TOP_LEFT" layoutX="27.0" layoutY="5.0" prefHeight="20.0" prefWidth="415.0" style="-fx-text-fill: #9fa6b7;" text="learn outcomes:" wrapText="true">
+                     <font>
+                        <Font name="Outfit Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="142.0" layoutY="330.0" prefHeight="52.0" prefWidth="496.0">
+         <content>
+            <AnchorPane fx:id="courseContentsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="61.0" prefWidth="458.0">
+               <children>
+                  <Label fx:id="subject_courseContents" alignment="TOP_LEFT" layoutX="8.0" layoutY="6.0" prefHeight="42.0" prefWidth="495.0" style="-fx-text-fill: #9fa6b7;" text="courseContents" wrapText="true">
+                     <font>
+                        <Font name="Outfit Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="163.0" layoutY="285.0" prefHeight="45.0" prefWidth="470.0">
+         <content>
+            <AnchorPane fx:id="evalMethodsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="35.0" prefWidth="458.0">
+               <children>
+                  <Label fx:id="subject_evaluationMethods" alignment="TOP_LEFT" layoutX="4.0" layoutY="-6.0" prefHeight="42.0" prefWidth="448.0" style="-fx-text-fill: #9fa6b7;" text="evaluationMethods:" wrapText="true">
+                     <font>
+                        <Font name="Outfit Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="164.0" layoutY="374.0" prefHeight="52.0" prefWidth="476.0">
+         <content>
+            <AnchorPane fx:id="assesmentMethodsAnchor" minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="458.0">
+               <children>
+                  <Label fx:id="subject_assesmentMethods" alignment="TOP_LEFT" layoutX="5.0" layoutY="20.0" prefHeight="42.0" prefWidth="472.0" style="-fx-text-fill: #9fa6b7;" text="assesmentMethods:">
+                     <font>
+                        <Font name="Outfit Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="276.0" layoutY="46.0" prefHeight="108.0" prefWidth="285.0">
+         <content>
+            <AnchorPane fx:id="TeachersAnchor" minHeight="0.0" minWidth="0.0" prefHeight="221.0" prefWidth="278.0" />
+         </content>
+      </ScrollPane>
     </children>
 </AnchorPane>

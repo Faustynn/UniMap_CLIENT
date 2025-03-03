@@ -102,7 +102,7 @@ public class FilterService {
                 .filter(searchForm.studyTypePredicate)
                 .filter(searchForm.subjectTypePredicate)
                 .filter(searchForm.nameSearch)
-                .map(Subject::new)
+                .map(jsonObject -> new Subject(jsonObject, new JSONObject().put("teachers", TeacherArray)))
                 .collect(Collectors.toList());
         return SubjectList;
     }

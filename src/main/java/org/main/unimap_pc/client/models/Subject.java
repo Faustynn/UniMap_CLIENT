@@ -7,7 +7,6 @@ import org.main.unimap_pc.client.services.FilterService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Builder
 @NoArgsConstructor
@@ -38,9 +37,10 @@ public class Subject {
     private String garant;
     private String evaluation;
 
-    private List<TeacherSubjectRoles> teachers;
+    private List<TeacherSubjectRoles> teachers_roles;
+    private List<Teacher> teachers;
 
-    public Subject(JSONObject jsonBase) {
+    public Subject(JSONObject jsonBase,JSONObject jsonTeachers) {
         try {
             code = jsonBase.getString("code");
         } catch (org.json.JSONException e) {
@@ -152,5 +152,32 @@ public class Subject {
         } catch (org.json.JSONException e) {
             evaluation = "";
         }
+
+        teachers_roles = new ArrayList<>();
+        teachers = new ArrayList<>();
+        if (jsonTeachers.has("teachers")) {
+            try {
+                JSONArray teachersArray = jsonTeachers.getJSONArray("teachers");
+                for (int i = 0; i < teachersArray.length(); i++) {
+                    JSONObject teacherJson = teachersArray.getJSONObject(i);
+                    JSONArray subjects = teacherJson.getJSONArray("subjects");
+
+                    for (int j = 0; j < subjects.length(); j++) {
+                        JSONObject subject = subjects.getJSONObject(j);
+                        String subjectName = subject.getString("subjectName");
+
+                        if (subjectName.contains(code)) {
+                            TeacherSubjectRoles teacher = new TeacherSubjectRoles(subject);
+                            teachers_roles.add(teacher);
+                            teachers.add(new Teacher(teacherJson));
+                            break;
+                        }
+                    }
+                }
+            } catch (org.json.JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

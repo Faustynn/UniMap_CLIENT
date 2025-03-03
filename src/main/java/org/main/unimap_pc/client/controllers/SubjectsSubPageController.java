@@ -4,13 +4,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import org.main.unimap_pc.client.models.Subject;
-import org.main.unimap_pc.client.services.DataFetcher;
+import org.main.unimap_pc.client.models.Teacher;
+import org.main.unimap_pc.client.models.TeacherSubjectRoles;
 import org.main.unimap_pc.client.services.PreferenceServise;
-import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -25,7 +26,7 @@ public class SubjectsSubPageController implements LanguageSupport {
     @FXML
     private Label subject_A,subject_B,subject_C,subject_D,subject_E,subject_FX,subject_teacher,subject_evaluation,subject_assesmentMethods,subject_evaluationMethods,subject_plannedActivities,subject_code,subject_abbr,subject_studentCount,subject_Type,subject_credits,subject_studyType,subject_semester,subject_languages,subject_completionType,subject_learnoutcomes,subject_courseContents;
     @FXML
-    private AnchorPane dragArea;
+    private AnchorPane dragArea,plannedActivAnchor,learn_outcomesAnchor,courseContentsAnchor,evalMethodsAnchor,assesmentMethodsAnchor,TeachersAnchor;
 
     @FXML
     private void handleCloseApp() {
@@ -92,7 +93,26 @@ public class SubjectsSubPageController implements LanguageSupport {
         subject_D.setText(subject.getDScore());
         subject_E.setText(subject.getEScore());
         subject_FX.setText(subject.getFxScore());
-        subject_teacher.setText(String.valueOf(subject.getTeachers()));
+
+        TeachersAnchor.getChildren().clear();
+        VBox container = new VBox();
+        container.setStyle("-fx-spacing: 10; -fx-padding: 10;");
+
+        for (TeacherSubjectRoles teacher : subject.getTeachers_roles()) {
+            for (Teacher t : subject.getTeachers()) {
+                Label teacherName = new Label(t.getName());
+                teacherName.setStyle("-fx-font-size: 14px; -fx-text-fill: #333;");
+
+                Label roleLabel = new Label(teacher.getRoles().toString().replace("[", "").replace("]", "").replace("{", "").replace("}", "").replace("\"", "").replace("zodpovedný za predmet", "Garant"));
+                roleLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333;");
+
+                VBox vbox = new VBox(teacherName, roleLabel);
+                vbox.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #dcdcdc; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10; -fx-margin-bottom: 10;");
+
+                container.getChildren().add(vbox);
+            }
+        }
+        TeachersAnchor.getChildren().add(container);
     }
     public void updateUILanguage(ResourceBundle languageBundle) {
         subject_teacher_text.setText(languageBundle.getString("subject_teacher_text"));

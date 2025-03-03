@@ -16,10 +16,12 @@ import java.util.List;
 public class TeacherSubjectRoles {
     private String subjectName;
     private List<String> roles;
+
     public TeacherSubjectRoles(JSONObject jsonBase) {
         try {
             subjectName = jsonBase.getString("subjectName");
         } catch (org.json.JSONException e) {
+            e.printStackTrace();
             subjectName = "";
         }
         try {
@@ -27,6 +29,7 @@ public class TeacherSubjectRoles {
                     .map(Object::toString)
                     .toList();
         } catch (org.json.JSONException e) {
+            e.printStackTrace();
             roles = new ArrayList<>();
         }
     }
