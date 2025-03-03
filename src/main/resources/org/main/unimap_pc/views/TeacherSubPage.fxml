@@ -146,20 +146,24 @@
             </AnchorPane>
          </children>
       </VBox>
-      <AnchorPane fx:id="subjectsAnchor" layoutX="31.0" layoutY="117.0" prefHeight="314.0" prefWidth="394.0">
-         <children>
-              <Label style="-fx-text-fill: #9fa6b7;" text="subjectName">
-                  <font>
-                      <Font name="System Bold" size="18.0" />
-                  </font>
-              </Label>
-              <Label layoutX="3.0" layoutY="21.0" style="-fx-text-fill: #9fa6b7;" text="roles">
-                  <font>
-                      <Font name="System Bold" size="18.0" />
-                  </font>
-              </Label>
-         </children>
-      </AnchorPane>
+      <ScrollPane layoutX="34.0" layoutY="119.0" prefHeight="314.0" prefWidth="394.0">
+         <content>
+            <AnchorPane fx:id="anchorScrollPane" prefHeight="314.0" prefWidth="394.0">
+               <children>
+                    <Label style="-fx-text-fill: #9fa6b7;" text="subjectName">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Label>
+                    <Label layoutX="3.0" layoutY="21.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Label>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
       <Label fx:id="teacher_aisID" layoutX="63.0" layoutY="1.0" prefHeight="23.0" prefWidth="141.0" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
          <font>
             <Font name="System Bold" size="18.0" />

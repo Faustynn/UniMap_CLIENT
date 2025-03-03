@@ -18,7 +18,7 @@ public class TeacherSubjectRoles {
     private List<String> roles;
     public TeacherSubjectRoles(JSONObject jsonBase) {
         try {
-            subjectName = jsonBase.getString("name");
+            subjectName = jsonBase.getString("subjectName");
         } catch (org.json.JSONException e) {
             subjectName = "";
         }
@@ -27,7 +27,10 @@ public class TeacherSubjectRoles {
                     .map(Object::toString)
                     .toList();
         } catch (org.json.JSONException e) {
-            roles = new ArrayList<String>();
+            roles = new ArrayList<>();
         }
     }
+        public String getFormattedRoles() {
+            return String.join(", ", roles);
+        }
 }

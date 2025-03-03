@@ -47,13 +47,14 @@ public class Teacher {
         } catch (org.json.JSONException e) {
             office = "None";
         }
+
         try {
-            subjects = jsonBase.getJSONArray("subject").toList().stream().map(o -> {
+            subjects = jsonBase.getJSONArray("subjects").toList().stream().map(o -> {
                 JSONObject subjectJson = new JSONObject((java.util.Map<?, ?>) o);
                 return new TeacherSubjectRoles(subjectJson);
             }).toList();
         } catch (org.json.JSONException e) {
-            subjects = new ArrayList<TeacherSubjectRoles>();
+            subjects = null;
         }
     }
 }
