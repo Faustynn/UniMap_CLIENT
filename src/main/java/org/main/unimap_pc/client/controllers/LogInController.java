@@ -1,8 +1,6 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.scene.control.Alert.AlertType;
 
 import java.awt.*;
@@ -37,6 +34,8 @@ public class LogInController implements LanguageSupport {
     public Label downlApp;
     public MFXButton btnFacebook;
     public MFXButton btnGoogle;
+    @FXML
+    private CheckBox remember_checkBox,checkTerms;
     @FXML
     private Label closeApp;
 
@@ -321,6 +320,23 @@ public class LogInController implements LanguageSupport {
             }
         } catch (Exception e) {
             ErrorScreens.showErrorScreen("Failed to open authentication page");
+        }
+    }
+
+    @FXML
+    private void handleCheckBox() {
+        if (remember_checkBox.isSelected()){
+                PreferenceServise.put("REMEMBER", true);
+        } else {
+            PreferenceServise.put("REMEMBER", false);
+        }
+    }
+
+    @FXML
+    private void handleCheckTerms() {
+        if (checkTerms.isSelected()) {
+            // TODO: terms
+        } else {
         }
     }
 }

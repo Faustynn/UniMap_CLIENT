@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.services.DataFetcher;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
@@ -57,7 +58,7 @@ public class SubjectsSubPageController implements LanguageSupport {
     @FXML
     private void initialize() {
         LanguageManager.getInstance().registerController(this);
-        LanguageManager.changeLanguage(UserService.getInstance().getDefLang());
+        LanguageManager.changeLanguage(PreferenceServise.get("LANGUAGE").toString());
         updateUILanguage(LanguageManager.getCurrentBundle());
 
         dragArea.setOnMousePressed(this::handleMousePressed);

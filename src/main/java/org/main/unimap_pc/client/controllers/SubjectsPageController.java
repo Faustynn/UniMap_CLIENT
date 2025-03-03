@@ -59,7 +59,7 @@ public class SubjectsPageController implements LanguageSupport {
         setupFilters();
         applyFilters();
 
-        defLang = UserService.getInstance().getDefLang();
+        defLang = PreferenceServise.get("LANGUAGE").toString();
         UserModel user = UserService.getInstance().getCurrentUser();
         if (user != null) {
             navi_username_text.setText(user.getUsername());
@@ -78,7 +78,7 @@ public class SubjectsPageController implements LanguageSupport {
                 String newLanguage = languageComboBox.getValue();
                 String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
                 LanguageManager.changeLanguage(languageCode);
-                UserService.getInstance().setDefLang(languageCode);
+                PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -418,11 +418,9 @@ public class SubjectsPageController implements LanguageSupport {
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
-        PreferenceServise.remove("ACCESS_TOKEN");
-        PreferenceServise.remove("REFRESH_TOKEN");
-        PreferenceServise.remove("USER_DATA");
-        CacheService.remove("SUBJECTS");
-        CacheService.remove("TEACHERS");
+        PreferenceServise.deletePreferences();
+        PreferenceServise.put("REMEMBER", false);
+        CacheService.clearCache();
 
 
         // Change scene to login

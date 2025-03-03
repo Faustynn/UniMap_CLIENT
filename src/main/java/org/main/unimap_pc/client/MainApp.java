@@ -7,7 +7,10 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.controllers.SceneController;
+import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
+import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LoadingScreens;
 
 import java.io.IOException;
@@ -45,7 +48,30 @@ public class MainApp extends Application {
         LoadingScreens.showLoadScreen(stage);
 
         checkServerConnectionAsync(stage);
-        schedulePeriodicServerChecks(stage);
+        UserService userService = UserService.getInstance();
+        if (PreferenceServise.get("REFRESH_TOKEN") != null) {
+            AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
+                if (isTokenRefreshed) {
+                    try {
+                        userService.autoLogin(stage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Invalid refresh token. Redirecting to login page.");
+                    Platform.runLater(() -> {
+                        try {
+                            sceneController.changeScene(AppConfig.getLoginPagePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            });
+        } else {
+            System.out.println("No refresh token found. Redirecting to login page.");
+            schedulePeriodicServerChecks(stage);
+        }
     }
 
 

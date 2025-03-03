@@ -121,11 +121,9 @@ public class SettingsPageController {
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
-        PreferenceServise.remove("ACCESS_TOKEN");
-        PreferenceServise.remove("REFRESH_TOKEN");
-        PreferenceServise.remove("USER_DATA");
-        CacheService.remove("SUBJECTS");
-        CacheService.remove("TEACHERS");
+        PreferenceServise.deletePreferences();
+        PreferenceServise.put("REMEMBER", false);
+        CacheService.clearCache();
 
 
         // Change scene to login

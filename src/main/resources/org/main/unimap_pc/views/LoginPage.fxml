@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.CheckBox?>
 <AnchorPane fx:id="dragArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.LogInController">
    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: #36436F;">
       <ImageView fitHeight="440.0" fitWidth="366.0" layoutX="65.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
@@ -104,6 +105,52 @@
             <Font name="Roboto Bold Italic" size="14.0" />
          </font>
       </Label>
-      <MFXCheckbox fx:id="checkTerms" gap="14.0" layoutX="39.0" layoutY="306.0" text="I agree with Terms of Service and Privacy Policy" />
+      <CheckBox fx:id="checkTerms" layoutX="39.0" layoutY="318.0" onAction="#handleCheckTerms" text="I agree with Terms of Service and Privacy Policy">
+         <style>
+            .check-box {
+            -fx-font-size: 14px;
+            -fx-text-fill: #333;
+            }
+            .check-box .box {
+            -fx-background-color: white;
+            -fx-border-color: #444;
+            -fx-border-width: 2px;
+            -fx-pref-width: 20px;
+            -fx-pref-height: 20px;
+            }
+            .check-box:selected .mark {
+            -fx-shape: "M5 15 L10 20 L20 5";
+            -fx-background-color: green;
+            }
+            .check-box:indeterminate .mark {
+            -fx-shape: "M5 10 L20 10 L20 15 L5 15 Z";
+            -fx-background-color: red;
+            }
+         </style>
+      </CheckBox>
+      <CheckBox fx:id="remember_checkBox" layoutX="39.0" layoutY="295.0" onAction="#handleCheckBox" text="Save Password">
+         <style>
+            .check-box {
+            -fx-font-size: 14px;
+            -fx-text-fill: #333;
+            }
+            .check-box .box {
+            -fx-background-color: white;
+            -fx-border-color: #444;
+            -fx-border-width: 2px;
+            -fx-pref-width: 20px;
+            -fx-pref-height: 20px;
+            }
+            .check-box:selected .mark {
+            -fx-shape: "M5 15 L10 20 L20 5";
+            -fx-background-color: green;
+            }
+            .check-box:indeterminate .mark {
+            -fx-shape: "M5 10 L20 10 L20 15 L5 15 Z";
+            -fx-background-color: red;
+            }
+         </style>
+      </CheckBox>
+
    </AnchorPane>
 </AnchorPane>

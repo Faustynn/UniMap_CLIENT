@@ -77,9 +77,6 @@ public class HomePageController implements LanguageSupport {
             refreshToken = PreferenceServise.get("REFRESH_TOKEN").toString();
             userData = PreferenceServise.get("USER_DATA").toString();
             cachedLanguage = PreferenceServise.get("LANGUAGE").toString();
-            UserService.getInstance().setAccessToken(accessToken);
-            UserService.getInstance().setRefreshToken(refreshToken);
-            UserService.getInstance().setDefLang(cachedLanguage);
 
             UserModel user = initUser(userData);
             if (user != null) {
@@ -216,12 +213,9 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
-        PreferenceServise.remove("ACCESS_TOKEN");
-        PreferenceServise.remove("REFRESH_TOKEN");
-        PreferenceServise.remove("USER_DATA");
-        CacheService.remove("SUBJECTS");
-        CacheService.remove("TEACHERS");
-
+        PreferenceServise.deletePreferences();
+        PreferenceServise.put("REMEMBER", false);
+        CacheService.clearCache();
 
         // Change scene to login
         Stage stage = (Stage) logoutbtn.getScene().getWindow();

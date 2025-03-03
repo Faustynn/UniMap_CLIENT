@@ -41,3 +41,5 @@ build/
 
 ## DB secure ##
 .properties
+/org/main/unimap_pc/cashe/cache.ser
+/org/main/unimap_pc/cashe/preferences.ser

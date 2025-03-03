@@ -65,7 +65,7 @@ public class TeachersPageController implements LanguageSupport {
         applyFilters();
 
 
-        defLang = UserService.getInstance().getDefLang();
+        defLang = PreferenceServise.get("LANGUAGE").toString();
         UserModel user = UserService.getInstance().getCurrentUser();
         if (user != null) {
             navi_username_text.setText(user.getUsername());
@@ -370,11 +370,9 @@ public class TeachersPageController implements LanguageSupport {
     }
     @FXML
     private void handleLogout() throws IOException {
-        PreferenceServise.remove("ACCESS_TOKEN");
-        PreferenceServise.remove("REFRESH_TOKEN");
-        PreferenceServise.remove("USER_DATA");
-        CacheService.remove("SUBJECTS");
-        CacheService.remove("TEACHERS");
+        PreferenceServise.deletePreferences();
+        PreferenceServise.put("REMEMBER", false);
+        CacheService.clearCache();
 
         // Change scene to login
         Stage stage = (Stage) logoutbtn.getScene().getWindow();
