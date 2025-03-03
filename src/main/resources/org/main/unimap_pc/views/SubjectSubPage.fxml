@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -209,15 +209,15 @@
       </Label>
       <VBox layoutX="634.0" layoutY="-3.0" prefHeight="445.0" prefWidth="405.0">
          <children>
-            <ScrollPane prefHeight="380.0" prefWidth="405.0">
+            <ScrollPane fx:id="comments_scroll_pane" prefHeight="380.0" prefWidth="405.0">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="323.0" prefWidth="403.0">
+                <AnchorPane fx:id="comments_Anchor" minHeight="0.0" minWidth="0.0" prefHeight="381.0" prefWidth="403.0">
                      <children>
                         <Pane prefHeight="52.0" prefWidth="405.0">
                            <children>
-                              <Label layoutX="5.0" layoutY="30.0" text="COMMENTS:" />
-                              <Label layoutX="329.0" layoutY="33.0" text="AVG Rating" />
-                              <FontAwesomeIcon glyphName="REFRESH" layoutX="89.0" layoutY="46.0" size="20" />
+                              <Label fx:id="comments_text" layoutX="5.0" layoutY="30.0" text="COMMENTS:" />
+                              <Label fx:id="avg_rait_text" layoutX="329.0" layoutY="33.0" text="AVG Rating" />
+                              <FontAwesomeIcon fx:id="refresh_comments" glyphName="REFRESH" layoutX="89.0" layoutY="46.0" onMouseClicked="#handle_refresh_comments" size="20" />
                            </children>
                         </Pane>
                         <Pane layoutY="50.0" prefHeight="68.0" prefWidth="404.0" style="-fx-background-color: green;">
@@ -286,27 +286,27 @@
             </ScrollPane>
             <AnchorPane prefHeight="117.0" prefWidth="405.0" style="-fx-background-color: yellow;">
                <children>
-                  <Button layoutX="296.0" layoutY="12.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="ADD">
+                  <MFXButton fx:id="addCommentButton" layoutX="296.0" layoutY="12.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="ADD">
                      <font>
                         <Font size="8.0" />
                      </font>
-                  </Button>
-                  <Label layoutX="1.0" layoutY="-2.0" text="Добавить новый комментарий">
+                  </MFXButton>
+                  <Label fx:id="write_new_comment_text" layoutX="1.0" layoutY="-2.0" text="Добавить новый комментарий">
                      <font>
                         <Font size="12.0" />
                      </font>
                   </Label>
-                  <MFXTextField layoutX="2.0" layoutY="16.0" prefHeight="68.0" prefWidth="282.0" />
-                  <Label layoutX="320.0" layoutY="43.0" text="Set stars here">
+                  <MFXTextField fx:id="commentTextField" layoutX="2.0" layoutY="16.0" prefHeight="68.0" prefWidth="282.0" />
+                  <Label fx:id="set_stars_text" layoutX="320.0" layoutY="43.0" text="Set stars here">
                      <font>
                         <Font size="8.0" />
                      </font>
                   </Label>
-                  <Button layoutX="295.0" layoutY="57.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="STARS">
+                  <MFXButton fx:id="add_comment_stars" layoutX="295.0" layoutY="57.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="92.0" text="STARS">
                      <font>
                         <Font size="8.0" />
                      </font>
-                  </Button>
+                  </MFXButton>
                </children>
             </AnchorPane>
          </children>

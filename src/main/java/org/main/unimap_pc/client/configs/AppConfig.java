@@ -1,5 +1,6 @@
 package org.main.unimap_pc.client.configs;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 
 // TODO: Rewrite prop file with lombok
@@ -190,7 +190,7 @@ public class AppConfig {
             return null; // or return a default image
         }
 
-        return new Image(resource.toExternalForm());
+        return new Image(resource.toString());
     }
 
     public static String getNewsUrl() {

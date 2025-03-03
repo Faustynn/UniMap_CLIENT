@@ -46,8 +46,8 @@ public class MainApp extends Application {
 
         sceneController = new SceneController(stage);
         LoadingScreens.showLoadScreen(stage);
-
         checkServerConnectionAsync(stage);
+
         UserService userService = UserService.getInstance();
         if (PreferenceServise.get("REFRESH_TOKEN") != null) {
             AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {

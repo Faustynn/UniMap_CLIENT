@@ -1,21 +1,32 @@
 package org.main.unimap_pc.client.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import org.main.unimap_pc.client.models.Subject;
-import org.main.unimap_pc.client.models.Teacher;
-import org.main.unimap_pc.client.models.TeacherSubjectRoles;
+import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.*;
+import org.main.unimap_pc.client.services.DataFetcher;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 public class SubjectsSubPageController implements LanguageSupport {
     @Setter
@@ -26,7 +37,17 @@ public class SubjectsSubPageController implements LanguageSupport {
     @FXML
     private Label subject_A,subject_B,subject_C,subject_D,subject_E,subject_FX,subject_teacher,subject_evaluation,subject_assesmentMethods,subject_evaluationMethods,subject_plannedActivities,subject_code,subject_abbr,subject_studentCount,subject_Type,subject_credits,subject_studyType,subject_semester,subject_languages,subject_completionType,subject_learnoutcomes,subject_courseContents;
     @FXML
-    private AnchorPane dragArea,plannedActivAnchor,learn_outcomesAnchor,courseContentsAnchor,evalMethodsAnchor,assesmentMethodsAnchor,TeachersAnchor;
+    private AnchorPane dragArea,plannedActivAnchor,learn_outcomesAnchor,courseContentsAnchor,evalMethodsAnchor,assesmentMethodsAnchor,TeachersAnchor,comments_Anchor;
+    @FXML
+    private ScrollPane comments_scroll_pane;
+    @FXML
+    private MFXTextField commentTextField;
+    @FXML
+    private MFXButton addCommentButton,add_comment_stars;
+    @FXML
+    private Label set_stars_text,write_new_comment_text,comments_text,avg_rait_text;
+    @FXML
+    private FontAwesomeIcon refresh_comments;
 
     @FXML
     private void handleCloseApp() {
@@ -54,6 +75,7 @@ public class SubjectsSubPageController implements LanguageSupport {
 
         if (subject != null) {
             updateContent(subject);
+            loadComments(subject.getCode());
         }
     }
     @FXML
@@ -139,10 +161,90 @@ public class SubjectsSubPageController implements LanguageSupport {
         subject_D_text.setText(languageBundle.getString("subject_D_text"));
         subject_E_text.setText(languageBundle.getString("subject_E_text"));
         subject_FX_text.setText(languageBundle.getString("subject_FX_text"));
+
+
+        addCommentButton.setText(languageBundle.getString("addCommentButton"));
+        set_stars_text.setText(languageBundle.getString("set_stars_text"));
+        write_new_comment_text.setText(languageBundle.getString("write_new_comment_text"));
+        comments_text.setText(languageBundle.getString("comments_text"));
+        avg_rait_text.setText(languageBundle.getString("avg_rait_text"));
     }
 
 
+    @FXML
+    public void handle_refresh_comments() {
+        try {
+            loadComments(subject.getCode());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private void loadComments(String subjectCode) {
+        CompletableFuture<String> commentsJsonFuture = DataFetcher.fetchComments(subjectCode);
+
+        commentsJsonFuture.thenAccept(commentsJson -> {
+            if (commentsJson != null) {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<CommentModel> commentsList = objectMapper.readValue(commentsJson, new TypeReference<List<CommentModel>>() {});
+                    Platform.runLater(() -> {
+                        displayComments(commentsList);
+                    });
+                } catch (Exception e) {
+                    System.err.println("Failed to parse comments JSON: " + e.getMessage());
+                }
+            } else {
+                System.err.println("Failed to load comments.");
+            }
+        });
+    }
+    private void displayComments(List<CommentModel> comment_list) {
+        if(comment_list == null) {
+            Label noCommentsLabel = new Label("No comments for this subject");
+            comments_scroll_pane.setContent(noCommentsLabel);
+            return;
+        }
+        VBox comments_container = new VBox(10);
+        comments_container.setPadding(new Insets(10));
+
+        // Clear any existing content in the scroll pane
+        comments_scroll_pane.setContent(comments_container);
+
+        for (CommentModel comments : comment_list) {
+            AnchorPane newsItem = createCommentsItem(comments);
+            comments_container.getChildren().add(newsItem);
+        }
+    }
+    private AnchorPane createCommentsItem(CommentModel comments) {
+        AnchorPane commentsItem = new AnchorPane();
+        commentsItem.setPrefWidth(comments_Anchor.getPrefWidth() - 20);
+        commentsItem.setStyle("-fx-background-color: #659ac9; -fx-background-radius: 25; -fx-border-color: #36436F; -fx-border-radius: 25; -fx-border-width: 2; -fx-border-style: solid;");
+
+        ImageView avatar = new ImageView();
+        avatar.setImage(new javafx.scene.image.Image(AppConfig.getAvatar(comments.getAvatar()).toString()));
+        avatar.setLayoutX(20);
+        avatar.setLayoutY(10);
+
+        Label username = new Label(comments.getUsername());
+        username.setLayoutX(60);
+        username.setLayoutY(10);
+        username.setTextFill(javafx.scene.paint.Color.WHITE);
+
+        Label descriptionLabel = new Label(comments.getDescription());
+        descriptionLabel.setLayoutX(20);
+        descriptionLabel.setLayoutY(50);
+        descriptionLabel.setPrefWidth(commentsItem.getPrefWidth() - 40);
+        descriptionLabel.setWrapText(true);
+
+        Label starsView = new Label(String.valueOf(comments.getRating()));
+        starsView.setLayoutX(20);
+        starsView.setLayoutY(100);
+        starsView.setTextFill(javafx.scene.paint.Color.WHITE);
+
+        commentsItem.getChildren().addAll(avatar, username, descriptionLabel, starsView);
+        return commentsItem;
+    }
 
 
 

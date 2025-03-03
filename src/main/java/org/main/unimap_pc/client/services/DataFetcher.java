@@ -122,7 +122,7 @@ public class DataFetcher {
 
 
 
-    public static CompletableFuture<Boolean> fetchComments(String code){
+    public static CompletableFuture<String> fetchComments(String code){
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getCommentsUrl()+code))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
@@ -137,19 +137,19 @@ public class DataFetcher {
                             JsonNode jsonNode = objectMapper.readTree(response.body());
 
                             System.out.println("COMMENTS "+jsonNode);
-                            return true;
+                            return jsonNode.toString();
                         } catch (Exception e) {
                             System.err.println("Failed to parse JSON response: " + e.getMessage());
-                            return false;
+                            return null;
                         }
                     } else {
                         System.err.println("Failed to fetch Comments with status code: " + response.statusCode());
-                        return false;
+                        return null;
                     }
                 })
                 .exceptionally(throwable -> {
                     System.err.println("Comments fetch request failed: " + throwable.getMessage());
-                    return false;
+                    return null;
                 });
     }
 
