@@ -5,10 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -23,6 +25,9 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import javafx.scene.control.TextField;
+import javafx.geometry.Insets;
+
 
 import java.awt.*;
 import java.io.IOException;
@@ -34,19 +39,20 @@ import static org.main.unimap_pc.client.controllers.LogInController.showErrorDia
 
 public class SubjectsPageController implements LanguageSupport {
     @FXML
-    private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code, garant, student_amount, study_level_text, subject_type_text, semester_text, filter_subject_text;
+    private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code, garant, student_amount, study_level_text, subject_type_text, semester_text, filter_subject_text,semester,type;
     @FXML
     private ImageView navi_avatar;
     @FXML
-    private MFXComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
+    private ComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
     @FXML
-    private MFXTextField searchField;
+    private TextField searchField;
     @FXML
     private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage, btnForgotPass, btnSignup;
     @FXML
     private ScrollPane scrollPane;
     @FXML
     private AnchorPane anchorScrollPane;
+    private Label noResultsLabel;
 
     private String defLang;
     private String accessToken;
@@ -69,6 +75,7 @@ public class SubjectsPageController implements LanguageSupport {
         LanguageManager.changeLanguage(defLang);
         LanguageManager.getInstance().registerController(this);
         updateUILanguage(LanguageManager.getCurrentBundle());
+
     }
 
     private void loadCurrentLanguage() {
@@ -159,90 +166,95 @@ public class SubjectsPageController implements LanguageSupport {
             studyLevelCombo.setStyle("-fx-text-fill: black;");
         }
 
-        if (!searchField.getText().trim().isEmpty()) {
-            searchField.setStyle("-fx-border-color: #1976D2;");
-        } else {
-            searchField.setStyle("");
-        }
     }
     private void updateSubjectList(List<Subject> subjects) {
         anchorScrollPane.getChildren().clear();
 
 
-        // контейнер для списка предметов
-        VBox subjectsContainer = new VBox(10);
+        VBox subjectsContainer = new VBox(5);
         subjectsContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
+        VBox.setVgrow(subjectsContainer, Priority.ALWAYS);
 
-        // Если список пуст - показываем сообщение
         if (subjects.isEmpty()) {
-            Label noResultsLabel = new Label("No subjects found matching your criteria");
-            noResultsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
+            ResourceBundle languageBundle = LanguageManager.getCurrentBundle();
+            noResultsLabel = new Label(languageBundle.getString("criteria_subjects"));
+            noResultsLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-alignment: center;");
             subjectsContainer.getChildren().add(noResultsLabel);
         } else {
             // Создаем карточку для каждого предмета
             for (int i = 0; i < subjects.size(); i++) {
                 Subject subject = subjects.get(i);
-                AnchorPane subjectCard = createSubjectCard(subject, i);
+                AnchorPane subjectCard = createSubjectCard(subject);
                 subjectsContainer.getChildren().add(subjectCard);
             }
         }
 
+        anchorScrollPane.setStyle("-fx-background-color: #191C22;");
         anchorScrollPane.getChildren().add(subjectsContainer);
-        AnchorPane.setTopAnchor(subjectsContainer, 10.0);
-        AnchorPane.setLeftAnchor(subjectsContainer, 10.0);
-        AnchorPane.setRightAnchor(subjectsContainer, 10.0);
+        anchorScrollPane.setPrefHeight(subjects.size()*(50+8));
+        anchorScrollPane.setMinHeight(300);
     }
 
-    private AnchorPane createSubjectCard(Subject subject, int index) {
+    private AnchorPane createSubjectCard(Subject subject) {
         AnchorPane card = new AnchorPane();
-        card.setPrefHeight(80);
+        card.setPrefHeight(50);
         card.setPrefWidth(anchorScrollPane.getPrefWidth() - 20);
-        card.setStyle("-fx-background-color: " + (index % 2 == 0 ? "#f5f5f5" : "#ffffff") +
-                "; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
+        card.setStyle("-fx-background-color: #2f3541;");
 
         // Аббревиатура предмета
         Label abbreviationLabel = new Label(subject.getCode());
-        abbreviationLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        abbreviationLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+
         card.getChildren().add(abbreviationLabel);
-        AnchorPane.setTopAnchor(abbreviationLabel, 10.0);
+        AnchorPane.setTopAnchor(abbreviationLabel, 15.0);
         AnchorPane.setLeftAnchor(abbreviationLabel, 10.0);
 
         // Название предмета
-        Label nameLabel = new Label(subject.getName());
-        nameLabel.setStyle("-fx-font-size: 14px;");
+        String name = subject.getName();
+        if (name.length() > 36) {
+            name = name.substring(0, 36) + "...";
+        }
+
+        Label nameLabel = new Label(name);
+        nameLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
         nameLabel.setMaxWidth(300);
         card.getChildren().add(nameLabel);
-        AnchorPane.setTopAnchor(nameLabel, 10.0);
-        AnchorPane.setLeftAnchor(nameLabel, 120.0);
-
-        // Тип предмета
-        Label typeLabel = new Label(subject.getType());
-        typeLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
-        card.getChildren().add(typeLabel);
-        AnchorPane.setTopAnchor(typeLabel, 35.0);
-        AnchorPane.setLeftAnchor(typeLabel, 120.0);
-
-        // Семестр
-        Label semesterLabel = new Label("Semester: " + subject.getSemester());
-        semesterLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
-        card.getChildren().add(semesterLabel);
-        AnchorPane.setTopAnchor(semesterLabel, 55.0);
-        AnchorPane.setLeftAnchor(semesterLabel, 120.0);
+        AnchorPane.setTopAnchor(nameLabel, 15.0);
+        AnchorPane.setLeftAnchor(nameLabel, 90.0);
 
         // Гарант
-        Label guarantorLabel = new Label("Guarantor: " + subject.getGarant());
-        guarantorLabel.setStyle("-fx-font-size: 12px;");
+        String guarantor = subject.getGarant();
+        if (guarantor != null && guarantor.length() > 30) {
+            guarantor = guarantor.substring(0, 30) + "...";
+        }
+        Label guarantorLabel = new Label(guarantor);
+        guarantorLabel.setStyle("-fx-text-fill: white;");
         card.getChildren().add(guarantorLabel);
-        AnchorPane.setTopAnchor(guarantorLabel, 35.0);
-        AnchorPane.setRightAnchor(guarantorLabel, 10.0);
+        AnchorPane.setTopAnchor(guarantorLabel, 15.0);
+        AnchorPane.setLeftAnchor(guarantorLabel, 333.0);
+
+
+        // Семестр
+        Label semesterLabel = new Label(subject.getSemester());
+        semesterLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(semesterLabel);
+        AnchorPane.setTopAnchor(semesterLabel, 15.0);
+        AnchorPane.setRightAnchor(semesterLabel, 230.0);
+
+        // Тип предмета
+        Label typeLabel = new Label(subject.getType().replace("povinne voliteľný", "PV").replace("povinný", "P").replace("voliteľný", "V"));
+        typeLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(typeLabel);
+        AnchorPane.setTopAnchor(typeLabel, 15.0);
+        AnchorPane.setRightAnchor(typeLabel, 145.0);
+
 
         // Количество студентов
-        Label studentsLabel = new Label("Students: " + subject.getStudentCount());
-        studentsLabel.setStyle("-fx-font-size: 12px;");
+        Label studentsLabel = new Label(String.valueOf(subject.getStudentCount()));
+        studentsLabel.setStyle("-fx-text-fill: white;");
         card.getChildren().add(studentsLabel);
-        AnchorPane.setTopAnchor(studentsLabel, 55.0);
-        AnchorPane.setRightAnchor(studentsLabel, 10.0);
-
+        AnchorPane.setTopAnchor(studentsLabel, 15.0);
+        AnchorPane.setRightAnchor(studentsLabel, 80.0);
         // Добавляем обработчик клика
         card.setOnMouseClicked(event -> openSubjectSubPage(subject));
 
@@ -329,7 +341,6 @@ public class SubjectsPageController implements LanguageSupport {
         btn_subjectpage.setText(languageBundle.getString("subjectpage"));
         btn_teacherspage.setText(languageBundle.getString("teacherspage"));
         btn_settingspage.setText(languageBundle.getString("settingspage"));
-        languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
 
         subj_list.setText(languageBundle.getString("subject.list"));
         abreviature.setText(languageBundle.getString("abreviature"));
@@ -342,6 +353,12 @@ public class SubjectsPageController implements LanguageSupport {
         filter_subject_text.setText(languageBundle.getString("filter.subject"));
 
         searchField.setPromptText(languageBundle.getString("search"));
+        type.setText(languageBundle.getString("type"));
+        semester.setText(languageBundle.getString("semester"));
+
+        if (noResultsLabel != null) {
+            noResultsLabel.setText(languageBundle.getString("criteria_subjects"));
+        }
     }
 
     @FXML

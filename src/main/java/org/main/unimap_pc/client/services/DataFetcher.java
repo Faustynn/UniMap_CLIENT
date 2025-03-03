@@ -122,13 +122,12 @@ public class DataFetcher {
 
 
 
-    public static CompletableFuture<String> fetchComments(String code){
+    public static CompletableFuture<String> fetchComments(String code, String type) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getCommentsUrl()+code))
+                .uri(URI.create(AppConfig.getCommentsUrl() + (type.equals("subject") ? "subject/" : "teacher/") + code))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
-
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
                     if (response.statusCode() == 200) {

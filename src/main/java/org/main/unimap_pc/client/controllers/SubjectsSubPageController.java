@@ -181,7 +181,7 @@ public class SubjectsSubPageController implements LanguageSupport {
     }
 
     private void loadComments(String subjectCode) {
-        CompletableFuture<String> commentsJsonFuture = DataFetcher.fetchComments(subjectCode);
+        CompletableFuture<String> commentsJsonFuture = DataFetcher.fetchComments(subjectCode, "subject");
 
         commentsJsonFuture.thenAccept(commentsJson -> {
             if (commentsJson != null) {
