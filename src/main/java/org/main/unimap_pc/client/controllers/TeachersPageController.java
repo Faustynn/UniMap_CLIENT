@@ -144,6 +144,9 @@ public class TeachersPageController implements LanguageSupport {
         List<Teacher> filteredTeachers = filterService.filterTeachers(searchForm);
 
         System.out.println("Filtered teachers: " + filteredTeachers.size());
+        for (Teacher teacher : filteredTeachers) {
+            System.out.println("Teacher: " + teacher.getName());
+        }
 
         updateTeacherList(filteredTeachers);
         updateSelectedFiltersText();

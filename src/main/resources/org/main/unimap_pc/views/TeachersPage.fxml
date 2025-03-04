@@ -35,7 +35,7 @@
                   <Insets top="24.0" />
                </VBox.margin>
             </Pane>
-            <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPERENT;" text="Home" textFill="WHITE">
+            <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Home" textFill="WHITE">
                <font>
                   <Font name="Outfit Regular" size="16.0" />
                </font>
@@ -56,12 +56,12 @@
                   <Insets left="24.0" top="-34.0" />
                </VBox.margin>
             </MFXButton>
-            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: transperent;">
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: transparent;">
                <VBox.margin>
                   <Insets top="13.0" />
                </VBox.margin>
             </Pane>
-            <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: transperent;" text="Subject" textFill="WHITE">
+            <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: transparent;" text="Subject" textFill="WHITE">
                <font>
                   <Font name="Outfit Regular" size="16.0" />
                </font>

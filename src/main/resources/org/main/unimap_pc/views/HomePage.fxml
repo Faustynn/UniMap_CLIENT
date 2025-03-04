@@ -41,7 +41,7 @@
                         </Label>
                      </children>
                   </Pane>
-                  <MFXButton fx:id="btn_homepage" graphicTextGap="8.0" layoutX="15.0" layoutY="200.0" onMouseClicked="#handleHomePageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: #659ac9; -fx-border-color: #36436F;" styleClass="" text="Home" textFill="WHITE">
+                  <MFXButton fx:id="btn_homepage" graphicTextGap="8.0" layoutX="15.0" layoutY="200.0" onMouseClicked="#handleHomePageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: TRANSPARENT; -fx-border-color: #36436F;" styleClass="" text="Home" textFill="WHITE">
                      <font>
                         <Font name="Arial" size="34.0" />
                      </font>

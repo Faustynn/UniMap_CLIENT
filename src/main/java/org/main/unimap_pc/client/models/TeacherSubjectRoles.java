@@ -1,13 +1,13 @@
 package org.main.unimap_pc.client.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,20 +20,41 @@ public class TeacherSubjectRoles {
     public TeacherSubjectRoles(JSONObject jsonBase) {
         try {
             subjectName = jsonBase.getString("subjectName");
-        } catch (org.json.JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException e) {
             subjectName = "";
         }
+
         try {
-            roles = jsonBase.getJSONArray("roles").toList().stream()
-                    .map(Object::toString)
-                    .toList();
-        } catch (org.json.JSONException e) {
-            e.printStackTrace();
+            JSONArray rolesArray = jsonBase.optJSONArray("roles");
+            if (rolesArray != null) {
+                roles = rolesArray.toList().stream()
+                        .map(Object::toString)
+                        .map(role -> role.replaceAll("[{}\"']", "").trim())
+                        .collect(Collectors.toList());
+            } else {
+                String rolesString = jsonBase.optString("roles", "");
+                roles = parseRolesString(rolesString);
+            }
+        } catch (Exception e) {
             roles = new ArrayList<>();
+            e.printStackTrace();
         }
     }
-        public String getFormattedRoles() {
-            return String.join(", ", roles);
+
+    private List<String> parseRolesString(String rolesString) {
+        if (rolesString == null || rolesString.isEmpty()) {
+            return new ArrayList<>();
         }
+
+        return List.of(rolesString.replaceAll("[{}\"']", "")
+                        .split(","))
+                .stream()
+                .map(String::trim)
+                .filter(role -> !role.isEmpty())
+                .collect(Collectors.toList());
+    }
+
+    public String getFormattedRoles() {
+        return roles == null ? "" : String.join(", ", roles);
+    }
 }
