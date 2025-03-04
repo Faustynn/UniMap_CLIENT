@@ -16,7 +16,7 @@
          <children>
             <ImageView fitHeight="75.0" fitWidth="97.0" layoutX="5.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../images/GPS_app.png" />
+                  <Image url="@../images/app/GPS_app.png" />
                </image>
             </ImageView>
             <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="304.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="" />
@@ -29,7 +29,7 @@
       </AnchorPane>
       <AnchorPane layoutY="83.0" prefHeight="240.0" prefWidth="350.0">
          <children>
-            <Label fx:id="reset_text" layoutX="69.0" layoutY="24.0" prefHeight="44.0" prefWidth="250.0" text="Reset Password" textFill="WHITE">
+            <Label fx:id="reset_text" layoutX="69.0" layoutY="16.0" prefHeight="44.0" prefWidth="250.0" text="Reset Password" textFill="WHITE">
                <font>
                   <Font name="Outfit Regular" size="32.0" />
                </font>
@@ -39,14 +39,14 @@
                   <Font name="Outfit Bold" size="16.0" />
                </font>
             </Button>
-            <TextField fx:id="fieldCode" layoutX="54.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35;">
+            <TextField fx:id="fieldCode" layoutX="54.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
                <font>
                   <Font name="Outfit Regular" size="14.0" />
                </font>
             </TextField>
          </children>
       </AnchorPane>
-      <Label fx:id="infoMess2" layoutX="91.0" layoutY="155.0" textFill="#cd1d2c">
+      <Label fx:id="infoMess2" layoutX="55.0" layoutY="140.0" textFill="#cd1d2c">
          <font>
             <Font name="Roboto Bold Italic" size="14.0" />
          </font>

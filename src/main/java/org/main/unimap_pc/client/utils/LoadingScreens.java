@@ -4,7 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -22,7 +21,7 @@ public class LoadingScreens {
     public static void showLoadScreen(Stage stage) {
         ProgressIndicator loadingIndicator = new ProgressIndicator();
 
-        Image appImage = new Image(LoadingScreens.class.getResource("/org/main/unimap_pc/images/GPS_app.png").toExternalForm());
+        Image appImage = new Image(LoadingScreens.class.getResource("/org/main/unimap_pc/images/app/GPS_app.png").toExternalForm());
         ImageView imageView = new ImageView(appImage);
         imageView.setFitWidth(250);
         imageView.setFitHeight(250);
@@ -53,7 +52,7 @@ public class LoadingScreens {
     public static void showLoadScreen(Stage stage, String message) {
         ProgressIndicator loadingIndicator = new ProgressIndicator();
 
-        Image appImage = new Image(LoadingScreens.class.getResource("/org/main/unimap_pc/images/GPS_app.png").toExternalForm());
+        Image appImage = new Image(LoadingScreens.class.getResource("/org/main/unimap_pc/images/app/GPS_app.png").toExternalForm());
         ImageView imageView = new ImageView(appImage);
         imageView.setFitWidth(250);
         imageView.setFitHeight(250);

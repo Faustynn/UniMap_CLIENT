@@ -1,12 +1,14 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.*;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -32,12 +34,13 @@ import org.main.unimap_pc.client.utils.LanguageSupport;
 
 public class LogInController implements LanguageSupport {
     public Label downlApp;
-    public MFXButton btnFacebook;
-    public MFXButton btnGoogle;
+    public Button btnFacebook;
+    public Button btnGoogle;
     @FXML
     private CheckBox remember_checkBox,checkTerms;
     @FXML
-    private Label closeApp;
+    private FontAwesomeIcon closeApp;
+
 
     @FXML
     private AnchorPane dragArea;
@@ -67,7 +70,7 @@ public class LogInController implements LanguageSupport {
     @FXML
     private void initialize() {
         languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
-        PreferenceServise.put(AppConfig.getLANGUAGE_KEY(), "EN");
+        PreferenceServise.put(AppConfig.getLANGUAGE_KEY(), "Language");
 
         loadCurrentLanguage();
         dragArea.setOnMousePressed(this::handleMousePressed);
@@ -103,10 +106,11 @@ public class LogInController implements LanguageSupport {
             btnFacebook.setText(languageBundle.getString("facebook.button"));
             downlApp.setText(languageBundle.getString("download.app"));
             languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
-            closeApp.setText(languageBundle.getString("close"));
             madeby.setText(languageBundle.getString("madeby"));
             dontHaveAcc.setText(languageBundle.getString("dont.have.account"));
             or.setText(languageBundle.getString("or"));
+            remember_checkBox.setText(languageBundle.getString("remember.checkbox"));
+            checkTerms.setText(languageBundle.getString("check.terms"));
         } catch (Exception e) {
             System.err.println("Error updating UI language: " + e.getMessage());
         }
@@ -123,18 +127,18 @@ public class LogInController implements LanguageSupport {
     }
 
     @FXML
-    private MFXTextField fieldUsername;
+    private TextField fieldUsername;
 
     @FXML
-    private MFXPasswordField fieldPassword;
+    private PasswordField fieldPassword;
 
     @FXML
     private Label btnForgotPass;
 
     @FXML
-    private MFXButton btnSignin;
+    private Button btnSignin;
     @FXML
-    private MFXButton btnSignup;
+    private Button btnSignup;
 
 
     @FXML

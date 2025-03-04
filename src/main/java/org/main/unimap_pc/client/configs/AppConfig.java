@@ -17,12 +17,13 @@ import java.util.Properties;
 public class AppConfig {
     // General app settings
     private static final String APP_TITLE = "UniMap";
-    private static final String ICON_PATH = "/org/main/unimap_pc/images/GPS_app.png";
+    private static final String ICON_PATH = "/org/main/unimap_pc/images/app/GPS_app.png";
+    private static final String STU_LOGO_PATH = "/org/main/unimap_pc/images/app/stu_logo_white.png";
     private static final String GIT_HUB = "https://github.com/Faustynn/VAVA_2024";
     @Getter
-    private static final String PREFS_FILE = "/src/main/resources/org/main/unimap_pc/cashe/preferences.ser";
+    private static final String PREFS_FILE = "src/main/resources/org/main/unimap_pc/cashe/preferences.ser";
     @Getter
-    private static final String CACHE_FILE = "/src/main/resources/org/main/unimap_pc/cashe/cache.ser";
+    private static final String CACHE_FILE = "src/main/resources/org/main/unimap_pc/cashe/cache.ser";
 
     // FXMLs
     private static final String LOGIN_PAGE_PATH = "/org/main/unimap_pc/views/LoginPage.fxml";
@@ -150,7 +151,9 @@ public class AppConfig {
         return TEACHERS_URL;
     }
 
-
+    public static String getStuLogoPath() {
+        return STU_LOGO_PATH;
+    }
 
 
 

@@ -65,3 +65,15 @@
     -fx-font-family: "Outfit Medium";
     -fx-font-size: 14px;
 }
+
+.check-box .box {
+    -fx-background-color: #262A35;
+    -fx-border-color: #3E4454;
+}
+.check-box:selected .box {
+    -fx-background-color: #262A35;
+    -fx-border-color: #3E4454;
+}
+.check-box:selected .box .mark {
+    -fx-background-color: green;
+}

@@ -69,7 +69,7 @@ public class HomePageController implements LanguageSupport {
     private void initialize() {
         try {
             loadNews();
-            System.out.println("Loaded News");
+            //   System.out.println("Loaded News");
             languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
             loadCurrentLanguage();
 
@@ -140,7 +140,12 @@ public class HomePageController implements LanguageSupport {
                     ObjectMapper objectMapper = new ObjectMapper();
                     List<NewsModel> newsList = objectMapper.readValue(newsJson, new TypeReference<List<NewsModel>>() {});
                     Platform.runLater(() -> {
+                        Label loadingLabel = new Label("Loading news...");
+                        loadingLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+                        pane_for_news.getChildren().add(loadingLabel);
+
                         displayNews(newsList);
+
                     });
                 } catch (Exception e) {
                     System.err.println("Failed to parse news JSON: " + e.getMessage());
@@ -153,6 +158,11 @@ public class HomePageController implements LanguageSupport {
     }
 
     private void displayNews(List<NewsModel> newsList) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         pane_for_news.getChildren().clear();
 
         VBox newsContainer = new VBox(5);
