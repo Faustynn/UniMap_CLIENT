@@ -5,10 +5,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.utils.LanguageManager;
+import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -16,17 +21,83 @@ import java.util.ResourceBundle;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
-public class SettingsPageController {
+public class SettingsPageController implements LanguageSupport {
+
+    @FXML
+    private AnchorPane dragArea;
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) dragArea.getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+    }
+
+
+    @FXML
+    private ComboBox<String> languageComboBox;
+    private String defLang;
 
 
     @FXML
     private void initialize() {
+        try {
+            dragArea.setOnMousePressed(this::handleMousePressed);
+            dragArea.setOnMouseDragged(this::handleMouseDragged);
 
+            Scene scene = dragArea.getScene();
+            if (scene != null) {
+                scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+                    // TODO:Resize logic
+                });
+                scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+                    // TODO:Resize logic
+                });
+            }
+
+            languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+            defLang = PreferenceServise.get("LANGUAGE").toString();
+            loadCurrentLanguage();
+            LanguageManager.changeLanguage(defLang);
+            LanguageManager.getInstance().registerController(this);
+            updateUILanguage(LanguageManager.getCurrentBundle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    //   @Override
-    public void updateUILanguage(ResourceBundle languageBundle) {
+    private void loadCurrentLanguage() {
+        languageComboBox.setValue(defLang);
+        languageComboBox.setOnAction(event -> {
+            try {
+                String newLanguage = languageComboBox.getValue();
+                String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
+                LanguageManager.changeLanguage(languageCode);
+                PreferenceServise.put("LANGUAGE", languageCode);
+                updateUILanguage(LanguageManager.getCurrentBundle());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
+    @Override
+    public void updateUILanguage(ResourceBundle languageBundle) {
+        logoutbtn.setText(languageBundle.getString("logout"));
+
+        btn_homepage.setText(languageBundle.getString("homepage"));
+        btn_profilepage.setText(languageBundle.getString("profilepage"));
+        btn_subjectpage.setText(languageBundle.getString("subjectpage"));
+        btn_teacherspage.setText(languageBundle.getString("teacherspage"));
+        btn_settingspage.setText(languageBundle.getString("settingspage"));
     }
 
     @FXML

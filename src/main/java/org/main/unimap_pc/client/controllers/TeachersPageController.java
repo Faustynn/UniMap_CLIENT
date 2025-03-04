@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -37,6 +38,25 @@ import java.util.ResourceBundle;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
 public class TeachersPageController implements LanguageSupport {
+
+    @FXML
+    private AnchorPane dragArea;
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) dragArea.getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+    }
+
     @FXML
     private Label navi_username_text, navi_login_text,ais_id_teach,name_teach,room_teach,teach_list;
     @FXML
@@ -78,7 +98,21 @@ public class TeachersPageController implements LanguageSupport {
         LanguageManager.changeLanguage(defLang);
         LanguageManager.getInstance().registerController(this);
         updateUILanguage(LanguageManager.getCurrentBundle());
+
+        dragArea.setOnMousePressed(this::handleMousePressed);
+        dragArea.setOnMouseDragged(this::handleMouseDragged);
+
+        Scene scene = dragArea.getScene();
+        if (scene != null) {
+            scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+                // TODO:Resize logic
+            });
+            scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+                // TODO:Resize logic
+            });
+        }
     }
+
     private void loadCurrentLanguage() {
         languageComboBox.setValue(defLang);
         languageComboBox.setOnAction(event -> {

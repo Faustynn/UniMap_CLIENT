@@ -17,90 +17,100 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22; -fx-text-fill: white;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22; -fx-text-fill: white;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsPageController">
    <children>
       <VBox prefHeight="640.0" prefWidth="240.0">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
-               <font>
-                  <Font name="Outfit Bold" size="24.0" />
-               </font>
+            <Label style="-fx-text-fill: WHITE; -fx-font-family: 'Outfit Bold'; -fx-font-size: 24px;" text="UNIMAP">
                <VBox.margin>
                   <Insets left="24.0" top="24.0" />
-               </VBox.margin></Text>
-            <Pane prefHeight="48.0" prefWidth="200.0">
+               </VBox.margin>
+            </Label>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
                <VBox.margin>
                   <Insets top="24.0" />
                </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_homepage" alignment="BOTTOM_LEFT" onMouseClicked="#handleHomePageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Home" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
             </Pane>
-            <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Home" textFill="WHITE">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
                <VBox.margin>
                   <Insets top="13.0" />
                </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_profilepage" alignment="BOTTOM_LEFT" onMouseClicked="#handleProfilePageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Profile" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
             </Pane>
-            <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Profile" textFill="WHITE">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
             <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
                <VBox.margin>
                   <Insets top="13.0" />
                </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: #79E3A5;" text="Subject" textFill="WHITE">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_teacherspage" onMouseClicked="#handleTeachersPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Teachers" textFill="WHITE">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Settings" textFill="WHITE">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane layoutY="100.0" prefHeight="56.0" prefWidth="240.0">
                <children>
-                  <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: #ff4989; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Log Out">
+                  <MFXButton fx:id="btn_subjectpage" alignment="BOTTOM_LEFT" onMouseClicked="#handleSubjectPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: #79E3A5;" text="Subject" textFill="WHITE">
                      <font>
                         <Font name="Outfit Regular" size="16.0" />
                      </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_teacherspage" alignment="BOTTOM_LEFT" onMouseClicked="#handleTeachersPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Teachers" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_settingspage" alignment="BOTTOM_LEFT" onMouseClicked="#handleSettingsPageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Settings" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane layoutY="100.0" prefHeight="56.0" prefWidth="240.0">
+               <children>
+                  <MFXButton fx:id="logoutbtn" alignment="BOTTOM_LEFT" onMouseClicked="#handleLogout" prefHeight="52.0" prefWidth="217.0" style="-fx-text-fill: #ff4989; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Log Out">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
                   </MFXButton>
                </children>
                <VBox.margin>
@@ -109,6 +119,7 @@
             </Pane>
          </children>
       </VBox>
+
       <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
          <image>
             <Image url="@../images/avatares/0.png" />

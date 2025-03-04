@@ -158,11 +158,6 @@ public class HomePageController implements LanguageSupport {
     }
 
     private void displayNews(List<NewsModel> newsList) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         pane_for_news.getChildren().clear();
 
         VBox newsContainer = new VBox(5);
