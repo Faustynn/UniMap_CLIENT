@@ -2,15 +2,16 @@ package org.main.unimap_pc.client.controllers;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -25,6 +26,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import javafx.scene.control.TextField;
 
 import java.awt.*;
 import java.io.IOException;
@@ -40,9 +42,9 @@ public class TeachersPageController implements LanguageSupport {
     @FXML
     private ImageView navi_avatar;
     @FXML
-    private MFXComboBox<String> languageComboBox;
+    private ComboBox<String> languageComboBox;
     @FXML
-    private MFXTextField searchField;
+    private TextField searchField;
     @FXML
     private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage;
     @FXML
@@ -50,7 +52,8 @@ public class TeachersPageController implements LanguageSupport {
     @FXML
     private AnchorPane anchorScrollPane;
     @FXML
-    private MFXComboBox<String> roleCombo;
+    private ComboBox<String> roleCombo;
+    private Label noResultsLabel;
 
 
     private String defLang;
@@ -106,6 +109,10 @@ public class TeachersPageController implements LanguageSupport {
         name_teach.setText(languageBundle.getString("name"));
         room_teach.setText(languageBundle.getString("room"));
         teach_list.setText(languageBundle.getString("teachers"));
+
+        if (noResultsLabel != null) {
+            noResultsLabel.setText(languageBundle.getString("criteria_teachers"));
+        }
     }
 
 
@@ -161,13 +168,15 @@ public class TeachersPageController implements LanguageSupport {
 
 
         // контейнер для списка предметов
-        VBox teacherContainer = new VBox(10);
+        VBox teacherContainer = new VBox(5);
         teacherContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
+        VBox.setVgrow(teacherContainer, Priority.ALWAYS);
 
         // Если список пуст - показываем сообщение
         if (teachers.isEmpty()) {
-            Label noResultsLabel = new Label("No teachers found matching your criteria");
-            noResultsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
+            ResourceBundle languageBundle = LanguageManager.getCurrentBundle();
+            noResultsLabel = new Label(languageBundle.getString("criteria_subjects"));
+            noResultsLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-alignment: center;");
             teacherContainer.getChildren().add(noResultsLabel);
         } else {
             // Создаем карточку для каждого предмета
@@ -178,40 +187,42 @@ public class TeachersPageController implements LanguageSupport {
             }
         }
 
+        anchorScrollPane.setStyle("-fx-background-color: #191C22;");
         anchorScrollPane.getChildren().add(teacherContainer);
-        AnchorPane.setTopAnchor(teacherContainer, 10.0);
-        AnchorPane.setLeftAnchor(teacherContainer, 10.0);
-        AnchorPane.setRightAnchor(teacherContainer, 10.0);
+        anchorScrollPane.setPrefHeight(teachers.size()*(50+8));
+        anchorScrollPane.setMinHeight(350);
     }
 
     private AnchorPane createTeacherCard(Teacher teacher, int index) {
         AnchorPane card = new AnchorPane();
-        card.setPrefHeight(80);
+        card.setPrefHeight(50);
         card.setPrefWidth(anchorScrollPane.getPrefWidth() - 20);
-        card.setStyle("-fx-background-color: " + (index % 2 == 0 ? "#f5f5f5" : "#ffffff") +
-                "; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
+        card.setStyle("-fx-background-color: #2f3541;");
 
         // AIS ID
         Label abbreviationLabel = new Label(teacher.getId());
-        abbreviationLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        abbreviationLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
         card.getChildren().add(abbreviationLabel);
-        AnchorPane.setTopAnchor(abbreviationLabel, 10.0);
+        AnchorPane.setTopAnchor(abbreviationLabel, 15.0);
         AnchorPane.setLeftAnchor(abbreviationLabel, 10.0);
 
         // Name and Surname
-        Label nameLabel = new Label(teacher.getName());
-        nameLabel.setStyle("-fx-font-size: 14px;");
-        nameLabel.setMaxWidth(300);
+        String name = teacher.getName();
+        if (name != null && name.length() > 120) {
+            name = name.substring(0, 120) + "...";
+        }
+        Label nameLabel = new Label(name);
+        nameLabel.setStyle("-fx-font-size: 14px;-fx-text-fill: white;");
         card.getChildren().add(nameLabel);
-        AnchorPane.setTopAnchor(nameLabel, 10.0);
+        AnchorPane.setTopAnchor(nameLabel, 15.0);
         AnchorPane.setLeftAnchor(nameLabel, 120.0);
 
         // Room
         Label semesterLabel = new Label(teacher.getOffice());
-        semesterLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
+        semesterLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: white;");
         card.getChildren().add(semesterLabel);
-        AnchorPane.setTopAnchor(semesterLabel, 55.0);
-        AnchorPane.setLeftAnchor(semesterLabel, 120.0);
+        AnchorPane.setTopAnchor(semesterLabel, 15.0);
+        AnchorPane.setLeftAnchor(semesterLabel, 675.0);
 
         // Добавляем обработчик клика
         card.setOnMouseClicked(event -> openTeacherPage(teacher));

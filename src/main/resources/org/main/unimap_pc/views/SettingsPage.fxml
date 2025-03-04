@@ -12,7 +12,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SettingsPageController">
     <children>
-        <VBox prefHeight="640.0" prefWidth="240.0" style="-fx-background-color: #1F222A;">
+        <VBox prefHeight="640.0" prefWidth="240.0">
             <children>
                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
                     <font>
@@ -21,17 +21,17 @@
                     <VBox.margin>
                         <Insets left="24.0" top="24.0" />
                     </VBox.margin></Text>
-                <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #1F222A;">
+                <Pane prefHeight="48.0" prefWidth="200.0">
                     <VBox.margin>
                         <Insets top="24.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Home">
+                <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPERENT;" text="Home" textFill="WHITE">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
                     <VBox.margin>
-                        <Insets left="24.0" top="-34.0" />
+                        <Insets left="24.0" />
                     </VBox.margin>
                 </MFXButton>
                 <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
@@ -39,7 +39,7 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Profile">
+                <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Profile" textFill="WHITE">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
@@ -47,12 +47,12 @@
                         <Insets left="24.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
-                <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
+                <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: transperent;">
                     <VBox.margin>
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Subject">
+                <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: transperent;" text="Subject" textFill="WHITE">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
@@ -65,7 +65,7 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_teacherspage" onMouseClicked="#handleTeachersPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Teachers">
+                <MFXButton fx:id="btn_teacherspage" onMouseClicked="#handleTeachersPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Teachers" textFill="WHITE">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
@@ -78,7 +78,7 @@
                         <Insets top="13.0" />
                     </VBox.margin>
                 </Pane>
-                <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Settings">
+                <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Settings" textFill="WHITE">
                     <font>
                         <Font name="Outfit Regular" size="16.0" />
                     </font>
@@ -86,19 +86,23 @@
                         <Insets left="24.0" top="-34.0" />
                     </VBox.margin>
                 </MFXButton>
-                <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Log Out">
-                    <font>
-                        <Font name="Outfit Regular" size="16.0" />
-                    </font>
+                <Pane layoutY="100.0" prefHeight="56.0" prefWidth="240.0">
+                    <children>
+                        <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: #ff4989; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Log Out">
+                            <font>
+                                <Font name="Outfit Regular" size="16.0" />
+                            </font>
+                        </MFXButton>
+                    </children>
                     <VBox.margin>
-                        <Insets left="24.0" top="286.0" />
+                        <Insets left="24.0" top="220.0" />
                     </VBox.margin>
-                </MFXButton>
+                </Pane>
             </children>
         </VBox>
-        <ImageView id="profile-picture" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+        <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
             <image>
-                <Image url="@../../../../../../../../1.jpg" />
+                <Image url="@../images/avatares/0.png" />
             </image>
         </ImageView>
         <Text fill="WHITE" layoutX="910.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazar Meredov" textAlignment="RIGHT">
