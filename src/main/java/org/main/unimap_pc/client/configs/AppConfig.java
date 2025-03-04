@@ -39,6 +39,7 @@ public class AppConfig {
     private static final String API_URL = "http://localhost:8080/api/unimap_pc/";
     private static final String CHECK_CONNECTION_URL = API_URL + "check-connection";
     private static final String GET_NEWS_URL = API_URL + "news/all";
+    private static final String GET_CHANGE_PASS_URL = API_URL + "change_pass";
 
     private static final String AUTH_URL = API_URL + "authenticate";
     private static final String REGISTR_URL = API_URL + "register";
@@ -183,5 +184,9 @@ public class AppConfig {
 
     public static String getNewsUrl() {
         return GET_NEWS_URL;
+    }
+
+    public static String getChangePasswordUrl() {
+        return GET_CHANGE_PASS_URL;
     }
 }

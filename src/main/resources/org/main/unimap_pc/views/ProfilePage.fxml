@@ -136,6 +136,14 @@
                         <Insets right="20.0" top="10.0" />
                     </VBox.margin>
                 </Label>
+                <MFXButton fx:id="change_pass_btn" onMouseClicked="#handleChangePass" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Log Out">
+                    <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="80.0" left="70.0" top="206.0" />
+                    </VBox.margin>
+                </MFXButton>
             </children>
         </VBox>
     </children>
