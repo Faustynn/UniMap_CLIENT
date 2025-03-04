@@ -34,7 +34,6 @@ public class UserService {
         Scene mainScene = new Scene(root);
         Platform.runLater(() -> {
             curr_stage.setScene(mainScene);
-            curr_stage.setFullScreen(true);
             curr_stage.show();
         });
     }

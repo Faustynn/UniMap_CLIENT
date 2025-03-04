@@ -270,7 +270,6 @@ public class HomePageController implements LanguageSupport {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
@@ -286,7 +285,6 @@ public class HomePageController implements LanguageSupport {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
@@ -311,7 +309,6 @@ public class HomePageController implements LanguageSupport {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
@@ -328,7 +325,6 @@ public class HomePageController implements LanguageSupport {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());
@@ -344,7 +340,6 @@ public class HomePageController implements LanguageSupport {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             System.err.println("Failed to load main page: " + e.getMessage());

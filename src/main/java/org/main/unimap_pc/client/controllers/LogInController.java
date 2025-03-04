@@ -283,7 +283,6 @@ public class LogInController implements LanguageSupport {
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
                     Scene mainScene = new Scene(root);
                     currentStage.setScene(mainScene);
-                    currentStage.setFullScreen(true);
                     currentStage.show();
 
                 } catch (IOException e) {
