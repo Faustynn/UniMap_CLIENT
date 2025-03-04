@@ -2,292 +2,174 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="956.0" prefWidth="1470.0" style="-fx-background-color: #EAEEF4;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.HomePageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.HomePageController">
    <children>
-      <VBox prefHeight="200.0" prefWidth="370.0">
+      <VBox prefHeight="640.0" prefWidth="240.0">
          <children>
-            <AnchorPane prefHeight="956.0" prefWidth="370.0" style="-fx-background-color: #36436F;">
+            <Label style="-fx-text-fill: WHITE; -fx-font-family: 'Outfit Bold'; -fx-font-size: 24px;" text="UNIMAP">
+               <VBox.margin>
+                  <Insets left="24.0" top="24.0" />
+               </VBox.margin>
+            </Label>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
+               <VBox.margin>
+                  <Insets top="24.0" />
+               </VBox.margin>
                <children>
-                  <AnchorPane fx:id="dragArea" prefHeight="956.0" prefWidth="370.0" />
-                  <Pane layoutX="15.0" layoutY="18.0" prefHeight="90.0" prefWidth="340.0" style="-fx-background-color: #659ac9; -fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-border-style: solid; -fx-border-color: #36436F;">
-                     <children>
-                        <FontAwesomeIcon fill="WHITE" glyphName="BARS" layoutX="280.0" layoutY="58.0" size="35" tabSize="0" text="" wrappingWidth="45.63819694519043">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor></FontAwesomeIcon>
-                        <Label graphicTextGap="0.0" layoutX="4.0" layoutY="1.0" prefHeight="82.0" prefWidth="251.0" text="UniMap" textFill="WHITE">
-                           <font>
-                              <Font name="Rockwell" size="42.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="80.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/GPS_app.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Label>
-                     </children>
-                  </Pane>
-                  <MFXButton fx:id="btn_homepage" graphicTextGap="8.0" layoutX="15.0" layoutY="200.0" onMouseClicked="#handleHomePageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: TRANSPARENT; -fx-border-color: #36436F;" styleClass="" text="Home" textFill="WHITE">
+                  <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: #79E3A5;" text="Home" textFill="WHITE">
                      <font>
-                        <Font name="Arial" size="34.0" />
+                        <Font name="Outfit Regular" size="16.0" />
                      </font>
-                     <graphic>
-                        <FontAwesomeIcon fill="WHITE" glyphName="HOME" size="35" tabSize="0" />
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </MFXButton>
-                  <MFXButton fx:id="btn_profilepage" graphicTextGap="8.0" layoutX="15.0" layoutY="325.0" onMouseClicked="#handleProfilePageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: transparent; -fx-border-color: #36436F;" styleClass="" text="Profile" textFill="WHITE">
-                      <font>
-                          <Font name="Arial" size="34.0" />
-                      </font>
-                      <graphic>
-                          <FontAwesomeIcon fill="WHITE" glyphName="USER" size="35" tabSize="0" />
-                      </graphic>
-                      <cursor>
-                          <Cursor fx:constant="HAND" />
-                      </cursor>
-                  </MFXButton>
-                  <MFXButton fx:id="btn_subjectpage" graphicTextGap="8.0" layoutX="15.0" layoutY="450.0" onMouseClicked="#handleSubjectPageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: transparent; -fx-border-color: #36436F;" styleClass="" text="Subject" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="34.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIcon fill="WHITE" glyphName="BOOK" size="35" tabSize="0" />
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXButton>
-                  <MFXButton fx:id="btn_teacherspage" graphicTextGap="8.0" layoutX="15.0" layoutY="575.0" onMouseClicked="#handleTeachersPageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: transparent; -fx-border-color: #36436F;" styleClass="" text="Teachers" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="34.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIcon fill="WHITE" glyphName="CHILD" size="35" tabSize="0" />
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXButton>
-                  <MFXButton fx:id="btn_settingspage" graphicTextGap="8.0" layoutX="15.0" layoutY="700.0" onMouseClicked="#handleSettingsPageClick" prefHeight="85.0" prefWidth="340.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: transparent; -fx-border-color: #36436F;" styleClass="" text="Settings" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="34.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIcon fill="WHITE" glyphName="GEAR" size="35" tabSize="0" />
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXButton>
-                  <MFXButton fx:id="logoutbtn" graphicTextGap="8.0" layoutX="99.0" layoutY="819.0" onAction="#handleLogout" prefHeight="70.0" prefWidth="180.0" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: #be1d00; -fx-border-color: #36436F;" styleClass="" text="Logout" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="22.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIcon fill="WHITE" glyphName="TIMES" size="35" tabSize="0" />
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXButton>
-               </children>
-            </AnchorPane>
-         </children>
-      </VBox>
-      <Pane prefHeight="956.0" prefWidth="1102.0">
-         <children>
-            <Pane prefHeight="123.0" prefWidth="1100.0" style="-fx-background-color: linear-gradient(to right, #36436F, #659ac9);">
-               <children>
-                  <AnchorPane fx:id="dragArea2" prefHeight="123.0" prefWidth="1100.0" />
-                  <MFXButton fx:id="navi_avatar_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="956.0" layoutY="18.0">
-                     <graphic>
-                        <ImageView fx:id="navi_avatar" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <image>
-                              <Image url="@../images/avatares/0.png" />                           </image>
-                        </ImageView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXButton>
-                  <Label fx:id="navi_login_text" alignment="CENTER_RIGHT" layoutX="640.0" layoutY="32.0" prefHeight="20.0" prefWidth="301.0" text="Login" textFill="WHITE">
-                     <font>
-                        <Font name="Arial Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="navi_username_text" alignment="CENTER_RIGHT" layoutX="641.0" layoutY="72.0" prefHeight="25.0" prefWidth="301.0" text="Username" textFill="WHITE">
-                     <font>
-                        <Font name="Arial" size="21.0" />
-                     </font>
-                  </Label>
-                  <MFXComboBox fx:id="languageComboBox" accessibleRole="TEXT" alignment="CENTER" borderGap="0.0" caretVisible="false" floatMode="DISABLED" floatingText="0" floatingTextGap="0.0" graphicTextGap="0.0" layoutX="223.0" layoutY="67.0" maxHeight="-Infinity" maxWidth="-Infinity" measureUnitGap="0.0" minHeight="-Infinity" minWidth="-Infinity" popupOffsetY="0.0" prefColumnCount="3" prefHeight="25.0" prefWidth="110.0" text="Language">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </MFXComboBox>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="24.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/stu_logo_white.png" />
-                     </image>
-                  </ImageView>
                </children>
             </Pane>
-            <Pane layoutX="730.0" layoutY="201.0" prefHeight="523.0" prefWidth="356.0">
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
                <children>
-                  <AnchorPane layoutX="1.0" prefHeight="130.0" prefWidth="352.0" style="-fx-background-color: #659ac9; -fx-background-radius: 0 50 50 50;">
-                     <children>
-                        <Label layoutX="15.0" layoutY="11.0" prefHeight="31.0" prefWidth="162.0" text="FIIT Discord" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="26.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane layoutY="140.0" prefHeight="130.0" prefWidth="352.0" style="-fx-background-color: #659ac9; -fx-background-radius: 0 50 50 50;">
-                     <children>
-                        <Label layoutX="15.0" layoutY="10.0" prefHeight="27.0" prefWidth="116.0" text="FX - com" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="26.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="descriptFXcom" layoutX="25.0" layoutY="38.0" prefHeight="80.0" prefWidth="299.0" text="Notion page created by a few students to help others. Here, you can read and download materials for various subjects" textFill="WHITE" wrapText="true">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane layoutY="280.0" prefHeight="130.0" prefWidth="352.0" style="-fx-background-color: #659ac9; -fx-background-radius: 0 50 50 50;">
-                     <children>
-                        <Label layoutX="15.0" layoutY="10.0" prefHeight="31.0" prefWidth="187.0" text="Mladost Guide" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="26.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="descriptMladost" layoutX="17.0" layoutY="35.0" prefHeight="90.0" prefWidth="332.0" text="Notion page for students who want to move into or already live in the Mladost dormitory, where you can find many useful tips" textFill="WHITE" wrapText="true">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane layoutY="420.0" prefHeight="130.0" prefWidth="352.0" style="-fx-background-color: #659ac9; -fx-background-radius: 0 50 50 50;">
-                     <children>
-                        <Label layoutX="15.0" layoutY="10.0" prefHeight="31.0" prefWidth="172.0" text="FIIT Telegram" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="26.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="descriptFIITTelegram" layoutX="25.0" layoutY="31.0" prefHeight="80.0" prefWidth="299.0" text="Telegram channel for foreign students, provided by enthusiastic students" textFill="WHITE" wrapText="true">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <Label fx:id="descriptFIITDISCORD" layoutX="25.0" layoutY="36.0" prefHeight="75.0" prefWidth="299.0" text="Official Discord of STU FIIT, provided by teachers and enthusiastic students" textFill="WHITE" wrapText="true">
+                  <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Profile" textFill="WHITE">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="Outfit Regular" size="16.0" />
                      </font>
-                  </Label>
-               </children></Pane>
-            <Label fx:id="news_upd_text" layoutX="20.0" layoutY="132.0" text="Last News &amp; Updates:">
-               <font>
-                  <Font name="Rockwell Bold Italic" size="36.0" />
-               </font>
-            </Label>
-            <Pane layoutX="733.0" layoutY="777.0" prefHeight="150.0" prefWidth="356.0">
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
                <children>
-                  <AnchorPane layoutX="25.0" layoutY="25.0" prefHeight="114.0" prefWidth="302.0" style="-fx-background-color: #659ac9; -fx-background-radius: 0 0 50 50;">
-                     <children>
-                        <Label layoutX="31.0" layoutY="10.0" prefHeight="27.0" prefWidth="88.0" text="GitHub" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="22.0" />
-                           </font>
-                        </Label>
-                        <FontAwesomeIcon fx:id="gitHubIcon" fill="#36436f" glyphName="GITHUB" layoutX="35.0" layoutY="100.0" size="75">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIcon>
-                        <Label fx:id="buycoffe" layoutX="120.0" layoutY="75.0" prefHeight="27.0" prefWidth="177.0" text="Buy a coffee :)" textFill="WHITE">
-                           <font>
-                              <Font name="Arial Bold" size="22.0" />
-                           </font>
-                        </Label>
-                        <FontAwesomeIcon fx:id="TipsIcon" fill="#36436f" glyphName="DOLLAR" layoutX="180.0" layoutY="67.0" size="60">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIcon>
-                     </children>
-                  </AnchorPane>
-               </children></Pane>
-            <Label fx:id="support_text" layoutX="757.0" layoutY="760.0" text="Want to support us?">
-               <font>
-                  <Font name="Rockwell Bold Italic" size="28.0" />
-               </font>
+                  <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Subject" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_teacherspage" onMouseClicked="#handleTeachersPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Teachers" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Settings" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane layoutY="100.0" prefHeight="56.0" prefWidth="240.0">
+               <children>
+                  <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: #ff4989; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Log Out">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                  </MFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets left="24.0" top="220.0" />
+               </VBox.margin>
+            </Pane>
+         </children>
+      </VBox>
+      <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+         <image>
+            <Image url="@../images/avatares/0.png" />
+         </image>
+      </ImageView>
+
+      <Label fx:id="navi_username_text" layoutX="922.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="navi_login_text" layoutX="967.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="10.0" />
+         </font>
+      </Label>
+
+      <ComboBox fx:id="languageComboBox" layoutX="781.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+         <styleClass>
+            <String fx:value="custom-combo-box" />
+         </styleClass>
+         <stylesheets>
+            <URL value="@../views/style/style.css" />
+         </stylesheets>
+      </ComboBox>
+
+      <ScrollPane fx:id="scrollPane_news" cache="true" hbarPolicy="NEVER" layoutX="269.0" layoutY="98.0" prefHeight="515.0" prefWidth="444.0" snapToPixel="false" style="-fx-background-color: #191C22;" vbarPolicy="NEVER">
+        <content>
+          <AnchorPane fx:id="pane_for_news" minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="444.0" style="-fx-background-color: #191C22;" />
+        </content>
+      </ScrollPane>
+      <Label fx:id="news_upd_text" layoutX="269.0" layoutY="80.0" style="-fx-text-fill: #878fa1; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="Latest News and Updates">
+      </Label>
+      <Pane layoutX="747.0" layoutY="98.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+         <children>
+            <Label layoutX="11.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Discord">
             </Label>
-            <Label fx:id="utils_text" layoutX="730.0" layoutY="134.0" text="Useful Utilities:">
-               <font>
-                  <Font name="Rockwell Bold Italic" size="36.0" />
-               </font>
+            <Label fx:id="descriptFIITDISCORD" layoutX="11.0" layoutY="37.0" maxWidth="291.0" prefHeight="65.0" prefWidth="291.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
             </Label>
-            <MFXScrollPane fx:id="scrollPane_news" layoutX="18.0" layoutY="196.0" prefHeight="744.0" prefWidth="683.0" style="-fx-background-color: transparent;">
-                <content>
-                    <Pane fx:id="pane_for_news" prefHeight="741.0" prefWidth="681.0">
-                        <children>
-                            <AnchorPane fx:id="news1" prefHeight="150.0" prefWidth="681.0" style="-fx-background-color: #659ac9; -fx-background-radius: 25; -fx-border-color: #36436F; -fx-border-radius: 25; -fx-border-width: 2; -fx-border-style: solid;">
-                                <children>
-                                    <Label fx:id="news_title" layoutX="26.0" layoutY="7.0" prefHeight="27.0" prefWidth="595.0" text="News Title" textFill="WHITE">
-                                        <font>
-                                            <Font name="Arial Bold" size="24.0" />
-                                        </font>
-                                    </Label>
-                                    <Label fx:id="news_descrip" alignment="TOP_LEFT" layoutX="20.0" layoutY="47.0" prefHeight="80.0" prefWidth="597.0" text="News Description" wrapText="true" />
-                                </children>
-                            </AnchorPane>
-                        </children>
-                    </Pane>
-                </content>
-            </MFXScrollPane>
-            <FontAwesomeIcon fx:id="refresh_news" glyphName="REFRESH" layoutX="661.0" layoutY="186.0" onMouseClicked="#handleRefreshNewsClick" size="30">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </FontAwesomeIcon>         </children>
+         </children>
       </Pane>
+      <Pane layoutX="747.0" layoutY="210.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+         <children>
+            <Label layoutX="10.0" layoutY="9.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FX - com">
+            </Label>
+            <Label fx:id="descriptFXcom" layoutX="12.0" layoutY="30.0" maxWidth="305.0" prefHeight="65.0" prefWidth="291.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="747.0" layoutY="322.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+         <children>
+            <Label layoutX="4.0" layoutY="12.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="Mladost Guide">
+            </Label>
+            <Label fx:id="descriptMladost" layoutX="8.0" layoutY="37.0" maxWidth="290.0" prefHeight="57.0" prefWidth="290.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="747.0" layoutY="434.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+         <children>
+            <Label layoutX="8.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Telegram">
+            </Label>
+            <Label fx:id="descriptFIITTelegram" layoutX="12.0" layoutY="41.0" maxWidth="290.0" prefHeight="55.0" prefWidth="290.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
+            </Label>
+         </children>
+      </Pane>
+      <Label fx:id="utils_text" layoutX="747.0" layoutY="80.0" style="-fx-text-fill: #878fa1; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="Links">
+      </Label>
+      <FontAwesomeIcon fx:id="refresh_news" fill="WHITE" glyphName="REFRESH" layoutX="699.0" layoutY="92.0" onMouseClicked="#handleRefreshNewsClick" size="15">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </FontAwesomeIcon>
    </children>
-</HBox>
+</AnchorPane>

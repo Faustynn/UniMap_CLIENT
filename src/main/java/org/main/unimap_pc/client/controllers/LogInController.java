@@ -102,7 +102,7 @@ public class LogInController implements LanguageSupport {
             btnGoogle.setText(languageBundle.getString("google.button"));
             btnFacebook.setText(languageBundle.getString("facebook.button"));
             downlApp.setText(languageBundle.getString("download.app"));
-            languageComboBox.setText(languageBundle.getString("language.combobox"));
+            languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
             closeApp.setText(languageBundle.getString("close"));
             madeby.setText(languageBundle.getString("madeby"));
             dontHaveAcc.setText(languageBundle.getString("dont.have.account"));
@@ -141,7 +141,7 @@ public class LogInController implements LanguageSupport {
     private Label infoMess;
 
     @FXML
-    private MFXComboBox<String> languageComboBox;
+    private ComboBox<String> languageComboBox;
 
     // If click into downlApp label open github page
     @FXML

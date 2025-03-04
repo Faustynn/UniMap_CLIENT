@@ -1,31 +1,31 @@
 package org.main.unimap_pc.client.controllers;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXScrollPane;
-import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
@@ -40,7 +40,6 @@ import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
-
 public class HomePageController implements LanguageSupport {
 
     @FXML
@@ -48,12 +47,12 @@ public class HomePageController implements LanguageSupport {
     private double xOffset = 0;
     private double yOffset = 0;
 
-
     @FXML
     private void handleMousePressed(MouseEvent event) {
         xOffset = event.getSceneX();
         yOffset = event.getSceneY();
     }
+
     @FXML
     private void handleMouseDragged(MouseEvent event) {
         Stage stage = (Stage) dragArea.getScene().getWindow();
@@ -73,6 +72,7 @@ public class HomePageController implements LanguageSupport {
             System.out.println("Loaded News");
             languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
             loadCurrentLanguage();
+
             accessToken = PreferenceServise.get("ACCESS_TOKEN").toString();
             refreshToken = PreferenceServise.get("REFRESH_TOKEN").toString();
             userData = PreferenceServise.get("USER_DATA").toString();
@@ -107,6 +107,7 @@ public class HomePageController implements LanguageSupport {
             });
         }
     }
+
     private void loadCurrentLanguage() {
         String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
         languageComboBox.setValue(selectedLanguage);
@@ -126,9 +127,9 @@ public class HomePageController implements LanguageSupport {
     }
 
     @FXML
-    private MFXScrollPane scrollPane_news;
+    private ScrollPane scrollPane_news;
     @FXML
-    private Pane pane_for_news;
+    private AnchorPane pane_for_news;
 
     private void loadNews() {
         CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
@@ -151,39 +152,68 @@ public class HomePageController implements LanguageSupport {
 
     }
 
-
     private void displayNews(List<NewsModel> newsList) {
-        // Create a VBox to hold the news items
-        VBox newsContainer = new VBox(10); // 10 pixels spacing between items
-        newsContainer.setPadding(new Insets(10)); // Add padding around the VBox
+        pane_for_news.getChildren().clear();
 
-        // Clear any existing content in the scroll pane
-        scrollPane_news.setContent(newsContainer);
+        VBox newsContainer = new VBox(5);
+        newsContainer.setPrefWidth(pane_for_news.getPrefWidth());
+        VBox.setVgrow(newsContainer, Priority.ALWAYS);
 
         for (NewsModel news : newsList) {
             AnchorPane newsItem = createNewsItem(news);
             newsContainer.getChildren().add(newsItem);
         }
+
+        pane_for_news.setStyle("-fx-background-color: #191C22;");
+        pane_for_news.getChildren().add(newsContainer);
+        pane_for_news.setPrefHeight(newsList.size()*(140+8));
+        pane_for_news.setMinHeight(444);
+
     }
 
     private AnchorPane createNewsItem(NewsModel news) {
-        AnchorPane newsItem = new AnchorPane();
-        newsItem.setPrefWidth(pane_for_news.getPrefWidth() -20);
-        newsItem.setStyle("-fx-background-color: #659ac9; -fx-background-radius: 25; -fx-border-color: #36436F; -fx-border-radius: 25; -fx-border-width: 2; -fx-border-style: solid;");
+        AnchorPane card = new AnchorPane();
+        card.setPrefHeight(140);
+        card.setPrefWidth(pane_for_news.getPrefWidth() - 20);
+        card.setStyle("-fx-background-color: #2f3541;");
 
-        Label titleLabel = new Label(news.getTitle());
-        titleLabel.setLayoutX(20);
-        titleLabel.setLayoutY(10);
-        titleLabel.setTextFill(javafx.scene.paint.Color.WHITE);
+        // Заголовок новости
+        String title = news.getTitle();
+        if (title.length() > 50) {
+            title = title.substring(0, 50) + "...";
+        }
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;");
+        card.getChildren().add(titleLabel);
+        AnchorPane.setTopAnchor(titleLabel, 15.0);
+        AnchorPane.setLeftAnchor(titleLabel, 20.0);
 
-        Label descriptionLabel = new Label(news.getContent());
-        descriptionLabel.setLayoutX(20);
-        descriptionLabel.setLayoutY(50);
-        descriptionLabel.setPrefWidth(newsItem.getPrefWidth() - 40);
-        descriptionLabel.setWrapText(true);
+        // Дата новости
+        DateTimeFormatter originalFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter newFormat = DateTimeFormatter.ofPattern("d/MM/yy");
+        LocalDateTime dateTime = LocalDateTime.parse(news.getDate_of_creation(), originalFormat);
+        String formattedDate = dateTime.format(newFormat);
 
-        newsItem.getChildren().addAll(titleLabel, descriptionLabel);
-        return newsItem;
+        Label dateLabel = new Label(formattedDate);
+
+        dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #90A4AE;");
+        card.getChildren().add(dateLabel);
+        AnchorPane.setTopAnchor(dateLabel, 15.0);
+        AnchorPane.setRightAnchor(dateLabel, 20.0);
+
+
+        // Краткое содержание
+        Label contentLabel = new Label(news.getContent());
+        contentLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #B0BEC5;");
+        contentLabel.setPrefWidth(card.getPrefWidth() - 40);
+        contentLabel.setPrefHeight(80);
+        contentLabel.setWrapText(true);
+        contentLabel.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+        card.getChildren().add(contentLabel);
+        AnchorPane.setTopAnchor(contentLabel, 50.0);
+        AnchorPane.setLeftAnchor(contentLabel, 20.0);
+
+        return card;
     }
 
     private UserModel initUser(String userData) {
@@ -207,9 +237,6 @@ public class HomePageController implements LanguageSupport {
         return null;
     }
 
-
-    @FXML
-    private MFXButton logoutbtn;
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
@@ -226,7 +253,97 @@ public class HomePageController implements LanguageSupport {
     }
 
     @FXML
-    private MFXToggleButton viewmode;
+    private void handleHomePageClick() {
+        try {
+            Stage currentStage = (Stage) btn_homepage.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
+
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.setFullScreen(true);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load main page: " + e.getMessage());
+            showErrorDialog("Error loading the application. Please try again later.");
+        }
+    }
+
+    @FXML
+    private void handleProfilePageClick() {
+        try {
+            Stage currentStage = (Stage) btn_profilepage.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getProfilePagePath())));
+
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.setFullScreen(true);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load main page: " + e.getMessage());
+            showErrorDialog("Error loading the application. Please try again later.");
+        }
+    }
+
+    @FXML
+    private void handleRefreshNewsClick() {
+        try {
+            loadNews();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void handleSubjectPageClick() {
+        try {
+            Stage currentStage = (Stage) btn_subjectpage.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSubjectsPagePath())));
+
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.setFullScreen(true);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load main page: " + e.getMessage());
+            showErrorDialog("Error loading the application. Please try again later.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleTeachersPageClick() {
+        try {
+            Stage currentStage = (Stage) btn_teacherspage.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getTeachersPagePath())));
+
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.setFullScreen(true);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load main page: " + e.getMessage());
+            showErrorDialog("Error loading the application. Please try again later.");
+        }
+    }
+
+    @FXML
+    private void handleSettingsPageClick() {
+        try {
+            Stage currentStage = (Stage) btn_subjectpage.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSettingsPagePath())));
+
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.setFullScreen(true);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load main page: " + e.getMessage());
+            showErrorDialog("Error loading the application. Please try again later.");
+        }
+    }
+
+    @FXML
+    private MFXButton logoutbtn;
     @FXML
     private MFXButton btn_homepage;
     @FXML
@@ -240,13 +357,9 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private FontAwesomeIcon refresh_news;
     @FXML
-    private Label buycoffe;
-    @FXML
     private Label news_upd_text;
     @FXML
     private Label utils_text;
-    @FXML
-    private Label support_text;
     @FXML
     private Label descriptFIITDISCORD;
     @FXML
@@ -256,7 +369,7 @@ public class HomePageController implements LanguageSupport {
     @FXML
     private Label descriptFIITTelegram;
     @FXML
-    private MFXComboBox languageComboBox;
+    private ComboBox<String> languageComboBox;
 
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
@@ -270,15 +383,12 @@ public class HomePageController implements LanguageSupport {
         languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
         news_upd_text.setText(languageBundle.getString("news.updates"));
         utils_text.setText(languageBundle.getString("utils"));
-        support_text.setText(languageBundle.getString("support"));
         descriptFIITDISCORD.setText(languageBundle.getString("descriptFIITDISCORD"));
         descriptFXcom.setText(languageBundle.getString("descriptFXcom"));
         descriptMladost.setText(languageBundle.getString("descriptMladost"));
         descriptFIITTelegram.setText(languageBundle.getString("descriptFIITTelegram"));
-        buycoffe.setText(languageBundle.getString("buycoffe"));
 
-        languageComboBox.setText(languageBundle.getString("language.combobox"));
-
+        languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
 
         if (news_title != null) {
             news_title.setText(languageBundle.getString("news.title"));
@@ -287,7 +397,6 @@ public class HomePageController implements LanguageSupport {
             news_descrip.setText(languageBundle.getString("news.description"));
         }
     }
-
 
     @FXML
     private Label navi_login_text;
@@ -307,92 +416,4 @@ public class HomePageController implements LanguageSupport {
     private Label news_title;
     @FXML
     private Label news_descrip;
-
-
-    @FXML
-    public void handleHomePageClick() {
-        try {
-            Stage currentStage = (Stage) btn_homepage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
-            currentStage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
-        }
-    }
-    @FXML
-    public void handleProfilePageClick() {
-        try {
-            Stage currentStage = (Stage) btn_profilepage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getProfilePagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
-            currentStage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
-        }
-    }
-
-    @FXML
-    public void handleRefreshNewsClick() {
-        try {
-            loadNews();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @FXML
-    public void handleSubjectPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_subjectpage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSubjectsPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
-            currentStage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    public void handleTeachersPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_teacherspage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getTeachersPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
-            currentStage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
-        }
-    }
-    @FXML
-    public void handleSettingsPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_subjectpage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSettingsPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
-            currentStage.show();
-        } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            showErrorDialog("Error loading the application. Please try again later.");
-        }
-    }
 }

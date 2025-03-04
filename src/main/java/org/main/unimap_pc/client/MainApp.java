@@ -3,6 +3,7 @@ package org.main.unimap_pc.client;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
 import org.main.unimap_pc.client.configs.AppConfig;
@@ -16,7 +17,12 @@ import org.main.unimap_pc.client.utils.LoadingScreens;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.*;
+import java.util.stream.Stream;
+
 import static org.main.unimap_pc.client.utils.ErrorScreens.showErrorScreen;
 
 public class MainApp extends Application {
@@ -43,6 +49,8 @@ public class MainApp extends Application {
         stage.setTitle(AppConfig.getAppTitle());
         setAppIcon(stage);
         stage.initStyle(javafx.stage.StageStyle.UNDECORATED);
+
+        loadFonts();
 
         sceneController = new SceneController(stage);
         LoadingScreens.showLoadScreen(stage);
@@ -201,6 +209,27 @@ public class MainApp extends Application {
             Thread.currentThread().interrupt();
         }
     }
+
+    private void loadFonts() {
+        String fontsDir = "org/main/unimap_pc/views/style/fonts";
+        try (Stream<Path> paths = Files.walk(Paths.get(getClass().getClassLoader().getResource(fontsDir).toURI()))) {
+            paths.filter(Files::isRegularFile).forEach(path -> {
+                try {
+                    Font.loadFont(Files.newInputStream(path), 10);
+                    System.out.println("Loaded font: " + path.getFileName());
+                } catch (IOException e) {
+                    System.err.println("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
+        }
+    }
+
+
+
+
+
     public static void main(String[] args) {
         launch(args);
     }

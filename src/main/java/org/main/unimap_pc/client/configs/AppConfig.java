@@ -1,6 +1,5 @@
 package org.main.unimap_pc.client.configs;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;

@@ -124,6 +124,7 @@
             <Font name="Outfit Regular" size="10.0" />
          </font>
       </Label>
+
       <Pane layoutX="262.0" layoutY="278.0" prefHeight="35.0" prefWidth="774.0" style="-fx-background-color: #232830;">
          <children>
             <Label fx:id="name_code" layoutX="88.0" layoutY="8.0" style="-fx-text-fill: #9fa6b7;" text="Name">

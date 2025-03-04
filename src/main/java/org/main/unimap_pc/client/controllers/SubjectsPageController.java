@@ -26,7 +26,6 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import javafx.scene.control.TextField;
-import javafx.geometry.Insets;
 
 
 import java.awt.*;
@@ -169,7 +168,6 @@ public class SubjectsPageController implements LanguageSupport {
     }
     private void updateSubjectList(List<Subject> subjects) {
         anchorScrollPane.getChildren().clear();
-
 
         VBox subjectsContainer = new VBox(5);
         subjectsContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
