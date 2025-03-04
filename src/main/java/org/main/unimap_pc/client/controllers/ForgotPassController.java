@@ -1,5 +1,7 @@
 package org.main.unimap_pc.client.controllers;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
@@ -7,7 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -26,22 +30,22 @@ import static org.main.unimap_pc.client.controllers.LogInController.showErrorDia
 
 public class ForgotPassController implements LanguageSupport {
     @FXML
-    private Label closeApp;
+    private FontAwesomeIcon closeApp;
 
     @FXML
     private AnchorPane dragArea;
 
     @FXML
-    private MFXButton btnSendMail;
+    private Button btnSendMail;
 
     @FXML
-    private MFXButton btnConfirmMail;
+    private Button btnConfirmMail;
 
     @FXML
-    private MFXTextField fieldEmail;
+    private TextField fieldEmail;
 
     @FXML
-    private MFXTextField fieldCode;
+    private TextField fieldCode;
 
     @FXML
     private Label infoMess;

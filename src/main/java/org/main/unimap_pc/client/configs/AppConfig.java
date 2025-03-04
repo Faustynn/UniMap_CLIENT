@@ -20,9 +20,10 @@ public class AppConfig {
     private static final String ICON_PATH = "/org/main/unimap_pc/images/GPS_app.png";
     private static final String GIT_HUB = "https://github.com/Faustynn/VAVA_2024";
     @Getter
-    private static final String PREFS_FILE = "org/main/unimap_pc/cashe/preferences.ser";
+    private static final String PREFS_FILE = "/src/main/resources/org/main/unimap_pc/cashe/preferences.ser";
     @Getter
-    private static final String CACHE_FILE = "org/main/unimap_pc/cashe/cache.ser";
+    private static final String CACHE_FILE = "/src/main/resources/org/main/unimap_pc/cashe/cache.ser";
+
     // FXMLs
     private static final String LOGIN_PAGE_PATH = "/org/main/unimap_pc/views/LoginPage.fxml";
     private static final String SIGNUP_PAGE_PATH = "/org/main/unimap_pc/views/SignUpPage.fxml";

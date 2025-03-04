@@ -1,11 +1,15 @@
 package org.main.unimap_pc.client.controllers;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -19,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SignUpController implements LanguageSupport {
     @FXML
-    private Label closeApp;
+    private FontAwesomeIcon closeApp;
 
     @FXML
     private AnchorPane dragArea;
@@ -37,7 +41,6 @@ public class SignUpController implements LanguageSupport {
 
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
-        closeApp.setText(languageBundle.getString("close"));
         infoMess.setText(languageBundle.getString("info.message"));
         btnRegistr.setText(languageBundle.getString("register.button"));
         fieldUsername.setPromptText(languageBundle.getString("username.prompt"));
@@ -75,15 +78,15 @@ public class SignUpController implements LanguageSupport {
     @FXML
     private Label infoMess;
     @FXML
-    private MFXTextField fieldUsername;
+    private TextField fieldUsername;
     @FXML
-    private MFXTextField fieldEmail;
+    private TextField fieldEmail;
     @FXML
-    private MFXTextField fieldLogin;
+    private TextField fieldLogin;
     @FXML
-    private MFXPasswordField fieldPassword;
+    private PasswordField fieldPassword;
     @FXML
-    private MFXPasswordField fieldControlPassword;
+    private PasswordField fieldControlPassword;
     @FXML
     private Button btnRegistr;
 
