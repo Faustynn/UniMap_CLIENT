@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import org.main.unimap_pc.client.models.Subject;
+import lombok.experimental.Accessors;
 import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.TeacherSubjectRoles;
 import org.main.unimap_pc.client.services.PreferenceServise;
@@ -21,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 public class TeacherSubPageController implements LanguageSupport {
-    @Setter
-    @Getter
-    private Teacher teacher;
+    private Teacher teacher_entity;
 
     @FXML
     private FontAwesomeIcon closeApp;
@@ -67,15 +68,15 @@ public class TeacherSubPageController implements LanguageSupport {
         stage.setY(event.getScreenY() - yOffset);
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacher_entity(Teacher teacher_entity) {
+        this.teacher_entity = teacher_entity;
 
-        if (teacher != null) {
-            updateContent(teacher);
-            if (teacher.getSubjects() == null) {
-                teacher.setSubjects(new ArrayList<>());
+        if (teacher_entity != null) {
+            updateContent(teacher_entity);
+            if (teacher_entity.getSubjects() == null) {
+                teacher_entity.setSubjects(new ArrayList<>());
             }
-            updateSubjectsList(teacher.getSubjects());
+            updateSubjectsList(teacher_entity.getSubjects());
         }
     }
 

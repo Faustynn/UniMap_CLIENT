@@ -71,7 +71,13 @@ public class LoadingScreenController implements LanguageSupport {
         StackPane.setMargin(loadingText, new Insets(100, 0, 0, 0));
 
         try {
-            defLang = PreferenceServise.get("LANGUAGE").toString();
+            defLang = (String) PreferenceServise.get("LANGUAGE");
+            if (defLang != null) {
+                LanguageManager.changeLanguage(defLang.toString());
+            } else {
+                defLang = "en"; // Def. language
+                LanguageManager.changeLanguage(defLang);
+            }
             LanguageManager.changeLanguage(defLang);
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());

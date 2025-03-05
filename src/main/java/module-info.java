@@ -7,10 +7,14 @@ module org.main.unimap_pc {
     requires org.json;
     requires java.prefs;
     requires jdk.httpserver;
+    requires javafx.controls;
+    requires javafx.fxml;
+    requires javafx.graphics;
+    requires javafx.base;
 
-    exports org.main.unimap_pc.client.models; // Экспорт пакет моделей
-    exports org.main.unimap_pc.client to javafx.graphics; // Экспорт  MainApp
-    exports org.main.unimap_pc.client.controllers to javafx.fxml; // Экспорт контроллеров для FXMLLoader
-    opens org.main.unimap_pc.client to javafx.fxml, javafx.graphics; // рефлексия
-    opens org.main.unimap_pc.client.controllers to javafx.fxml; // пакет контроллеров для рефлексии
+    exports org.main.unimap_pc.client.models;
+    exports org.main.unimap_pc.client to javafx.graphics;
+    exports org.main.unimap_pc.client.controllers to javafx.fxml;
+    opens org.main.unimap_pc.client to javafx.fxml, javafx.graphics;
+    opens org.main.unimap_pc.client.controllers to javafx.fxml;
 }

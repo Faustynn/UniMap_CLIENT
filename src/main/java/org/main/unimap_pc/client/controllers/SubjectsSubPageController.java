@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.main.unimap_pc.client.models.*;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.LanguageManager;
@@ -21,9 +22,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
+@Getter
+@Setter
+@Accessors(chain = true)
 public class SubjectsSubPageController implements LanguageSupport {
-    @Setter
-    @Getter
     private Subject subject;
     @FXML
     private FontAwesomeIcon closeApp;
@@ -218,8 +220,7 @@ public class SubjectsSubPageController implements LanguageSupport {
     private AnchorPane display_details() {
         subj_details_anchor.getChildren().clear();
 
-        VBox modulesContainer = new VBox(10);
-        modulesContainer.setStyle("-fx-padding: 10;");
+        VBox modulesContainer = new VBox(5);
 
         Map<String, DetailEntry> detailsMap = new LinkedHashMap<>() {{
             put("Teacher", new DetailEntry(

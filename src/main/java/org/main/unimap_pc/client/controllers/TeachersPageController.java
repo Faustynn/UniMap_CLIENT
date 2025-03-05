@@ -1,7 +1,6 @@
 package org.main.unimap_pc.client.controllers;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -303,7 +302,7 @@ public class TeachersPageController implements LanguageSupport {
             try {
                 AnchorPane modalPane = loader.load();
                 TeacherSubPageController controller = loader.getController();
-                controller.setTeacher(teacher);
+                controller.setTeacher_entity(teacher);
 
                 Scene modalScene = new Scene(modalPane);
                 Stage modalStage = new Stage();
