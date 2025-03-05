@@ -18,6 +18,7 @@ public class TeacherSubjectRoles {
     private List<String> roles;
 
     public TeacherSubjectRoles(JSONObject jsonBase) {
+        System.out.println("TeacherSubjectRoles: " + jsonBase);
         try {
             subjectName = jsonBase.getString("subjectName");
         } catch (JSONException e) {

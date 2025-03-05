@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -216,13 +218,26 @@ public class TeachersPageController implements LanguageSupport {
             noResultsLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-alignment: center;");
             teacherContainer.getChildren().add(noResultsLabel);
         } else {
-            // Создаем карточку для каждого предмета
-            for (int i = 0; i < teachers.size(); i++) {
-                Teacher teacher = teachers.get(i);
-                AnchorPane teacherCard = createTeacherCard(teacher, i);
-                teacherContainer.getChildren().add(teacherCard);
-            }
-        }
+            // Create a map to store unique teachers by their ID
+            Map<String, Teacher> uniqueTeachers = new HashMap<>();
+            for (Teacher teacher : teachers) {
+                if (uniqueTeachers.containsKey(teacher.getId())) {
+                    // If the teacher already exists, merge the subjects
+                    Teacher existingTeacher = uniqueTeachers.get(teacher.getId());
+                    existingTeacher.getSubjects().addAll(teacher.getSubjects());
+                } else {
+                    // If the teacher is new, add them to the map
+                    uniqueTeachers.put(teacher.getId(), teacher);
+                }
+
+    }
+
+    // Create a card for each unique teacher and add it to the container
+    for (Teacher teacher : uniqueTeachers.values()) {
+        AnchorPane teacherCard = createTeacherCard(teacher);
+        teacherContainer.getChildren().add(teacherCard);
+    }
+}
 
         anchorScrollPane.setStyle("-fx-background-color: #191C22;");
         anchorScrollPane.getChildren().add(teacherContainer);
@@ -230,7 +245,7 @@ public class TeachersPageController implements LanguageSupport {
         anchorScrollPane.setMinHeight(350);
     }
 
-    private AnchorPane createTeacherCard(Teacher teacher, int index) {
+    private AnchorPane createTeacherCard(Teacher teacher) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(50);
         card.setPrefWidth(anchorScrollPane.getPrefWidth() - 20);

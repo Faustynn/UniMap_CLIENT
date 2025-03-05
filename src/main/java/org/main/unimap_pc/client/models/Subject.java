@@ -166,8 +166,12 @@ public class Subject {
                         JSONObject subject = subjects.getJSONObject(j);
                         String subjectName = subject.getString("subjectName");
 
-                        if (subjectName.contains(code)) {
-                            TeacherSubjectRoles teacher = new TeacherSubjectRoles(subject);
+                        if (subjectName.equals(code)) {
+                            JSONObject specificSubjectRoles = new JSONObject();
+                            specificSubjectRoles.put("subjectName", subjectName);
+                            specificSubjectRoles.put("roles", subject.getJSONArray("roles"));
+
+                            TeacherSubjectRoles teacher = new TeacherSubjectRoles(specificSubjectRoles);
                             teachers_roles.add(teacher);
                             teachers.add(new Teacher(teacherJson));
                             break;
