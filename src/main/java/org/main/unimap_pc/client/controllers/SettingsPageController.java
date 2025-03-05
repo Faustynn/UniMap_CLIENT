@@ -5,7 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -23,6 +26,18 @@ import static org.main.unimap_pc.client.controllers.LogInController.showErrorDia
 
 public class SettingsPageController implements LanguageSupport {
 
+    public ImageView navi_avatar;
+    public Label navi_username_text;
+    public Label navi_login_text;
+    public Button btnStartDeleteAcc;
+    public Button btnStartDeletComments;
+    public Label privacy_text;
+    public Label profile_text;
+    public Label pair_mobile_text;
+    public ImageView qr_image;
+    public Label political_terms_text;
+    public Label sourse_code_text;
+    public Label support_text;
     @FXML
     private AnchorPane dragArea;
     private double xOffset = 0;

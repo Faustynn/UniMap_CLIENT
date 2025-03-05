@@ -30,15 +30,15 @@ public class ProfilePageController implements LanguageSupport {
     public Label navi_username_text1;
     public Label navi_login_text1;
     public Button btnChangePicture;
-    public Button btnStartDeleteAcc;
-    public Button btnStartDeletComments;
     public TextField changeEmailField;
     public PasswordField changePasswordField;
-    public Label navi_login_text11;
     public Button btnConfirmChangePass;
-    public Label privacy_text;
     public Label profile_text;
     public Label password_text;
+    public Label email_text;
+    public Label change_private_text;
+    public TextField changeUsernameField;
+    public Label username_text;
 
     @FXML
     private AnchorPane dragArea;

@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.shape.Circle?>
 <AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.ProfilePageController">
     <children>
         <VBox prefHeight="640.0" prefWidth="240.0">
@@ -142,73 +142,73 @@
                 <Font name="Outfit Regular" size="10.0" />
             </font>
         </Label>
-      <Label fx:id="navi_username_text1" layoutX="450.0" layoutY="130.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+      <Label fx:id="navi_username_text1" layoutX="459.0" layoutY="157.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="26.0" />
          </font>
       </Label>
-      <Label fx:id="navi_login_text1" layoutX="450.0" layoutY="163.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+      <Label fx:id="navi_login_text1" layoutX="459.0" layoutY="190.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="14.0" />
          </font>
       </Label>
-        <ImageView fitHeight="144.0" fitWidth="144.0" layoutX="270.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="144.0" fitWidth="144.0" layoutX="279.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../images/avatares/0.png" />
             </image>
             <clip>
-                <Circle radius="72" centerX="72" centerY="72" />
+                <Circle centerX="72" centerY="72" radius="72" />
             </clip>
         </ImageView>
-      <Button fx:id="btnChangePicture" layoutX="286.0" layoutY="226.0" prefHeight="35.0" prefWidth="109.0" style="-fx-background-color: #191C22; -fx-cursor: hand; -fx-background-radius: 25%;" text="Change picture" textFill="WHITE">
+      <Button fx:id="btnChangePicture" layoutX="295.0" layoutY="253.0" prefHeight="35.0" prefWidth="109.0" style="-fx-background-color: #191C22; -fx-cursor: hand; -fx-background-radius: 25%;" text="Change picture" textFill="WHITE">
          <font>
             <Font name="Outfit Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="btnStartDeleteAcc" layoutX="270.0" layoutY="501.0" prefHeight="50.0" prefWidth="175.0" style="-fx-background-color: darkred; -fx-cursor: hand;" text="Delete my account" textFill="WHITE">
-         <font>
-            <Font name="Outfit Bold" size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="btnStartDeletComments" layoutX="499.0" layoutY="501.0" prefHeight="50.0" prefWidth="175.0" style="-fx-background-color: #ED3B88; -fx-cursor: hand;" text="Delete all feedbacks" textFill="WHITE">
-         <font>
-            <Font name="Outfit Bold" size="16.0" />
-         </font>
-      </Button>
-      <TextField fx:id="changeEmailField" layoutX="270.0" layoutY="307.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+      <TextField fx:id="changeEmailField" layoutX="279.0" layoutY="445.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
          <font>
             <Font name="Outfit Regular" size="14.0" />
          </font>
       </TextField>
-      <PasswordField fx:id="changePasswordField" layoutX="270.0" layoutY="396.0" prefHeight="50.0" prefWidth="300.0" promptText="Password" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+      <PasswordField fx:id="changePasswordField" layoutX="279.0" layoutY="534.0" prefHeight="50.0" prefWidth="300.0" promptText="Password" style="-fx-background-color: #262A35; -fx-text-fill: white;">
          <font>
             <Font name="Outfit Regular" size="16.0" />
          </font>
       </PasswordField>
-      <Label fx:id="navi_login_text11" layoutX="270.0" layoutY="287.0" style="-fx-text-fill: #848da0;" text="Email" textAlignment="RIGHT">
+      <Label fx:id="email_text" layoutX="279.0" layoutY="425.0" style="-fx-text-fill: #848da0;" text="Email" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="password_text" layoutX="270.0" layoutY="377.0" style="-fx-text-fill: #848da0;" text="Password (Hold the field to see)" textAlignment="RIGHT">
+      <Label fx:id="password_text" layoutX="279.0" layoutY="515.0" style="-fx-text-fill: #848da0;" text="Password (Hold the field to see)" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="privacy_text" layoutX="270.0" layoutY="469.0" style="-fx-text-fill: #848da0;" text="Privacy:" textAlignment="RIGHT">
-         <font>
-            <Font name="Outfit Regular" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="profile_text" layoutX="270.0" layoutY="47.0" style="-fx-text-fill: WHITE;" text="Profile" textAlignment="RIGHT">
+      <Label fx:id="profile_text" layoutX="279.0" layoutY="74.0" style="-fx-text-fill: WHITE;" text="Profile" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="32.0" />
          </font>
       </Label>
-      <Button fx:id="btnConfirmChangePass" layoutX="579.0" layoutY="396.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
+      <Button fx:id="btnConfirmChangePass" layoutX="588.0" layoutY="534.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
          <font>
             <Font name="Outfit Bold" size="16.0" />
          </font>
       </Button>
+      <Label fx:id="change_private_text" layoutX="279.0" layoutY="315.0" style="-fx-text-fill: WHITE;" text="Change your private:" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="24.0" />
+         </font>
+      </Label>
+      <TextField fx:id="changeUsernameField" layoutX="280.0" layoutY="370.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="14.0" />
+         </font>
+      </TextField>
+      <Label fx:id="username_text" layoutX="279.0" layoutY="350.0" style="-fx-text-fill: #848da0;" text="Username" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="14.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
