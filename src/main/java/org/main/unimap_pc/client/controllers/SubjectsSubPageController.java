@@ -571,9 +571,9 @@ private AnchorPane display_details() {
 
         return modulePane;
     }
+
     @FXML
     public void handleСomments_button(){
 
     }
-
 }

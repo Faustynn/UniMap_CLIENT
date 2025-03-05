@@ -208,6 +208,6 @@ public class TeacherSubPageController implements LanguageSupport {
 
     @FXML
     public void handleСomments_button() {
-        // TODO: Implement comments
+
     }
 }
