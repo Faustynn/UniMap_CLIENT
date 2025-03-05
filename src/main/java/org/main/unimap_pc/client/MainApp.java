@@ -12,11 +12,11 @@ import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
-import org.main.unimap_pc.client.utils.LoadingScreens;
+import org.main.unimap_pc.client.controllers.LoadingScreenController;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ConnectException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,168 +30,126 @@ public class MainApp extends Application {
     private static SceneController sceneController;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private boolean connectionEstablished = false;
+    private final UserService userService = UserService.getInstance();
 
-    private void setAppIcon(Stage stage) {
-        try (InputStream iconStream = getClass().getResourceAsStream(AppConfig.getIconPath())) {
-            if (iconStream == null) {
-                throw new IllegalArgumentException("Icon file not found: " + AppConfig.getIconPath());
+    // Метод для проверки наличия кеш-файлов
+    private boolean areCacheFilesPresent() {
+        String[] cacheFilesPath = {AppConfig.getPREFS_FILE(), AppConfig.getCACHE_FILE()};
+
+        for (String cacheFilePath : cacheFilesPath) {
+            File cacheFile = new File(cacheFilePath);
+            if (cacheFile.exists() && cacheFile.isFile() && cacheFile.length() > 0) {
+                return true;
             }
-            Image icon = new Image(iconStream);
-            stage.getIcons().add(icon);
-        } catch (IOException e) {
-            System.err.println("Failed to load application icon: " + e.getMessage());
         }
+        return false;
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         stage.setTitle(AppConfig.getAppTitle());
-        setAppIcon(stage);
         stage.initStyle(javafx.stage.StageStyle.UNDECORATED);
 
         loadFonts();
 
         sceneController = new SceneController(stage);
-        LoadingScreens.showLoadScreen(stage);
-        checkServerConnectionAsync(stage);
+        LoadingScreenController.showLoadScreen(stage);
 
         UserService userService = UserService.getInstance();
-        if (PreferenceServise.get("REFRESH_TOKEN") != null) {
-            AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
-                if (isTokenRefreshed) {
-                    try {
-                        userService.autoLogin(stage);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    System.out.println("Invalid refresh token. Redirecting to login page.");
+        String refreshToken = (String) PreferenceServise.get("REFRESH_TOKEN");
+
+        // Проверяем наличие кеша и соединения с сервером
+        checkConnectionAndProceed(stage, refreshToken);
+    }
+
+    private void checkConnectionAndProceed(Stage stage, String refreshToken) {
+        CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                .thenAccept(isServerConnected -> {
+                    boolean hasCacheFiles = areCacheFilesPresent();
+
                     Platform.runLater(() -> {
                         try {
-                            sceneController.changeScene(AppConfig.getLoginPagePath());
+                            if (hasCacheFiles && !isServerConnected) {
+                                // Есть кеш, но нет интернета - автологин без проверки
+                                if (refreshToken != null) {
+                                    userService.autoLogin(stage);
+                                } else {
+                                    showLoadingScreen(stage, "Нет подключения к интернету");
+                                }
+                            } else if (hasCacheFiles && isServerConnected) {
+                                // Есть кеш и интернет - полный автологин
+                                if (refreshToken != null) {
+                                    AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
+                                        if (isTokenRefreshed) {
+                                            try {
+                                                userService.autoLogin(stage);
+                                            } catch (IOException e) {
+                                                handleLoginPageFallback(stage);
+                                            }
+                                        } else {
+                                            handleLoginPageFallback(stage);
+                                        }
+                                    });
+                                } else {
+                                    handleLoginPageFallback(stage);
+                                }
+                            } else if (!hasCacheFiles && isServerConnected) {
+                                // Нет кеша, есть интернет - открываем страницу логина
+                                sceneController.changeScene(AppConfig.getLoginPagePath());
+                            } else {
+                                // Нет кеша, нет интернета - показываем экран загрузки
+                                showLoadingScreen(stage, "Нет подключения к серверу");
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
+                            showErrorScreen("Ошибка при загрузке приложения");
                         }
                     });
-                }
-            });
-        } else {
-            System.out.println("No refresh token found. Redirecting to login page.");
-            schedulePeriodicServerChecks(stage);
-        }
+                })
+                .exceptionally(ex -> {
+                    // В случае ошибки подключения
+                    Platform.runLater(() -> {
+                        try {
+                            boolean hasCacheFiles = areCacheFilesPresent();
+
+                            if (hasCacheFiles && refreshToken != null) {
+                                // Есть кеш - автологин без проверки
+                                userService.autoLogin(stage);
+                            } else {
+                                // Нет кеша - показываем экран загрузки
+                                showLoadingScreen(stage, "Нет подключения к серверу");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            showErrorScreen("Ошибка при загрузке приложения");
+                        }
+                    });
+                    return null;
+                });
     }
 
-
-    private void checkServerConnectionAsync(Stage stage) {
-        if(!connectionEstablished){
-            System.out.println("Checking server connection...");
-        }else {
-            System.out.println("Periodical Server Checking...");
-        }
-        attemptConnection(stage, 10);
-    }
-
-    private void showLoadingScreen(Stage stage) {
+    private void handleLoginPageFallback(Stage stage) {
         Platform.runLater(() -> {
-            LoadingScreens.showLoadScreen(stage);
+            try {
+                sceneController.changeScene(AppConfig.getLoginPagePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                showErrorScreen("Не удалось загрузить страницу входа");
+            }
         });
     }
+
     private void showLoadingScreen(Stage stage, String message) {
         Platform.runLater(() -> {
-            LoadingScreens.showLoadScreen(stage, message);
+            try {
+                LoadingScreenController.showLoadScreen(stage, message);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
-    private void attemptConnection(Stage stage, int attemptsLeft) {
-        CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
-                .thenAccept(isConnected -> handleConnectionResult(stage, isConnected, attemptsLeft))
-                .exceptionally(ex -> handleConnectionException(stage, ex, attemptsLeft));
-    }
 
-    private void handleConnectionResult(Stage stage, boolean isConnected, int attemptsLeft) {
-        if (isConnected) {
-            handleSuccessfulConnection(stage);
-        } else {
-            handleFailedConnection(stage, attemptsLeft);
-        }
-    }
-    private void handleSuccessfulConnection(Stage stage) {
-        synchronized (this) {
-            if (!connectionEstablished) {
-                connectionEstablished = true;
-                System.out.println("Connection successful!");
-
-                Platform.runLater(() -> {
-                    try {
-                        sceneController.changeScene(AppConfig.getLoginPagePath());
-                        stage.show();
-                    } catch (IOException e) {
-                        handleLoginPageLoadError(e);
-                        e.printStackTrace();
-                    }
-                });
-            }
-        }
-    }
-    private void handleFailedConnection(Stage stage, int attemptsLeft) {
-        synchronized (this) {
-            if (connectionEstablished) {
-                connectionEstablished = false;
-                showLoadingScreen(stage);
-            }
-        }
-
-        if (attemptsLeft > 0) {
-            retryConnection(stage, attemptsLeft);
-        } else {
-            showLoadingScreen(stage, "Server is not available! Please write to administrators");
-        }
-    }
-    private Void handleConnectionException(Stage stage, Throwable ex, int attemptsLeft) {
-        logConnectionError(ex);
-
-        synchronized (this) {
-            if (connectionEstablished) {
-                connectionEstablished = false;
-                showLoadingScreen(stage, "Connection lost, retrying...");
-            }
-        }
-
-        if (attemptsLeft > 1) {
-            retryConnection(stage, attemptsLeft);
-        }
-
-        return null;
-    }
-
-    private void retryConnection(Stage stage, int attemptsLeft) {
-        System.out.println("Retrying connection...");
-        scheduler.schedule(() -> attemptConnection(stage, attemptsLeft - 1), 3, TimeUnit.SECONDS);
-    }
-    private void logConnectionError(Throwable ex) {
-        if (ex.getCause() instanceof ConnectException) {
-            System.err.println("Failed to connect to the server: " + ex.getMessage());
-        } else {
-            System.err.println("An error occurred: " + ex.getMessage());
-        }
-    }
-    private void handleLoginPageLoadError(IOException e) {
-        System.err.println("Failed to load login page: " + e.getMessage());
-        showErrorAndExit("Error loading the application. Please try again later.");
-    }
-
-    private void schedulePeriodicServerChecks(Stage stage) {
-        scheduler.scheduleAtFixedRate(() -> {
-            checkServerConnectionAsync(stage);
-        }, 0, 5, TimeUnit.SECONDS);
-    }
-
-
-    private void showErrorAndExit(String message) {
-        showErrorScreen(message);
-        stop();
-    }
     @Override
     public void stop() {
         executorService.shutdown();
@@ -225,10 +183,6 @@ public class MainApp extends Application {
             System.err.println("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
         }
     }
-
-
-
-
 
     public static void main(String[] args) {
         launch(args);

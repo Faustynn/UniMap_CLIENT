@@ -17,7 +17,7 @@ public class JWTService {
 
     private TokenRefresher tokenRefresher;
 
-    public void refreshTokenService() {
+    public void refreshAccessToken() {
             AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
                 if (isTokenRefreshed) {
                     if (tokenRefresher != null) {

@@ -152,6 +152,10 @@ public class HomePageController implements LanguageSupport {
                 }
             } else {
                 System.err.println("Failed to load news.");
+                Label errorLabel = new Label("Failed to load news, please check your internet connection!");
+                errorLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
+                errorLabel.setPadding(new Insets(20, 10, 10, 10));
+                pane_for_news.getChildren().add(errorLabel);
             }
         });
 
@@ -389,13 +393,6 @@ public class HomePageController implements LanguageSupport {
         descriptFIITTelegram.setText(languageBundle.getString("descriptFIITTelegram"));
 
         languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
-
-        if (news_title != null) {
-            news_title.setText(languageBundle.getString("news.title"));
-        }
-        if (news_descrip != null) {
-            news_descrip.setText(languageBundle.getString("news.description"));
-        }
     }
 
     @FXML
@@ -404,16 +401,4 @@ public class HomePageController implements LanguageSupport {
     private Label navi_username_text;
     @FXML
     private ImageView navi_avatar;
-    @FXML
-    private MFXButton navi_avatar_btn;
-    @FXML
-    private FontAwesomeIcon gitHubIcon;
-    @FXML
-    private FontAwesomeIcon TipsIcon;
-    @FXML
-    private AnchorPane news1;
-    @FXML
-    private Label news_title;
-    @FXML
-    private Label news_descrip;
 }

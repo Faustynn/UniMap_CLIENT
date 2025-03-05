@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -27,6 +30,7 @@ import javafx.stage.StageStyle;
 
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.AuthService;
+import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.ErrorScreens;
 import org.main.unimap_pc.client.utils.LanguageManager;
@@ -76,6 +80,8 @@ public class LogInController implements LanguageSupport {
         dragArea.setOnMousePressed(this::handleMousePressed);
         dragArea.setOnMouseDragged(this::handleMouseDragged);
         LanguageManager.getInstance().registerController(this);
+
+        Platform.runLater(this::startConnectionCheck);
     }
     private void loadCurrentLanguage() {
         String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
@@ -278,6 +284,9 @@ public class LogInController implements LanguageSupport {
 
         AuthService.login(username, password).thenAccept(isLoginSuccessful -> Platform.runLater(() -> {
             if (isLoginSuccessful) {
+                if (connectionCheckService != null) {
+                    connectionCheckService.shutdown();
+                }
                 try {
                     Stage currentStage = (Stage) btnSignin.getScene().getWindow();
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
@@ -293,11 +302,26 @@ public class LogInController implements LanguageSupport {
                 infoMess.setText("Invalid username or password!");
             }
         })).exceptionally(ex -> {
-            Platform.runLater(() -> infoMess.setText("Login request failed. Please try again later."));
+            Platform.runLater(() -> {
+                infoMess.setText("Login request failed. Please try again later.");
+
+                // Check connection status if login fails
+                CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                        .thenAccept(isConnected -> {
+                            if (!isConnected) {
+                                handleLostConnection();
+                            }
+                        });
+            });
             return null;
         });
     }
 
+    public void cleanup() {
+        if (connectionCheckService != null) {
+            connectionCheckService.shutdown();
+        }
+    }
 
 
     @FXML
@@ -340,6 +364,35 @@ public class LogInController implements LanguageSupport {
         if (checkTerms.isSelected()) {
             // TODO: terms
         } else {
+        }
+    }
+
+    private ScheduledExecutorService connectionCheckService;
+
+    private void startConnectionCheck() {
+        connectionCheckService = Executors.newSingleThreadScheduledExecutor();
+
+        connectionCheckService.scheduleAtFixedRate(() -> {
+            CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                    .thenAccept(isConnected -> {
+                        if (!isConnected) {
+                            Platform.runLater(this::handleLostConnection);
+                        }
+                    });
+        }, 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
+    }
+
+    private void handleLostConnection() {
+        // Stop the current connection check service
+        if (connectionCheckService != null) {
+            connectionCheckService.shutdown();
+        }
+
+        try {
+            Stage currentStage = (Stage) btnSignin.getScene().getWindow();
+            LoadingScreenController.showLoadScreen(currentStage, "Потеряно подключение к интернету");
+        } catch (IOException e) {
+            ErrorScreens.showErrorScreen("Не удалось загрузить экран ожидания");
         }
     }
 }
