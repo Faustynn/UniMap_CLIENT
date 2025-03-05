@@ -123,6 +123,7 @@ public class FilterService {
 
         public teacherSearchForm(String searchTerm, roleEnum targetRole, boolean isStrict) {
             teachesSubject = teacher -> {
+                if(searchTerm.isBlank() && targetRole == roleEnum.NONE && isStrict){return true;}
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
@@ -188,10 +189,8 @@ public class FilterService {
                 filterPredicate = teachesSubject;
             } else {
                 if (isStrict && targetRole != roleEnum.NONE) {
-                    // For strict mode: include subject+role matches OR name matches that also have the target role
                     filterPredicate = teachesSubject.or(nameSearch.and(hasTargetRole));
                 } else {
-                    // For non-strict mode: use original logic
                     filterPredicate = teachesSubject.or(nameSearch);
                 }
             }
