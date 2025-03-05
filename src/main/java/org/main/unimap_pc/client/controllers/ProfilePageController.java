@@ -5,7 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -22,6 +23,22 @@ import java.util.ResourceBundle;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
 public class ProfilePageController implements LanguageSupport {
+
+    public ImageView navi_avatar;
+    public Label navi_username_text;
+    public Label navi_login_text;
+    public Label navi_username_text1;
+    public Label navi_login_text1;
+    public Button btnChangePicture;
+    public Button btnStartDeleteAcc;
+    public Button btnStartDeletComments;
+    public TextField changeEmailField;
+    public PasswordField changePasswordField;
+    public Label navi_login_text11;
+    public Button btnConfirmChangePass;
+    public Label privacy_text;
+    public Label profile_text;
+    public Label password_text;
 
     @FXML
     private AnchorPane dragArea;

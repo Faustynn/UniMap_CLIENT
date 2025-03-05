@@ -66,8 +66,37 @@ public class SubjectsSubPageController implements LanguageSupport {
     public void setSubject(Subject subject) {
         this.subject = subject;
 
+
         if (subject != null) {
+            System.out.println("Subject is not null");
+            System.out.println("Subject Code: " + subject.getCode());
+            System.out.println("Subject Name: " + subject.getName());
+            System.out.println("Subject Type: " + subject.getType());
+            System.out.println("Subject Credits: " + subject.getCredits());
+            System.out.println("Subject Study Type: " + subject.getStudyType());
+            System.out.println("Subject Semester: " + subject.getSemester());
+            System.out.println("Subject Languages: " + subject.getLanguages());
+            System.out.println("Subject Completion Type: " + subject.getCompletionType());
+            System.out.println("Subject Student Count: " + subject.getStudentCount());
+            System.out.println("Subject Evaluation: " + subject.getEvaluation());
+            System.out.println("Subject Assesment Methods: " + subject.getAssesmentMethods());
+            System.out.println("Subject Learning Outcomes: " + subject.getLearningOutcomes());
+            System.out.println("Subject Course Contents: " + subject.getCourseContents());
+            System.out.println("Subject Planned Activities: " + subject.getPlannedActivities());
+            System.out.println("Subject Evaluation Methods: " + subject.getEvaluationMethods());
+            System.out.println("Subject A: " + subject.getAScore());
+            System.out.println("Subject B: " + subject.getBScore());
+            System.out.println("Subject C: " + subject.getCScore());
+            System.out.println("Subject D: " + subject.getDScore());
+            System.out.println("Subject E: " + subject.getEScore());
+            System.out.println("Subject FX: " + subject.getFxScore());
+
             updateContent(subject);
+
+            System.out.println(subject_assesmentMethods.getText());
+            System.out.println(subject_evaluationMethods.getText());
+            System.out.println(subject_assesmentMethods.getText());
+
             Platform.runLater(this::display_details);
         }else {
             System.out.println("Subject is null");
@@ -219,6 +248,7 @@ public class SubjectsSubPageController implements LanguageSupport {
     @FXML
     private AnchorPane display_details() {
         subj_details_anchor.getChildren().clear();
+        updateContent(subject);
 
         VBox modulesContainer = new VBox(5);
 
