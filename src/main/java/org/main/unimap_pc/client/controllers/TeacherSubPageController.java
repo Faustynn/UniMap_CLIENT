@@ -2,8 +2,10 @@ package org.main.unimap_pc.client.controllers;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -11,9 +13,12 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.TeacherSubjectRoles;
+import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -25,6 +30,12 @@ import java.util.ResourceBundle;
 @Setter
 @Accessors(chain = true)
 public class TeacherSubPageController implements LanguageSupport {
+    @FXML
+    public Label navi_username_text,navi_login_text;
+    @FXML
+    public ImageView navi_avatar;
+
+    public Button comments_button;
     private Teacher teacher_entity;
 
     @FXML
@@ -85,6 +96,14 @@ public class TeacherSubPageController implements LanguageSupport {
         LanguageManager.getInstance().registerController(this);
         LanguageManager.changeLanguage(PreferenceServise.get("LANGUAGE").toString());
         updateUILanguage(LanguageManager.getCurrentBundle());
+
+        UserModel user = UserService.getInstance().getCurrentUser();
+        if (user != null) {
+            UserService.getInstance().setCurrentUser(user);
+            navi_username_text.setText(user.getUsername());
+            navi_login_text.setText(user.getLogin());
+            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+        }
 
         dragArea.setOnMousePressed(this::handleMousePressed);
         dragArea.setOnMouseDragged(this::handleMouseDragged);

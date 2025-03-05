@@ -173,14 +173,6 @@
             </font>
         </Label>
 
-        <ComboBox fx:id="languageComboBox" layoutX="216.0" layoutY="18.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
-            <styleClass>
-                <String fx:value="custom-combo-box" />
-            </styleClass>
-            <stylesheets>
-                <URL value="@../views/style/style.css" />
-            </stylesheets>
-        </ComboBox>
         <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="16.0" layoutY="37.0" onMouseClicked="#handleCloseApp" size="30" text="" />
       <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleСomments_button" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
          <font>

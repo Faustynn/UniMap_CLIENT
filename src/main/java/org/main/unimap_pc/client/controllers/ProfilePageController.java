@@ -11,8 +11,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -65,6 +67,14 @@ public class ProfilePageController implements LanguageSupport {
     @FXML
     private void initialize() {
         try {
+            UserModel user = UserService.getInstance().getCurrentUser();
+            if (user != null) {
+                UserService.getInstance().setCurrentUser(user);
+                navi_username_text.setText(user.getUsername());
+                navi_login_text.setText(user.getLogin());
+                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+            }
+
             dragArea.setOnMousePressed(this::handleMousePressed);
             dragArea.setOnMouseDragged(this::handleMouseDragged);
 
