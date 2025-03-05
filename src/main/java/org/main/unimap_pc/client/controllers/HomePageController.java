@@ -179,7 +179,6 @@ public class HomePageController implements LanguageSupport {
         pane_for_news.setMinHeight(444);
 
     }
-
     private AnchorPane createNewsItem(NewsModel news) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(140);

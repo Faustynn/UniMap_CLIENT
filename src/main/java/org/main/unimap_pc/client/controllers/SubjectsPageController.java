@@ -224,7 +224,6 @@ public class SubjectsPageController implements LanguageSupport {
         anchorScrollPane.setPrefHeight(subjects.size()*(50+8));
         anchorScrollPane.setMinHeight(300);
     }
-
     private AnchorPane createSubjectCard(Subject subject) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(50);
