@@ -1,6 +1,7 @@
 package org.main.unimap_pc.client.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,8 +50,9 @@ public class ProfilePageController implements LanguageSupport {
     public Label password_text;
     public Label email_text;
     public Label change_private_text;
-    public TextField changeUsernameField;
-    public Label username_text;
+    public FontAwesomeIcon edit_username;
+    public Button btnConfirmChangeEmal;
+    public PasswordField changeConfirmPasswordField;
 
     @FXML
     private AnchorPane dragArea;
