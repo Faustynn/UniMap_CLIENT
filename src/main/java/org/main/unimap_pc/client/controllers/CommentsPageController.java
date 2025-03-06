@@ -24,6 +24,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -113,7 +114,7 @@ public class CommentsPageController implements LanguageSupport {
             setupStarRating();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Error during comments page initializing: " + e.getMessage());
         }
 
 
@@ -143,6 +144,7 @@ public class CommentsPageController implements LanguageSupport {
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
                 showErrorDialog("Error changing language: " + e.getMessage());
                 loadCurrentLanguage();
             }
@@ -155,7 +157,6 @@ public class CommentsPageController implements LanguageSupport {
         add_comment_text.setText(languageBundle.getString("add.comment.text"));
         set_stars_text.setText(languageBundle.getString("set.stars.text"));
         add_comments_btn.setText(languageBundle.getString("add.comments.btn"));
-
     }
 
 
@@ -238,6 +239,7 @@ public class CommentsPageController implements LanguageSupport {
         } else if (page == 2) {
             result = CommentsService.putNewTeacherComment(jsonComment);
         } else {
+            Logger.error("Invalid page type");
             showErrorDialog("Invalid page type");
             return;
         }
@@ -251,6 +253,7 @@ public class CommentsPageController implements LanguageSupport {
                     refreshComments();
                 });
             } else {
+                Logger.error("Failed to add comment");
                 showErrorDialog("Failed to add comment");
             }
         });
@@ -278,17 +281,18 @@ public class CommentsPageController implements LanguageSupport {
                             org.json.JSONArray commentsArray = new org.json.JSONArray(commentsJson);
                             displayComments(commentsArray);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Logger.error("Error parsing comments: " + e.getMessage());
                             showErrorDialog("Error parsing comments: " + e.getMessage());
                         }
                     });
                 } else {
+                    Logger.error("Failed to load comments");
                     showErrorDialog("Failed to load comments");
                 }
             });
         } catch (NumberFormatException e) {
             showErrorDialog("Invalid parent ID format: " + lookingParentID);
-            e.printStackTrace();
+            Logger.error("Invalid parent ID format: " + lookingParentID);
         }
     }
 

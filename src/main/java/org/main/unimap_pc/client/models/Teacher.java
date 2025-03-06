@@ -4,6 +4,7 @@ import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,14 @@ public class Teacher {
                     String.valueOf(jsonBase.get("id")) :
                     "";
         } catch (JSONException e) {
+            Logger.error("Error parsing 'id' in Teacher: " + e.getMessage());
             id = "";
         }
 
         try {
             name = jsonBase.optString("name", "");
         } catch (JSONException e) {
+            Logger.error("Error parsing 'name' in Teacher: " + e.getMessage());
             name = "";
         }
 
@@ -41,6 +44,7 @@ public class Teacher {
                     String.valueOf(jsonBase.get("email")) :
                     "";
         } catch (JSONException e) {
+            Logger.error("Error parsing 'email' in Teacher: " + e.getMessage());
             email = "";
         }
 
@@ -49,6 +53,7 @@ public class Teacher {
                     String.valueOf(jsonBase.get("phone")) :
                     "";
         } catch (JSONException e) {
+            Logger.error("Error parsing 'phone' in Teacher: " + e.getMessage());
             phone = "";
         }
 
@@ -60,6 +65,7 @@ public class Teacher {
                 office = "";
             }
         } catch (JSONException e) {
+            Logger.error("Error parsing 'office' in Teacher: " + e.getMessage());
             office = "";
         }
      //   System.out.println("Teacher: " + jsonBase);
@@ -88,7 +94,7 @@ public class Teacher {
             }
         } catch (JSONException e) {
             subjects = new ArrayList<>();
-            e.printStackTrace();
+            Logger.error("Error parsing 'subjects' in Teacher: " + e.getMessage());
         }
     }
 }

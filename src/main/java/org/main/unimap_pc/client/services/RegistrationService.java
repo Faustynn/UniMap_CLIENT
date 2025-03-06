@@ -22,7 +22,6 @@ public class RegistrationService {
                 return sendRegistrationRequest(AppConfig.getRegistrUrl(), data,code).join();
             } catch (Exception e) {
                 Logger.error("Error during registration for user: " + username + " - " + e.getMessage());
-                e.printStackTrace();
                 return false;
             }
         });

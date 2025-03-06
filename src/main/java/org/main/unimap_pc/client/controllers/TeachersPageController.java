@@ -125,7 +125,6 @@ public class TeachersPageController implements LanguageSupport {
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 Logger.error("Error changing language: " + e.getMessage());
-                e.printStackTrace();
             }
         });
     }
@@ -326,13 +325,11 @@ public class TeachersPageController implements LanguageSupport {
 
                 modalStage.showAndWait();
             } catch (IOException e) {
-                System.err.println("Failed to load FXML from path: " + fxmlPath);
-                e.printStackTrace();
+                Logger.error("Failed to load FXML from path: " + fxmlPath);
                 showErrorDialog(errorMessage + ": " + e.getMessage());
             }
         } catch (Exception e) {
-            System.err.println("Unexpected error in openModalWindow");
-            e.printStackTrace();
+            Logger.error("Unexpected error in openModalWindow" + e.getMessage());
             showErrorDialog(errorMessage + ": " + e.getMessage());
         }
     }

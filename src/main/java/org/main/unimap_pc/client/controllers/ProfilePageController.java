@@ -96,7 +96,7 @@ public class ProfilePageController implements LanguageSupport {
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Error during profile page initializing" + e.getMessage());
         }
     }
 
@@ -110,7 +110,7 @@ public class ProfilePageController implements LanguageSupport {
                 PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error("Error in loadCurrentLanguage(): " + e.getMessage());
             }
         });
     }

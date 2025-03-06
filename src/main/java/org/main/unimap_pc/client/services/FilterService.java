@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.Teacher;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class FilterService {
             try {
                 SubjectArray = new JSONObject((String) subjects).getJSONArray("subjects");
             } catch (JSONException e) {
+                Logger.error("Error parsing 'SUBJECTS' from cache: " + e.getMessage());
                 SubjectArray = new JSONArray();
             }
         } else if (subjects instanceof JSONArray) {
@@ -58,6 +60,7 @@ public class FilterService {
                 TeacherArray = new JSONObject((String) teachers).getJSONArray("teachers");
             } catch (JSONException e) {
                 TeacherArray = new JSONArray();
+                Logger.error("Error parsing 'TEACHERS' from cache: " + e.getMessage());
             }
         } else if (teachers instanceof JSONArray) {
             TeacherArray = (JSONArray) teachers;

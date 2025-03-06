@@ -23,6 +23,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -151,7 +152,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Код предмета не указан"
             );
         } else {
-            System.err.println("subject_code JavaFX element не инициализирован!");
+            Logger.error("subject_code JavaFX element is not initialized!");
+            System.err.println("subject_code JavaFX element is not initialized!");
         }
 
         if (subject_abbr != null) {
@@ -161,7 +163,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Название предмета не указано"
             );
         } else {
-            System.err.println("subject_abbr JavaFX element не инициализирован!");
+            Logger.error("subject_abbr JavaFX element is not initialized!");
+            System.err.println("subject_abbr JavaFX element is not initialized!");
         }
 
         if (subject_Type != null) {
@@ -171,7 +174,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Тип предмета не указан"
             );
         } else {
-            System.err.println("subject_Type JavaFX element не инициализирован!");
+            Logger.error("subject_Type JavaFX element is not initialized!");
+            System.err.println("subject_Type JavaFX element is not initialized!");
         }
 
         if (subject_credits != null) {
@@ -181,7 +185,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Кредиты не указаны"
             );
         } else {
-            System.err.println("subject_credits JavaFX element не инициализирован!");
+            Logger.error("subject_credits JavaFX element is not initialized!");
+            System.err.println("subject_credits JavaFX element is not initialized!");
         }
 
         if (subject_studyType != null) {
@@ -191,7 +196,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Тип обучения не указан"
             );
         } else {
-            System.err.println("subject_studyType JavaFX element не инициализирован!");
+            Logger.error("subject_studyType JavaFX element is not initialized!");
+            System.err.println("subject_studyType JavaFX element is not initialized!");
         }
 
         if (subject_semester != null) {
@@ -201,7 +207,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Семестр не указан"
             );
         } else {
-            System.err.println("subject_semester JavaFX element не инициализирован!");
+            Logger.error("subject_semester JavaFX element is not initialized!");
+            System.err.println("subject_semester JavaFX element is not initialized!");
         }
 
         if (subject_languages != null) {
@@ -211,7 +218,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Языки не указаны"
             );
         } else {
-            System.err.println("subject_languages JavaFX element не инициализирован!");
+            Logger.error("subject_languages JavaFX element is not initialized!");
+            System.err.println("subject_languages JavaFX element is not initialized!");
         }
 
         if (subject_completionType != null) {
@@ -221,7 +229,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Тип завершения не указан"
             );
         } else {
-            System.err.println("subject_completionType JavaFX element не инициализирован!");
+            Logger.error("subject_completionType JavaFX element is not initialized!");
+            System.err.println("subject_completionType JavaFX element is not initialized!");
         }
 
         if (subject_studentCount != null) {
@@ -231,7 +240,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Количество студентов не указано"
             );
         } else {
-            System.err.println("subject_studentCount JavaFX element не инициализирован!");
+            Logger.error("subject_studentCount JavaFX element is not initialized!");
+            System.err.println("subject_studentCount JavaFX element is not initialized!");
         }
 
         if (subject_evaluation != null) {
@@ -241,7 +251,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Оценка не указана"
             );
         } else {
-            System.err.println("subject_evaluation JavaFX element не инициализирован!");
+            Logger.error("subject_evaluation JavaFX element is not initialized!");
+            System.err.println("subject_evaluation JavaFX element is not initialized!");
         }
 
         if (subject_assesmentMethods != null) {
@@ -251,7 +262,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Методы оценки не указаны"
             );
         } else {
-            System.err.println("subject_assesmentMethods JavaFX element не инициализирован!");
+            Logger.error("subject_assesmentMethods JavaFX element is not initialized!");
+            System.err.println("subject_assesmentMethods JavaFX element is not initialized!");
         }
 
         if (subject_learnoutcomes != null) {
@@ -261,7 +273,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Результаты обучения не указаны"
             );
         } else {
-            System.err.println("subject_learnoutcomes JavaFX element не инициализирован!");
+            Logger.error("subject_learnoutcomes JavaFX element is not initialized!");
+            System.err.println("subject_learnoutcomes JavaFX element is not initialized!");
         }
 
         if (subject_courseContents != null) {
@@ -271,7 +284,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Содержание курса не указано"
             );
         } else {
-            System.err.println("subject_courseContents JavaFX element не инициализирован!");
+            Logger.error("subject_courseContents JavaFX element is not initialized!");
+            System.err.println("subject_courseContents JavaFX element is not initialized!");
         }
 
         if (subject_plannedActivities != null) {
@@ -281,7 +295,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Планируемые мероприятия не указаны"
             );
         } else {
-            System.err.println("subject_plannedActivities JavaFX element не инициализирован!");
+            Logger.error("subject_plannedActivities JavaFX element is not initialized!");
+            System.err.println("subject_plannedActivities JavaFX element is not initialized!");
         }
 
         if (subject_evaluationMethods != null) {
@@ -291,7 +306,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "Методы оценки не указаны"
             );
         } else {
-            System.err.println("subject_evaluationMethods JavaFX element не инициализирован!");
+            Logger.error("subject_evaluationMethods JavaFX element is not initialized!");
+            System.err.println("subject_evaluationMethods JavaFX element is not initialized!");
         }
 
         if (subject_A != null) {
@@ -301,7 +317,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "A оценка не указана"
             );
         } else {
-            System.err.println("subject_A JavaFX element не инициализирован!");
+            Logger.error("subject_A JavaFX element is not initialized!");
+            System.err.println("subject_A JavaFX element is not initialized!");
         }
 
         if (subject_B != null) {
@@ -311,7 +328,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "B оценка не указана"
             );
         } else {
-            System.err.println("subject_B JavaFX element не инициализирован!");
+            Logger.error("subject_B JavaFX element is not initialized!");
+            System.err.println("subject_B JavaFX element is not initialized!");
         }
 
         if (subject_C != null) {
@@ -321,7 +339,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "C оценка не указана"
             );
         } else {
-            System.err.println("subject_C JavaFX element не инициализирован!");
+            Logger.error("subject_C JavaFX element is not initialized!");
+            System.err.println("subject_C JavaFX element is not initialized!");
         }
 
         if (subject_D != null) {
@@ -331,7 +350,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "D оценка не указана"
             );
         } else {
-            System.err.println("subject_D JavaFX element не инициализирован!");
+            Logger.error("subject_D JavaFX element is not initialized!");
+            System.err.println("subject_D JavaFX element is not initialized!");
         }
 
         if (subject_E != null) {
@@ -341,7 +361,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "E оценка не указана"
             );
         } else {
-            System.err.println("subject_E JavaFX element не инициализирован!");
+            Logger.error("subject_E JavaFX element is not initialized!");
+            System.err.println("subject_E JavaFX element is not initialized!");
         }
 
         if (subject_FX != null) {
@@ -351,7 +372,8 @@ public class SubjectsSubPageController implements LanguageSupport {
                             : "FX оценка не указана"
             );
         } else {
-            System.err.println("subject_FX JavaFX element не инициализирован!");
+            Logger.error("subject_FX JavaFX element is not initialized!");
+            System.err.println("subject_FX JavaFX element is not initialized!");
         }
     }
     public void updateUILanguage(ResourceBundle languageBundle) {
@@ -591,7 +613,7 @@ private AnchorPane display_details() {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load Comments Page from Subjectsub page: " + e.getMessage());
+            Logger.error("Failed to load Comments Page from Subjectsub page: " + e.getMessage());
         }
     }
 }

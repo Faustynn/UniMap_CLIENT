@@ -50,7 +50,6 @@ public class JWTService {
             stage.show();
         } catch (IOException e) {
             Logger.error("Error redirecting to login page: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }

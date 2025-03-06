@@ -96,7 +96,7 @@ public class SettingsPageController implements LanguageSupport {
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Error during initializing settings page" + e.getMessage());
         }
     }
 
@@ -110,7 +110,7 @@ public class SettingsPageController implements LanguageSupport {
                 PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.error("Error in loadCurrentLanguage(): " + e.getMessage());
             }
         });
     }

@@ -2,6 +2,8 @@ package org.main.unimap_pc.client.services;
 
 
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -23,12 +25,12 @@ public class CommentsService {
                     if (response.statusCode() == 200) {
                         return response.body();
                     } else {
-                        System.err.println("Load All Subjects comments failed with status code: " + response.statusCode());
+                        Logger.error("Load All Subjects comments failed with status code: " + response.statusCode());
                         return null;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error(System.err.println("Request failed: " + throwable.getMessage()););
                     return null;
                 });
     }
@@ -44,12 +46,12 @@ public class CommentsService {
                     if (response.statusCode() == 200) {
                         return response.body();
                     } else {
-                        System.err.println("Load All Teacher comments failed with status code: " + response.statusCode());
+                        Logger.error("Load All Teacher comments failed with status code: " + response.statusCode());
                         return null;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return null;
                 });
     }
@@ -67,7 +69,7 @@ public class CommentsService {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> response.statusCode() == 201)
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -82,7 +84,7 @@ public class CommentsService {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> response.statusCode() == 201)
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -97,7 +99,7 @@ public class CommentsService {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> response.statusCode() == 204)
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -111,7 +113,7 @@ public class CommentsService {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> response.statusCode() == 204)
                 .exceptionally(throwable -> {
-                    System.err.println("Request failed: " + throwable.getMessage());
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return false;
                 });
     }

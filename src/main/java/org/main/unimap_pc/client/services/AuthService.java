@@ -25,7 +25,6 @@ public class AuthService {
                 return sendAuthenticationRequest(AppConfig.getAuthUrl(), data).join();
             } catch (Exception e) {
                 Logger.error("Error during login for user: " + username + " - " + e.getMessage());
-                e.printStackTrace();
                 return false;
             }
         });

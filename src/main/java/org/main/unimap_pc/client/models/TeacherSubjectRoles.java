@@ -4,6 +4,7 @@ import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TeacherSubjectRoles {
             }
         } catch (Exception e) {
             roles = new ArrayList<>();
-            e.printStackTrace();
+            Logger.error("Error parsing 'roles' in TeacherSubjectRoles: " + e.getMessage());
         }
     }
 

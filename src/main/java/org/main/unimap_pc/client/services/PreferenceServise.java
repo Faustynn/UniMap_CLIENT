@@ -5,6 +5,7 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.main.unimap_pc.client.utils.Logger;
 
 public class PreferenceServise {
     private static final Map<String, Object> prefs = new ConcurrentHashMap<>();
@@ -49,7 +50,7 @@ public class PreferenceServise {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(prefs);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Error saving preferences to file: " + e.getMessage());
         }
     }
     private static void loadPreferences() {
@@ -61,8 +62,7 @@ public class PreferenceServise {
             Map<String, Object> loadedPrefs = (Map<String, Object>) ois.readObject();
             prefs.putAll(loadedPrefs);
         } catch (IOException | ClassNotFoundException e) {
-            // Log the error and start with empty preferences
-            e.printStackTrace();
+            Logger.error("Error loading preferences: " + e.getMessage());
         }
     }
 

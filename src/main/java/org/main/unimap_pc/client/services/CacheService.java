@@ -1,6 +1,7 @@
 package org.main.unimap_pc.client.services;
 
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.*;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class CacheService {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(cache);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Error saving cache to file: " + e.getMessage());
         }
     }
 
@@ -59,7 +60,7 @@ public class CacheService {
             Map<String, Object> loadedCache = (Map<String, Object>) ois.readObject();
             cache.putAll(loadedCache);
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Logger.error("Error loading cache: " + e.getMessage());
         }
     }
 

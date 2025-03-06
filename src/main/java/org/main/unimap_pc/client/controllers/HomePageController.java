@@ -94,7 +94,6 @@ public class HomePageController implements LanguageSupport {
 
         } catch (Exception e) {
             Logger.error("Error during initialization: " + e.getMessage());
-            e.printStackTrace();
         }
 
         dragArea.setOnMousePressed(this::handleMousePressed);

@@ -230,12 +230,10 @@ public class LogInController implements LanguageSupport {
 
             } catch (IOException e) {
                 Logger.error("Failed to load FXML from path: " + fxmlPath + e.getMessage());
-                e.printStackTrace();
                 showErrorDialog(errorMessage + ": " + e.getMessage());
             }
         } catch (Exception e) {
             Logger.error("Unexpected error in openModalWindow" + e.getMessage());
-            e.printStackTrace();
             showErrorDialog(errorMessage + ": " + e.getMessage());
         }
     }
@@ -272,7 +270,6 @@ public class LogInController implements LanguageSupport {
             );
         } catch (Exception e) {
             Logger.error("Error loading SignUpPage.fxml: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -399,6 +396,7 @@ public class LogInController implements LanguageSupport {
             Stage currentStage = (Stage) btnSignin.getScene().getWindow();
             LoadingScreenController.showLoadScreen(currentStage, "Потеряно подключение к интернету");
         } catch (IOException e) {
+            Logger.error("Error in handleLostConnection(): " + e.getMessage());
             ErrorScreens.showErrorScreen("Не удалось загрузить экран ожидания");
         }
     }

@@ -131,7 +131,6 @@ public class ForgotPassController implements LanguageSupport {
                     } catch (IOException e) {
                         infoMess.setText("Error #418 :), please try again or contact support");
                         Logger.error("Error #418: Failed to load Forgot Password page. " + e.getMessage());
-                        e.printStackTrace();
                     }
                 }
             }));

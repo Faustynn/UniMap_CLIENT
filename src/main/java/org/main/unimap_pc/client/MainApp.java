@@ -104,8 +104,8 @@ public class MainApp extends Application {
                                 showLoadingScreen(stage, "Нет подключения к серверу");
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
-                            showErrorScreen("Ошибка при загрузке приложения");
+                            Logger.error("Error during loading the application" + e.getMessage());
+                            showErrorScreen("Error during loading the application");
                         }
                     });
                 })
@@ -123,7 +123,7 @@ public class MainApp extends Application {
                                 showLoadingScreen(stage, "Нет подключения к серверу");
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Logger.error("Error during loading the application" + e.getMessage());
                             showErrorScreen("Ошибка при загрузке приложения");
                         }
                     });
@@ -136,8 +136,8 @@ public class MainApp extends Application {
             try {
                 sceneController.changeScene(AppConfig.getLoginPagePath());
             } catch (IOException e) {
-                e.printStackTrace();
-                showErrorScreen("Не удалось загрузить страницу входа");
+                Logger.error("Failed to load login page: " + e.getMessage());
+                showErrorScreen("Failed to load login page");
             }
         });
     }
@@ -147,6 +147,7 @@ public class MainApp extends Application {
             try {
                 LoadingScreenController.showLoadScreen(stage, message);
             } catch (IOException e) {
+                Logger.error("Failed to load the loading screen: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         });
@@ -182,16 +183,17 @@ public class MainApp extends Application {
                     Font.loadFont(Files.newInputStream(path), 10);
                     System.out.println("Loaded font: " + path.getFileName());
                 } catch (IOException e) {
+                    Logger.error("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
                     System.err.println("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
                 }
             });
         } catch (Exception e) {
+            Logger.error("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
             System.err.println("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
         }
     }
 
     public static void main(String[] args) {
-        //Logger.warning("XoXoL");
         launch(args);
     }
 }

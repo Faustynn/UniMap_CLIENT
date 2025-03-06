@@ -3,6 +3,7 @@ package org.main.unimap_pc.client.configs;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import lombok.Setter;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -170,12 +171,13 @@ public class AppConfig {
     static {
         try (InputStream input = AppConfig.class.getResourceAsStream("/org/main/unimap_pc/config.properties")) {
             if (input == null) {
+                Logger.error("config.properties file is null");
                 throw new RuntimeException("config.properties file is null");
             } else {
                 properties.load(input);
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Logger.error("CONFIG ERROR: Failed to load config.properties - " + ex.getMessage());
         }
     }
 
@@ -198,7 +200,7 @@ public class AppConfig {
 
         URL resource = AppConfig.class.getResource(imagePath);
         if (resource == null) {
-            System.err.println("Avatar image not found: " + imagePath);
+            Logger.error("Avatar image not found: " + imagePath);
             return null; // or return a default image
         }
 

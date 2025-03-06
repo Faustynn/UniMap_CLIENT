@@ -19,6 +19,7 @@ import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -85,7 +86,7 @@ public class LoadingScreenController implements LanguageSupport {
             // Start periodic server connection check
             Platform.runLater(this::startConnectionCheck);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Error during load screen initializing" + e.getMessage());
         }
     }
 
@@ -110,7 +111,7 @@ public class LoadingScreenController implements LanguageSupport {
                                     // Change to login scene
                                     sceneController.changeScene(AppConfig.getLoginPagePath());
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    Logger.error("Error in startConnectionCheck(): " + e.getMessage());
                                 }
                             });
                         }
