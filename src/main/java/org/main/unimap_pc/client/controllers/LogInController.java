@@ -32,6 +32,7 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.ErrorScreens;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
@@ -60,6 +61,7 @@ public class LogInController implements LanguageSupport {
 
     @FXML
     private void handleCloseApp() {
+        cleanup();
         Stage stage = (Stage) closeApp.getScene().getWindow();
         stage.close();
         System.exit(0);
@@ -68,6 +70,7 @@ public class LogInController implements LanguageSupport {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    private final SecurityService securityService = new SecurityService();
 
 
 
@@ -277,8 +280,8 @@ public class LogInController implements LanguageSupport {
             infoMess.setText("Please enter your username and password!");
             return;
         }
-        if (username.length() < 3 || password.length() < 3) {
-            infoMess.setText("Username and password must be at least 3 characters long!");
+        if (!securityService.checkNames(username) || !securityService.checkPassword(password)) {
+            infoMess.setText("Invalid username or password format!");
             return;
         }
 
@@ -372,18 +375,15 @@ public class LogInController implements LanguageSupport {
     private void startConnectionCheck() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
 
-        connectionCheckService.scheduleAtFixedRate(() -> {
-            CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
-                    .thenAccept(isConnected -> {
-                        if (!isConnected) {
-                            Platform.runLater(this::handleLostConnection);
-                        }
-                    });
-        }, 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
+        connectionCheckService.scheduleAtFixedRate(() -> CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                .thenAccept(isConnected -> {
+                    if (!isConnected) {
+                        Platform.runLater(this::handleLostConnection);
+                    }
+                }), 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
     }
 
     private void handleLostConnection() {
-        // Stop the current connection check service
         if (connectionCheckService != null) {
             connectionCheckService.shutdown();
         }

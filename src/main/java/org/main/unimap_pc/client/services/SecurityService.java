@@ -37,4 +37,10 @@ public class SecurityService {
                 "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
                         email);
     }
+
+    public boolean checkEmailCode(String code) {
+        // The demands are:
+        // The code should be 6 int symbols long
+        return Pattern.matches("^[0-9]{6}$", code);
+    }
 }
