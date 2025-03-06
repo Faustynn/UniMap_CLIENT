@@ -2,6 +2,7 @@ package org.main.unimap_pc.client.services;
 
 
 import org.json.JSONObject;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,12 +33,12 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Check Email failed with status code: " + response.statusCode());
+                        Logger.error("Check Email failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Check Email request failed: " + throwable.getMessage());
+                    Logger.error("Check Email request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -60,12 +61,12 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Check Code failed with status code: " + response.statusCode());
+                        Logger.error("Check Code failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Check Code request failed: " + throwable.getMessage());
+                    Logger.error("Check Code request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -88,12 +89,12 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Updating password failed with status code: " + response.statusCode());
+                        Logger.error("Updating password failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Update password request failed: " + throwable.getMessage());
+                    Logger.error("Update password request failed: " + throwable.getMessage());
                     return false;
                 });
     }

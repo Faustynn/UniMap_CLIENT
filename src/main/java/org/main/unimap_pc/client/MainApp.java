@@ -9,6 +9,7 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.controllers.SceneController;
 import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.utils.LoadingScreens;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,12 +27,13 @@ public class MainApp extends Application {
     private void setAppIcon(Stage stage) {
         try (InputStream iconStream = getClass().getResourceAsStream(AppConfig.getIconPath())) {
             if (iconStream == null) {
+                Logger.error("Icon file not found: " + AppConfig.getIconPath());
                 throw new IllegalArgumentException("Icon file not found: " + AppConfig.getIconPath());
             }
             Image icon = new Image(iconStream);
             stage.getIcons().add(icon);
         } catch (IOException e) {
-            System.err.println("Failed to load application icon: " + e.getMessage());
+            Logger.error("Failed to load application icon: " + e.getMessage());
         }
     }
 
@@ -46,6 +48,8 @@ public class MainApp extends Application {
 
         checkServerConnectionAsync(stage);
         schedulePeriodicServerChecks(stage);
+
+
     }
 
 
@@ -87,6 +91,7 @@ public class MainApp extends Application {
             if (!connectionEstablished) {
                 connectionEstablished = true;
                 System.out.println("Connection successful!");
+                //Logger.checkServerAndSendQueuedLogs();
 
                 Platform.runLater(() -> {
                     try {
@@ -138,11 +143,11 @@ public class MainApp extends Application {
         if (ex.getCause() instanceof ConnectException) {
             System.err.println("Failed to connect to the server: " + ex.getMessage());
         } else {
-            System.err.println("An error occurred: " + ex.getMessage());
+            Logger.error("An error occurred: " + ex.getMessage());
         }
     }
     private void handleLoginPageLoadError(IOException e) {
-        System.err.println("Failed to load login page: " + e.getMessage());
+        Logger.error("Failed to load login page: " + e.getMessage());
         showErrorAndExit("Error loading the application. Please try again later.");
     }
 
@@ -163,18 +168,22 @@ public class MainApp extends Application {
         scheduler.shutdown();
         try {
             if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
+                Logger.warning("ExecutorService did not terminate in time, forcing shutdown.");
                 executorService.shutdownNow();
             }
             if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
+                Logger.warning("Scheduler did not terminate in time, forcing shutdown.");
                 scheduler.shutdownNow();
             }
         } catch (InterruptedException e) {
+            Logger.error("Thread interrupted while shutting down executors: " + e.getMessage());
             executorService.shutdownNow();
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }
     public static void main(String[] args) {
+        //Logger.warning("XoXoL");
         launch(args);
     }
 }

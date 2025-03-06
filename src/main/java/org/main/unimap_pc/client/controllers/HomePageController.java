@@ -38,6 +38,7 @@ import org.main.unimap_pc.client.services.DataFetcher;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 import static org.main.unimap_pc.client.services.AuthService.prefs;
@@ -96,6 +97,7 @@ public class HomePageController implements LanguageSupport {
             updateUILanguage(LanguageManager.getCurrentBundle());
 
         } catch (Exception e) {
+            Logger.error("Error during initialization: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -125,6 +127,7 @@ public class HomePageController implements LanguageSupport {
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 showErrorDialog("Error changing language: " + e.getMessage());
+                Logger.error("Error changing language: " + e.getMessage());
                 loadCurrentLanguage();
             }
         });
@@ -147,9 +150,11 @@ public class HomePageController implements LanguageSupport {
                         displayNews(newsList);
                     });
                 } catch (Exception e) {
-                    System.err.println("Failed to parse news JSON: " + e.getMessage());
+                    Logger.error("Failed to parse news JSON: " + e.getMessage());
+                    //System.err.println("Failed to parse news JSON: " + e.getMessage());
                 }
             } else {
+                Logger.error("Failed to load news.");
                 System.err.println("Failed to load news.");
             }
         });
@@ -206,6 +211,7 @@ public class HomePageController implements LanguageSupport {
 
                 return new UserModel(id, username, email, login, admin, avatar);
             } catch (Exception e) {
+                Logger.error("Error parsing user data: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -326,7 +332,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -341,7 +347,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -356,7 +362,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
             e.printStackTrace();
         }
@@ -372,7 +378,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -387,7 +393,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }

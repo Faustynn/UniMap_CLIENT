@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class SettingsPageController {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -65,7 +66,7 @@ public class SettingsPageController {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -80,7 +81,7 @@ public class SettingsPageController {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -95,7 +96,7 @@ public class SettingsPageController {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -110,7 +111,7 @@ public class SettingsPageController {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }

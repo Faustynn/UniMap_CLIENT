@@ -16,6 +16,7 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.EmailService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -128,6 +129,7 @@ public class ForgotPassController implements LanguageSupport {
                         stage.setScene(scene);
                     } catch (IOException e) {
                         infoMess.setText("Error #418 :), please try again or contact support");
+                        Logger.error("Error #418: Failed to load Forgot Password page. " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
@@ -174,6 +176,7 @@ public class ForgotPassController implements LanguageSupport {
                                 }
                             }));
                         } catch (Exception e) {
+                            Logger.error("Encryption error: " + e.getMessage());
                             showErrorDialog("Encryption error: " + e.getMessage());
                         }
                     });

@@ -1,6 +1,7 @@
 package org.main.unimap_pc.client.services;
 
 import lombok.Setter;
+import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.utils.TokenRefresher;
 
 import javafx.fxml.FXMLLoader;
@@ -48,6 +49,7 @@ public class JWTService {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
+            Logger.error("Error redirecting to login page: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -17,6 +17,7 @@ import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -72,6 +73,7 @@ public class TeachersPageController implements LanguageSupport {
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
                 e.printStackTrace();
             }
         });
@@ -118,7 +120,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -133,7 +135,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -148,7 +150,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -163,7 +165,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -178,7 +180,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }

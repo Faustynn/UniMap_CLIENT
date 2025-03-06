@@ -18,6 +18,7 @@ import org.main.unimap_pc.client.services.FilterService;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,6 +74,7 @@ public class SubjectsPageController implements LanguageSupport {
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
                 e.printStackTrace();
             }
         });
@@ -273,7 +275,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
 
@@ -288,7 +290,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
 
@@ -303,7 +305,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
 
@@ -318,7 +320,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
 
@@ -333,7 +335,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
 
