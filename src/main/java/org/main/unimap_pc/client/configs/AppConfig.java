@@ -51,7 +51,7 @@ public class AppConfig {
     private static final String FIND_USER_BY_EMAIL_URL = API_URL + "user/email/";
 
     private static final String CONFIRM_CODE_TO_EMAIL = API_URL + "user/email/code";
-    private static final String CHANGE_PASSWORD = API_URL + "user/email/password";
+    private static final String CHANGE_PASSWORD = API_URL + "user/email/change_pass";
 
     private static final String OAUTH2_GOOGLE = API_URL + "authenticate/google";
     private static final String OAUTH2_FACEBOOK = API_URL + "authenticate/facebook";
@@ -62,6 +62,7 @@ public class AppConfig {
     private static final String TEACHERS_URL = API_URL + "resources/teachers";
     private static final String COMMENTS_URL = API_URL + "comments/";
     // Getters
+    public static String getApiUrl() { return API_URL; }
     public static String getLoginPagePath() {
         return LOGIN_PAGE_PATH;
     }

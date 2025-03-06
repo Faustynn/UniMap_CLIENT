@@ -1,16 +1,21 @@
 package org.main.unimap_pc.client.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.TilePane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.PasswordChangeRequest;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
@@ -18,9 +23,13 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -65,14 +74,20 @@ public class ProfilePageController implements LanguageSupport {
     private String defLang;
 
     @FXML
+    private ImageView avatar_image_view;
+
+    @FXML
     private void initialize() {
         try {
             UserModel user = UserService.getInstance().getCurrentUser();
             if (user != null) {
                 UserService.getInstance().setCurrentUser(user);
                 navi_username_text.setText(user.getUsername());
+                navi_username_text1.setText(user.getUsername());
                 navi_login_text.setText(user.getLogin());
+                navi_login_text1.setText(user.getLogin());
                 navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+                avatar_image_view.setImage(AppConfig.getAvatar(user.getAvatar()));
             }
 
             dragArea.setOnMousePressed(this::handleMousePressed);
@@ -97,6 +112,199 @@ public class ProfilePageController implements LanguageSupport {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int avatarID; // Assuming you have avatarID defined somewhere in your controller
+    private ImageView avatarImageView; //ImageView where you display the avatar in the main window.
+
+    public void setAvatarID(int avatarID) {
+        this.avatarID = avatarID;
+    }
+
+    public void setAvatarImageView(ImageView avatarImageView){
+        this.avatarImageView = avatarImageView;
+    }
+
+
+    @FXML
+    private Image profile_picture;
+
+    @FXML
+    private void handleChangeAvatar() {
+        Stage stage = new Stage();
+        stage.setTitle("Select Avatar");
+        stage.initModality(Modality.APPLICATION_MODAL);
+
+        TilePane tilePane = new TilePane();
+        tilePane.setAlignment(javafx.geometry.Pos.CENTER);
+        tilePane.setHgap(10);
+        tilePane.setVgap(10);
+
+        File folder = new File(getClass().getResource("/org/main/unimap_pc/images/avatares/").getFile());
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
+            if (files != null) {
+                List<ImageView> avatarImageViews = new ArrayList<>();
+                for (File file : files) {
+                    String imagePath = "/org/main/unimap_pc/images/avatares/" + file.getName();
+                    Image image = new Image(getClass().getResourceAsStream(imagePath));
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(100);
+                    imageView.setFitHeight(100);
+
+                    int avatarId = Integer.parseInt(file.getName().replace(".png", ""));
+
+                    // so here images 2 and 3 will be blocked for casual user and there will be access to them only for premium users and admin
+                    if (avatarId == 2 || avatarId == 3) {
+                        if (UserService.getInstance().getCurrentUser().isAdmin() || UserService.getInstance().getCurrentUser().isPremium) {
+                            // Admin or premium user, allow selection
+                            imageView.setOnMouseClicked(event -> {
+                                updateAvatar(avatarId);
+                                stage.close();
+                            });
+                        } else {
+                            // Casual user, block selection and provide feedback
+                            imageView.setOpacity(0.5); // Visually indicate it's disabled
+                            imageView.setOnMouseClicked(event -> {
+                                // Optionally show an alert or message
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Premium Avatar");
+                                alert.setHeaderText(null);
+                                alert.setContentText("This avatar is only available for premium users or administrators.");
+                                alert.showAndWait();
+                            });
+                        }
+                    } else {
+                        // Regular avatar, allow selection for all users
+                        imageView.setOnMouseClicked(event -> {
+                            updateAvatar(avatarId);
+                            stage.close();
+                        });
+                    }
+                    avatarImageViews.add(imageView);
+                }
+                tilePane.getChildren().addAll(avatarImageViews);
+            }
+        } else {
+            System.err.println("Avatar directory not found.");
+        }
+
+        Scene scene = new Scene(tilePane, 600, 400);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    public void updateAvatar(int selectedAvatarID) {
+        this.avatarID = selectedAvatarID;
+        String imagePath = "/org/main/unimap_pc/images/avatares/" + avatarID + ".png";
+        Image newAvatar = new Image(getClass().getResourceAsStream(imagePath));
+        if(avatarImageView != null){
+            avatarImageView.setImage(newAvatar);
+        }
+
+        UserModel currentUser = UserService.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.getEmail() == null || currentUser.getEmail().isEmpty()) {
+            System.err.println("User email not available. Cannot call backend.");
+            return;
+        }
+
+        String backendUrl = AppConfig.getApiUrl() + "change_avatar";
+        HttpClient httpClient = HttpClient.newBuilder().build();
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("email", currentUser.getEmail());
+        requestBody.put("avatarPath", Integer.toString(avatarID)); // Send only the ID
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson;
+        try {
+            requestBodyJson = objectMapper.writeValueAsString(requestBody);
+        } catch (Exception e) {
+            System.err.println("Error creating JSON request body: " + e.getMessage());
+            return;
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(backendUrl))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            String responseBody = response.body();
+                            System.out.println("Avatar updated on backend: " + responseBody);
+                            currentUser.setAvatar(Integer.toString(avatarID)); // Store only the ID
+                            UserService.getInstance().setCurrentUser(currentUser);
+                            PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+                            avatar_image_view.setImage(AppConfig.getAvatar(currentUser.getAvatar()));
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                        }
+
+                    } else {
+                        System.err.println("Backend returned error: " + response.statusCode());
+                    }
+                })
+                .exceptionally(throwable -> {
+                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    return null;
+                });
+
+}
+
+    @FXML
+    private void handleChangePass() {
+        try {
+            String newPassword = changePasswordField.getText();
+            String email = UserService.getInstance().getCurrentUser().getEmail();
+
+            if (newPassword == null || newPassword.isEmpty()) {
+                showErrorDialog("Please enter a new password.");
+                return;
+            }
+
+            PasswordChangeRequest request = new PasswordChangeRequest();
+            request.setEmail(email);
+            request.setNewPassword(newPassword);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String requestBody = objectMapper.writeValueAsString(request);
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(AppConfig.getChangePassword()))
+                    .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            System.out.println(httpRequest);
+            HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+
+            if (response.statusCode() == 200) {
+                showErrorDialog("Password changed successfully.");
+                changePasswordField.clear();
+            } else if (response.statusCode() == 404) {
+                showErrorDialog("User not found.");
+            } else if (response.statusCode() == 302) {
+                String location = response.headers().firstValue("Location").orElse("Location header not found");
+                System.out.println("Location Header: " + location);
+                showErrorDialog("Redirect received. Location: " + location + ". Check server logs.");
+            } else {
+                showErrorDialog("Failed to change password: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorDialog("An error occurred while changing the password: " + e.getMessage());
+        }
+
     }
 
     private void loadCurrentLanguage() {

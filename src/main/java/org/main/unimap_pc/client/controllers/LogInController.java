@@ -323,7 +323,6 @@ public class LogInController implements LanguageSupport {
         }
     }
 
-
     @FXML
     private void handleSignByGoogle() {
         try {

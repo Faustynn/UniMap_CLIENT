@@ -152,15 +152,15 @@
             <Font name="Outfit Regular" size="14.0" />
          </font>
       </Label>
-        <ImageView fitHeight="144.0" fitWidth="144.0" layoutX="279.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="avatar_image_view" fitHeight="144.0" fitWidth="144.0" layoutX="279.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../images/avatares/0.png" />
+                <Image url="@../images/avatares/5.png" />
             </image>
             <clip>
                 <Circle centerX="72" centerY="72" radius="72" />
             </clip>
         </ImageView>
-      <Button fx:id="btnChangePicture" layoutX="295.0" layoutY="253.0" prefHeight="35.0" prefWidth="109.0" style="-fx-background-color: #191C22; -fx-cursor: hand; -fx-background-radius: 25%;" text="Change picture" textFill="WHITE">
+      <Button fx:id="btnChangePicture" onMouseClicked="#handleChangeAvatar" layoutX="295.0" layoutY="253.0" prefHeight="35.0" prefWidth="109.0" style="-fx-background-color: #191C22; -fx-cursor: hand; -fx-background-radius: 25%;" text="Change picture" textFill="WHITE">
          <font>
             <Font name="Outfit Bold" size="12.0" />
          </font>
@@ -190,7 +190,7 @@
             <Font name="Outfit Regular" size="32.0" />
          </font>
       </Label>
-      <Button fx:id="btnConfirmChangePass" layoutX="588.0" layoutY="534.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
+      <Button fx:id="btnConfirmChangePass" onMouseClicked="#handleChangePass" layoutX="588.0" layoutY="534.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
          <font>
             <Font name="Outfit Bold" size="16.0" />
          </font>
