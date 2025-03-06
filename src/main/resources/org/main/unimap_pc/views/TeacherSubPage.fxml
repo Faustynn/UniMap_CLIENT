@@ -82,7 +82,7 @@
                 <Image url="@../images/avatares/0.png" />
             </image>
         </ImageView>
-      <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleСomments_button" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
+      <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleCommentsButton" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
          <font>
             <Font name="Outfit Bold" size="16.0" />
          </font>

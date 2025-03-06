@@ -16,8 +16,10 @@ import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.EmailService;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -36,9 +38,6 @@ public class ForgotPassController implements LanguageSupport {
     private Button btnSendMail;
 
     @FXML
-    private Button btnConfirmMail;
-
-    @FXML
     private TextField fieldEmail;
 
     @FXML
@@ -55,6 +54,8 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private Label reset_text;
+
+    private final SecurityService securityService = new SecurityService();
 
 
     @FXML
@@ -107,11 +108,11 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private void SendMailbtn() {
-        if (fieldEmail.getText().isEmpty()) {
+        String emailInput = fieldEmail.getText();
+        if (emailInput.isEmpty()) {
             infoMess.setText("Please enter your email address");
-        } else if (fieldEmail.getText().length() < 5 || !fieldEmail.getText().contains("@") || !fieldEmail.getText().contains(".")) {
+        } else if (!securityService.checkEmail(emailInput)) {
             infoMess.setText("Invalid email address");
-            // fieldEmail.clear();
         } else {
             String url = AppConfig.getFindUserByEmailUrl() + fieldEmail.getText();
             System.out.println(url);
@@ -129,6 +130,7 @@ public class ForgotPassController implements LanguageSupport {
                         stage.setScene(scene);
                     } catch (IOException e) {
                         infoMess.setText("Error #418 :), please try again or contact support");
+                        Logger.error("Error #418: Failed to load Forgot Password page. " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
@@ -139,12 +141,13 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     public void ConfirmMailbtn() {
+        String codeInput = fieldCode.getText();
         String url = AppConfig.getConfirmCodeToEmail();
         String url2 = AppConfig.getChangePassword();
 
-        if (fieldCode.getText().isEmpty()) {
+        if (codeInput.isEmpty()) {
             infoMess2.setText("Please enter your code from email!");
-        } else if (fieldCode.getText().length() != 6) {
+        } else if (!securityService.checkEmailCode(codeInput)) {
             infoMess2.setText("The code must be 6 numbers!");
         } else {
             EmailService.checkCode(url, fieldCode.getText(), email).thenAccept(result -> Platform.runLater(() -> {
@@ -155,8 +158,8 @@ public class ForgotPassController implements LanguageSupport {
                     fieldCode.clear();
 
                     fieldCode.textProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue.length() < 6) {
-                            infoMess2.setText("Password must be at least 6 characters!");
+                        if (!securityService.checkPassword(newValue)) {
+                            infoMess2.setText("Password must be at least 10 characters long, contain at least one letter and one digit!");
                             return;
                         }
 
@@ -175,6 +178,7 @@ public class ForgotPassController implements LanguageSupport {
                                 }
                             }));
                         } catch (Exception e) {
+                            Logger.error("Encryption error: " + e.getMessage());
                             showErrorDialog("Encryption error: " + e.getMessage());
                         }
                     });

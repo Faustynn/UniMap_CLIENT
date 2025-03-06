@@ -32,9 +32,11 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.ErrorScreens;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 public class LogInController implements LanguageSupport {
     public Label downlApp;
@@ -60,6 +62,7 @@ public class LogInController implements LanguageSupport {
 
     @FXML
     private void handleCloseApp() {
+        cleanup();
         Stage stage = (Stage) closeApp.getScene().getWindow();
         stage.close();
         System.exit(0);
@@ -68,6 +71,7 @@ public class LogInController implements LanguageSupport {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    private final SecurityService securityService = new SecurityService();
 
 
 
@@ -95,6 +99,7 @@ public class LogInController implements LanguageSupport {
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
                 showErrorDialog("Error changing language: " + e.getMessage());
                 loadCurrentLanguage();
             }
@@ -118,6 +123,7 @@ public class LogInController implements LanguageSupport {
             remember_checkBox.setText(languageBundle.getString("remember.checkbox"));
             checkTerms.setText(languageBundle.getString("check.terms"));
         } catch (Exception e) {
+            Logger.error("Error updating UI language: " + e.getMessage());
             System.err.println("Error updating UI language: " + e.getMessage());
         }
     }
@@ -159,6 +165,7 @@ public class LogInController implements LanguageSupport {
         try {
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(AppConfig.getGithubPage()));
         } catch (IOException e) {
+            Logger.error("Error opening the GitHub page: " + e.getMessage());
             showErrorDialog("Error opening the GitHub page: " + e.getMessage());
         }
     }
@@ -181,6 +188,7 @@ public class LogInController implements LanguageSupport {
 
             // Проверяем, существует ли ресурс
             if (getClass().getResource(fxmlPath) == null) {
+                Logger.error("Resource not found: " + fxmlPath);
                 showErrorDialog("Resource not found: " + fxmlPath);
                 return;
             }
@@ -221,12 +229,12 @@ public class LogInController implements LanguageSupport {
                 modalStage.showAndWait();
 
             } catch (IOException e) {
-                System.err.println("Failed to load FXML from path: " + fxmlPath);
+                Logger.error("Failed to load FXML from path: " + fxmlPath + e.getMessage());
                 e.printStackTrace();
                 showErrorDialog(errorMessage + ": " + e.getMessage());
             }
         } catch (Exception e) {
-            System.err.println("Unexpected error in openModalWindow");
+            Logger.error("Unexpected error in openModalWindow" + e.getMessage());
             e.printStackTrace();
             showErrorDialog(errorMessage + ": " + e.getMessage());
         }
@@ -263,7 +271,7 @@ public class LogInController implements LanguageSupport {
                     "Error loading the sign up window"
             );
         } catch (Exception e) {
-            System.err.println("Error loading SignUpPage.fxml: " + e.getMessage());
+            Logger.error("Error loading SignUpPage.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -277,8 +285,8 @@ public class LogInController implements LanguageSupport {
             infoMess.setText("Please enter your username and password!");
             return;
         }
-        if (username.length() < 3 || password.length() < 3) {
-            infoMess.setText("Username and password must be at least 3 characters long!");
+        if (!securityService.checkNames(username) || !securityService.checkPassword(password)) {
+            infoMess.setText("Invalid username or password format!");
             return;
         }
 
@@ -295,7 +303,7 @@ public class LogInController implements LanguageSupport {
                     currentStage.show();
 
                 } catch (IOException e) {
-                    System.err.println("Failed to load main page: " + e.getMessage());
+                    Logger.error("Failed to load main page: " + e.getMessage());
                     showErrorDialog("Error loading the application. Please try again later.");
                 }
             } else {
@@ -332,6 +340,7 @@ public class LogInController implements LanguageSupport {
                 Desktop.getDesktop().browse(new URI(authUrl));
             }
         } catch (Exception e) {
+            Logger.error("Failed to open authentication page");
             ErrorScreens.showErrorScreen("Failed to open authentication page");
         }
     }
@@ -345,6 +354,7 @@ public class LogInController implements LanguageSupport {
                 Desktop.getDesktop().browse(new URI(authUrl));
             }
         } catch (Exception e) {
+            Logger.error("Failed to open authentication page");
             ErrorScreens.showErrorScreen("Failed to open authentication page");
         }
     }
@@ -371,18 +381,15 @@ public class LogInController implements LanguageSupport {
     private void startConnectionCheck() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
 
-        connectionCheckService.scheduleAtFixedRate(() -> {
-            CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
-                    .thenAccept(isConnected -> {
-                        if (!isConnected) {
-                            Platform.runLater(this::handleLostConnection);
-                        }
-                    });
-        }, 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
+        connectionCheckService.scheduleAtFixedRate(() -> CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                .thenAccept(isConnected -> {
+                    if (!isConnected) {
+                        Platform.runLater(this::handleLostConnection);
+                    }
+                }), 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
     }
 
     private void handleLostConnection() {
-        // Stop the current connection check service
         if (connectionCheckService != null) {
             connectionCheckService.shutdown();
         }

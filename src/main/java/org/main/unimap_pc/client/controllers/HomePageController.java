@@ -37,6 +37,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -79,6 +80,7 @@ public class HomePageController implements LanguageSupport {
             cachedLanguage = PreferenceServise.get("LANGUAGE").toString();
 
             UserModel user = initUser(userData);
+            System.out.println(user.isPremium());
             if (user != null) {
                 UserService.getInstance().setCurrentUser(user);
                 navi_username_text.setText(user.getUsername());
@@ -91,6 +93,7 @@ public class HomePageController implements LanguageSupport {
             updateUILanguage(LanguageManager.getCurrentBundle());
 
         } catch (Exception e) {
+            Logger.error("Error during initialization: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -121,6 +124,7 @@ public class HomePageController implements LanguageSupport {
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 showErrorDialog("Error changing language: " + e.getMessage());
+                Logger.error("Error changing language: " + e.getMessage());
                 loadCurrentLanguage();
             }
         });
@@ -148,9 +152,11 @@ public class HomePageController implements LanguageSupport {
 
                     });
                 } catch (Exception e) {
-                    System.err.println("Failed to parse news JSON: " + e.getMessage());
+                    Logger.error("Failed to parse news JSON: " + e.getMessage());
+                    //System.err.println("Failed to parse news JSON: " + e.getMessage());
                 }
             } else {
+                Logger.error("Failed to load news.");
                 System.err.println("Failed to load news.");
                 Label errorLabel = new Label("Failed to load news, please check your internet connection!");
                 errorLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
@@ -230,15 +236,19 @@ public class HomePageController implements LanguageSupport {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(userData);
 
+                System.out.println(jsonNode);
+
                 String id = jsonNode.get("id").asText();
                 String login = jsonNode.get("login").asText();
                 String email = jsonNode.get("email").asText();
                 String username = jsonNode.get("username").asText();
                 String avatar = jsonNode.get("avatar").asText();
                 boolean admin = jsonNode.get("admin").asBoolean();
+                boolean premium = jsonNode.get("premium").asBoolean();
 
-                return new UserModel(id, username, email, login, admin, avatar);
+                return new UserModel(id, username, email, login, admin, premium,avatar);
             } catch (Exception e) {
+                Logger.error("Error parsing user data: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -270,7 +280,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -285,7 +295,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -309,7 +319,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
             e.printStackTrace();
         }
@@ -325,7 +335,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -340,7 +350,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -390,8 +400,6 @@ public class HomePageController implements LanguageSupport {
         descriptFXcom.setText(languageBundle.getString("descriptFXcom"));
         descriptMladost.setText(languageBundle.getString("descriptMladost"));
         descriptFIITTelegram.setText(languageBundle.getString("descriptFIITTelegram"));
-
-        languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
     }
 
     @FXML

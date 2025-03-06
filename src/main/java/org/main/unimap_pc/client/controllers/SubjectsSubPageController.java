@@ -3,6 +3,9 @@ package org.main.unimap_pc.client.controllers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -21,8 +24,10 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
@@ -573,7 +578,20 @@ private AnchorPane display_details() {
     }
 
     @FXML
-    public void handleСomments_button(){
+    public void handleCommentsButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getCommentsPagePath()));
+            Parent root = loader.load();
 
+            CommentsPageController controller = loader.getController();
+            controller.setDatas(1, subject.getCode());
+
+            Stage currentStage = (Stage) comments_button.getScene().getWindow();
+            Scene mainScene = new Scene(root);
+            currentStage.setScene(mainScene);
+            currentStage.show();
+        } catch (IOException e) {
+            System.err.println("Failed to load Comments Page from Subjectsub page: " + e.getMessage());
+        }
     }
 }

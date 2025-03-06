@@ -10,13 +10,14 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.controllers.SceneController;
 import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
+
+import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.controllers.LoadingScreenController;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -156,12 +157,15 @@ public class MainApp extends Application {
         scheduler.shutdown();
         try {
             if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
+                Logger.warning("ExecutorService did not terminate in time, forcing shutdown.");
                 executorService.shutdownNow();
             }
             if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
+                Logger.warning("Scheduler did not terminate in time, forcing shutdown.");
                 scheduler.shutdownNow();
             }
         } catch (InterruptedException e) {
+            Logger.error("Thread interrupted while shutting down executors: " + e.getMessage());
             executorService.shutdownNow();
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
@@ -185,6 +189,7 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
+        //Logger.warning("XoXoL");
         launch(args);
     }
 }

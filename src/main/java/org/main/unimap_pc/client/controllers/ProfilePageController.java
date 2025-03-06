@@ -16,6 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.PasswordChangeRequest;
+import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
@@ -156,7 +157,7 @@ public class ProfilePageController implements LanguageSupport {
 
                     // so here images 2 and 3 will be blocked for casual user and there will be access to them only for premium users and admin
                     if (avatarId == 2 || avatarId == 3) {
-                        if (UserService.getInstance().getCurrentUser().isAdmin() || UserService.getInstance().getCurrentUser().isPremium) {
+                        if (UserService.getInstance().getCurrentUser().isAdmin() || UserService.getInstance().getCurrentUser().isPremium()) {
                             // Admin or premium user, allow selection
                             imageView.setOnMouseClicked(event -> {
                                 updateAvatar(avatarId);
@@ -356,7 +357,7 @@ public class ProfilePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -370,7 +371,7 @@ public class ProfilePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -384,7 +385,7 @@ public class ProfilePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -398,7 +399,7 @@ public class ProfilePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -412,7 +413,7 @@ public class ProfilePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }

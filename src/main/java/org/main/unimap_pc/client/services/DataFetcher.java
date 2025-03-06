@@ -9,6 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.models.NewsModel;
+import org.main.unimap_pc.client.utils.Logger;
 
 public class DataFetcher {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
@@ -44,16 +46,16 @@ public class DataFetcher {
                             CacheService.put("SUBJECTS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
-                            System.err.println("Failed to parse JSON response: " + e.getMessage());
+                            Logger.error("Failed to parse JSON response: " + e.getMessage());
                             return false;
                         }
                     } else {
-                        System.err.println("Failed to fetch subjects with status code: " + response.statusCode());
+                        Logger.error("Failed to fetch subjects with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Subjects fetch request failed: " + throwable.getMessage());
+                    Logger.error("Subjects fetch request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -71,16 +73,16 @@ public class DataFetcher {
                         try {
                            return response.body();
                         } catch (Exception e) {
-                            System.err.println("Failed to parse news JSON response: " + e.getMessage());
+                            Logger.error("Failed to parse news JSON response: " + e.getMessage());
                             return null;
                         }
                     } else {
-                        System.err.println("Failed to fetch news with status code: " + response.statusCode());
+                        Logger.error("Failed to fetch news with status code: " + response.statusCode());
                         return null;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("News fetch request failed: " + throwable.getMessage());
+                    Logger.error("News fetch request failed: " + throwable.getMessage());
                     return null;
                 });
     }
@@ -105,50 +107,17 @@ public class DataFetcher {
                             CacheService.put("TEACHERS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
-                            System.err.println("Failed to parse JSON response: " + e.getMessage());
+                            Logger.error("Failed to parse JSON response: " + e.getMessage());
                             return false;
                         }
                     } else {
-                        System.err.println("Failed to fetch teachers with status code: " + response.statusCode());
+                        Logger.error("Failed to fetch teachers with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Teachers fetch request failed: " + throwable.getMessage());
+                    Logger.error("Teachers fetch request failed: " + throwable.getMessage());
                     return false;
-                });
-    }
-
-
-
-
-    public static CompletableFuture<String> fetchComments(String code, String type) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getCommentsUrl() + (type.equals("subject") ? "subject/" : "teacher/") + code))
-                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
-                .GET()
-                .build();
-        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(response -> {
-                    if (response.statusCode() == 200) {
-                        try {
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            JsonNode jsonNode = objectMapper.readTree(response.body());
-
-                            System.out.println("COMMENTS "+jsonNode);
-                            return jsonNode.toString();
-                        } catch (Exception e) {
-                            System.err.println("Failed to parse JSON response: " + e.getMessage());
-                            return null;
-                        }
-                    } else {
-                        System.err.println("Failed to fetch Comments with status code: " + response.statusCode());
-                        return null;
-                    }
-                })
-                .exceptionally(throwable -> {
-                    System.err.println("Comments fetch request failed: " + throwable.getMessage());
-                    return null;
                 });
     }
 

@@ -2,6 +2,7 @@ package org.main.unimap_pc.client.services;
 
 
 import org.json.JSONObject;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,22 +33,26 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Check Email failed with status code: " + response.statusCode());
+                        Logger.error("Check Email failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Check Email request failed: " + throwable.getMessage());
+                    Logger.error("Check Email request failed: " + throwable.getMessage());
                     return false;
                 });
     }
+
     public static CompletableFuture<Boolean> checkCode(String url,String code, String email) {
         if (code == null || code.isEmpty() || email == null || email.isEmpty()) {
+            System.out.println("EROROR CHECK CODEEE");
             return CompletableFuture.completedFuture(false);
         }
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("data", email +":"+code);
+
+        System.out.println("CHECK CODE "+ requestBody.toString());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -60,15 +65,16 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Check Code failed with status code: " + response.statusCode());
+                        Logger.error("Check Code failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Check Code request failed: " + throwable.getMessage());
+                    Logger.error("Check Code request failed: " + throwable.getMessage());
                     return false;
                 });
     }
+
     public static CompletableFuture<Boolean> updatepassword(String url,String new_password, String email) {
         if (new_password == null || new_password.isEmpty() || email == null || email.isEmpty()) {
             return CompletableFuture.completedFuture(false);
@@ -88,12 +94,12 @@ public class EmailService {
                     if (response.statusCode() == 200) {
                         return true;
                     } else {
-                        System.err.println("Updating password failed with status code: " + response.statusCode());
+                        Logger.error("Updating password failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Update password request failed: " + throwable.getMessage());
+                    Logger.error("Update password request failed: " + throwable.getMessage());
                     return false;
                 });
     }

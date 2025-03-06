@@ -50,6 +50,14 @@
       <version>${jackson.version}</version>
     </dependency>
 
+
+    <!-- Websocket -->
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+    </dependency>
+
     <!-- MaterialFX -->
     <dependency>
       <groupId>io.github.palexdev</groupId>

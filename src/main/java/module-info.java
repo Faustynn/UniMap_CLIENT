@@ -11,6 +11,7 @@ module org.main.unimap_pc {
     requires javafx.fxml;
     requires javafx.graphics;
     requires javafx.base;
+    requires javax.websocket.api;
 
     exports org.main.unimap_pc.client.models;
     exports org.main.unimap_pc.client to javafx.graphics;

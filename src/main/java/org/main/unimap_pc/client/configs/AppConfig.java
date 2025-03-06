@@ -60,9 +60,13 @@ public class AppConfig {
 
     private static final String SUBJECTS_URL = API_URL + "resources/subjects";
     private static final String TEACHERS_URL = API_URL + "resources/teachers";
+
+    private static final String LOG_URL = API_URL + "log";
     private static final String COMMENTS_URL = API_URL + "comments/";
     // Getters
     public static String getApiUrl() { return API_URL; }
+
+  // Getters
     public static String getLoginPagePath() {
         return LOGIN_PAGE_PATH;
     }
@@ -117,6 +121,10 @@ public class AppConfig {
     public static String getSettingsPagePath() {
         return SETTINGS_PAGE_PATH;
     }
+
+  public static String getLogPagePath() {
+        return LOG_URL;
+    }
     public static String getCommentsUrl() {
         return COMMENTS_URL;
     }
@@ -126,6 +134,8 @@ public class AppConfig {
     public static String getTeachersSubPagePath() {
         return TEACHERS_SUB_PAGE_PATH;
     }
+
+  
     @Getter
     private static final String DEFAULT_LANGUAGE = "English";
     @Getter
@@ -199,5 +209,45 @@ public class AppConfig {
 
     public static String getNewsUrl() {
         return GET_NEWS_URL;
+    }
+    public static String getLogLevel() {
+        return properties.getProperty("LOG_LEVEL", "INFO");
+    }
+
+
+
+    private static final String COMMENTS_PAGE_PATH = "/org/main/unimap_pc/views/CommentsPage.fxml";
+    public static String getCommentsPagePath() {
+        return COMMENTS_PAGE_PATH;
+    }
+
+    // Comment Logic
+    private static final String ALL_TEACHERS_URL = API_URL + "comments/teacher/";
+    private static final String ALL_SUBJECTS_URL = API_URL + "comments/subject/";
+
+    private static final String ADD_TEACHERS_COMMENT_URL = API_URL + "comments/teacher";
+    private static final String ADD_SUBJECTS_COMMENT_URL = API_URL + "comments/subject";
+
+    private static final String DELETE_TEACHERS_COMMENT_URL = API_URL + "comments/teacher/";
+    private static final String DELETE_SUBJECTS_COMMENT_URL = API_URL + "comments/subject/";
+
+
+    public static String getAllTeacherURL(String id){
+        return ALL_TEACHERS_URL+id;
+    }
+    public static String getAllSubjectsURL(String id){
+        return ALL_SUBJECTS_URL+id;
+    }
+    public static String getAddTeacherCommentURL(){
+        return ADD_TEACHERS_COMMENT_URL;
+    }
+    public static String getAddSubjectsCommentURL(){
+        return ADD_SUBJECTS_COMMENT_URL;
+    }
+    public static String getDeleteTeacherCommentURL(String id){
+        return DELETE_TEACHERS_COMMENT_URL+id;
+    }
+    public static String getDeleteSubjectsCommentURL(String id){
+        return DELETE_SUBJECTS_COMMENT_URL+id;
     }
 }
