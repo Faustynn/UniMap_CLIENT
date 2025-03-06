@@ -42,13 +42,17 @@ public class EmailService {
                     return false;
                 });
     }
+
     public static CompletableFuture<Boolean> checkCode(String url,String code, String email) {
         if (code == null || code.isEmpty() || email == null || email.isEmpty()) {
+            System.out.println("EROROR CHECK CODEEE");
             return CompletableFuture.completedFuture(false);
         }
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("data", email +":"+code);
+
+        System.out.println("CHECK CODE "+ requestBody.toString());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -70,6 +74,7 @@ public class EmailService {
                     return false;
                 });
     }
+
     public static CompletableFuture<Boolean> updatepassword(String url,String new_password, String email) {
         if (new_password == null || new_password.isEmpty() || email == null || email.isEmpty()) {
             return CompletableFuture.completedFuture(false);
