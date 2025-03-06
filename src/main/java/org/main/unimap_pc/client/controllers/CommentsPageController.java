@@ -46,7 +46,7 @@ public class CommentsPageController implements LanguageSupport {
     public Label comments_text,add_comment_text,set_stars_text;
     public Button add_comments_btn;
     public TextField CommentTextField;
-    public FontAwesomeIcon star1,star2,star3,star4,star5,refresh_btn;
+    public FontAwesomeIcon star1,star2,star3,star4,star5,star6,refresh_btn;
     public HBox star_box;
     public ComboBox languageComboBox;
     private double xOffset = 0;
@@ -169,6 +169,7 @@ public class CommentsPageController implements LanguageSupport {
         star3.setOnMouseClicked(event -> setRating(3));
         star4.setOnMouseClicked(event -> setRating(4));
         star5.setOnMouseClicked(event -> setRating(5));
+        star6.setOnMouseClicked(event -> setRating(6));
 
         // Set hover effects for better UX
         star1.setOnMouseEntered(event -> highlightStars(1));
@@ -176,6 +177,7 @@ public class CommentsPageController implements LanguageSupport {
         star3.setOnMouseEntered(event -> highlightStars(3));
         star4.setOnMouseEntered(event -> highlightStars(4));
         star5.setOnMouseEntered(event -> highlightStars(5));
+        star6.setOnMouseEntered(event -> highlightStars(6));
 
         // Reset to current rating when mouse leaves star box
         star_box.setOnMouseExited(event -> updateStarAppearance());
@@ -195,6 +197,7 @@ public class CommentsPageController implements LanguageSupport {
         star3.setFill(count >= 3 ? Color.GOLD : Color.web("#dddddd"));
         star4.setFill(count >= 4 ? Color.GOLD : Color.web("#dddddd"));
         star5.setFill(count >= 5 ? Color.GOLD : Color.web("#dddddd"));
+        star6.setFill(count >= 6 ? Color.GOLD : Color.web("#dddddd"));
     }
 
     private void updateStarAppearance() {

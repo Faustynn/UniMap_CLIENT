@@ -56,6 +56,7 @@ public class CommentsService {
 
 
     public static CompletableFuture<Boolean> putNewSubjectComment(String jsonComment) {
+        System.out.println("LALA"+jsonComment);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getAddSubjectsCommentURL()))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
