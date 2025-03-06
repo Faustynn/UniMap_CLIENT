@@ -1,5 +1,7 @@
 package org.main.unimap_pc.client.services;
 
+import org.main.unimap_pc.client.utils.Logger;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,8 +26,7 @@ public class CheckClientConnection {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding())
                 .thenApply(response -> response.statusCode() == 200)
                 .exceptionally(throwable -> {
-                    // TODO: logs
-                    System.err.println("Async connection check failed: " + throwable.getMessage());
+                    Logger.error("Async connection check failed: " + throwable.getMessage());
                     return false;
                 });
     }

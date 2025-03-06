@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
 
 public class RegistrationService {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
@@ -20,6 +21,7 @@ public class RegistrationService {
 
                 return sendRegistrationRequest(AppConfig.getRegistrUrl(), data,code).join();
             } catch (Exception e) {
+                Logger.error("Error during registration for user: " + username + " - " + e.getMessage());
                 e.printStackTrace();
                 return false;
             }
@@ -55,12 +57,12 @@ public class RegistrationService {
                         code.set(305);
                         return false;
                     } else {
-                        System.err.println("Registration failed with status code: " + response.statusCode());
+                        Logger.error("Registration failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Registration request failed: " + throwable.getMessage());
+                    Logger.error("Registration request failed: " + throwable.getMessage());
                     return false;
                 });
     }

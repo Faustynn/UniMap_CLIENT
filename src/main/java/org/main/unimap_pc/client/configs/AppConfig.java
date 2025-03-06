@@ -60,8 +60,11 @@ public class AppConfig {
 
     private static final String SUBJECTS_URL = API_URL + "resources/subjects";
     private static final String TEACHERS_URL = API_URL + "resources/teachers";
+
+    private static final String LOG_URL = API_URL + "log";
     private static final String COMMENTS_URL = API_URL + "comments/";
-    // Getters
+
+  // Getters
     public static String getLoginPagePath() {
         return LOGIN_PAGE_PATH;
     }
@@ -116,6 +119,10 @@ public class AppConfig {
     public static String getSettingsPagePath() {
         return SETTINGS_PAGE_PATH;
     }
+
+  public static String getLogPagePath() {
+        return LOG_URL;
+    }
     public static String getCommentsUrl() {
         return COMMENTS_URL;
     }
@@ -125,6 +132,8 @@ public class AppConfig {
     public static String getTeachersSubPagePath() {
         return TEACHERS_SUB_PAGE_PATH;
     }
+
+  
     @Getter
     private static final String DEFAULT_LANGUAGE = "English";
     @Getter
@@ -199,6 +208,9 @@ public class AppConfig {
     public static String getNewsUrl() {
         return GET_NEWS_URL;
     }
+    public static String getLogLevel() {
+        return properties.getProperty("LOG_LEVEL", "INFO");
+
 
 
 

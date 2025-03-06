@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.PreferenceServise;
@@ -146,7 +147,7 @@ public class SettingsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -160,7 +161,7 @@ public class SettingsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -174,7 +175,7 @@ public class SettingsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -188,7 +189,7 @@ public class SettingsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }
@@ -202,7 +203,7 @@ public class SettingsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
     }

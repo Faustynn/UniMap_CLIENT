@@ -26,6 +26,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 import javafx.scene.control.TextField;
 
 
@@ -119,6 +120,7 @@ public class SubjectsPageController implements LanguageSupport {
                 PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
                 e.printStackTrace();
             }
         });
@@ -400,7 +402,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
     @FXML
@@ -413,7 +415,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load profile page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
     @FXML
@@ -426,7 +428,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
     @FXML
@@ -439,8 +441,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
-            e.printStackTrace();
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
     @FXML
@@ -453,7 +454,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            Logger.error("Failed to load main page: " + e.getMessage());
         }
     }
     @FXML

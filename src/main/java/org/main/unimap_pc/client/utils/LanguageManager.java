@@ -29,7 +29,7 @@ public class LanguageManager {
             currentBundle = ResourceBundle.getBundle("org.main.unimap_pc.langs.lang", locale);
             PreferenceServise.put("LANGUAGE", language);
         } catch (Exception e) {
-            System.err.println("Failed to load language resources for " + language + ": " + e.getMessage());
+            Logger.error("Failed to load language resources for " + language + ": " + e.getMessage());
             if (!language.equals("en")) {
                 System.out.println("Falling back to English");
                 changeLanguage("en");
