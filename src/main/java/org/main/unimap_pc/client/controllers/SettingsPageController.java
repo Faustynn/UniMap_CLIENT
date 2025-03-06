@@ -5,28 +5,125 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.utils.Logger;
+import org.main.unimap_pc.client.models.UserModel;
+import org.main.unimap_pc.client.services.CacheService;
+import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
+import org.main.unimap_pc.client.utils.LanguageManager;
+import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
-public class SettingsPageController {
+public class SettingsPageController implements LanguageSupport {
+
+    public ImageView navi_avatar;
+    public Label navi_username_text;
+    public Label navi_login_text;
+    public Button btnStartDeleteAcc;
+    public Button btnStartDeletComments;
+    public Label privacy_text;
+    public Label profile_text;
+    public Label pair_mobile_text;
+    public ImageView qr_image;
+    public Label political_terms_text;
+    public Label sourse_code_text;
+    public Label support_text;
+    @FXML
+    private AnchorPane dragArea;
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) dragArea.getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+    }
+
+
+    @FXML
+    private ComboBox<String> languageComboBox;
+    private String defLang;
 
 
     @FXML
     private void initialize() {
+        try {
+            UserModel user = UserService.getInstance().getCurrentUser();
+            if (user != null) {
+                UserService.getInstance().setCurrentUser(user);
+                navi_username_text.setText(user.getUsername());
+                navi_login_text.setText(user.getLogin());
+                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+            }
 
+            dragArea.setOnMousePressed(this::handleMousePressed);
+            dragArea.setOnMouseDragged(this::handleMouseDragged);
+
+            Scene scene = dragArea.getScene();
+            if (scene != null) {
+                scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+                    // TODO:Resize logic
+                });
+                scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+                    // TODO:Resize logic
+                });
+            }
+
+            languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+            defLang = PreferenceServise.get("LANGUAGE").toString();
+            loadCurrentLanguage();
+            LanguageManager.changeLanguage(defLang);
+            LanguageManager.getInstance().registerController(this);
+            updateUILanguage(LanguageManager.getCurrentBundle());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    //   @Override
-    public void updateUILanguage(ResourceBundle languageBundle) {
+    private void loadCurrentLanguage() {
+        languageComboBox.setValue(defLang);
+        languageComboBox.setOnAction(event -> {
+            try {
+                String newLanguage = languageComboBox.getValue();
+                String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
+                LanguageManager.changeLanguage(languageCode);
+                PreferenceServise.put("LANGUAGE", languageCode);
+                updateUILanguage(LanguageManager.getCurrentBundle());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
+    @Override
+    public void updateUILanguage(ResourceBundle languageBundle) {
+        logoutbtn.setText(languageBundle.getString("logout"));
+
+        btn_homepage.setText(languageBundle.getString("homepage"));
+        btn_profilepage.setText(languageBundle.getString("profilepage"));
+        btn_subjectpage.setText(languageBundle.getString("subjectpage"));
+        btn_teacherspage.setText(languageBundle.getString("teacherspage"));
+        btn_settingspage.setText(languageBundle.getString("settingspage"));
     }
 
     @FXML
@@ -48,7 +145,6 @@ public class SettingsPageController {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
@@ -63,7 +159,6 @@ public class SettingsPageController {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
@@ -78,7 +173,6 @@ public class SettingsPageController {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
@@ -93,7 +187,6 @@ public class SettingsPageController {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
@@ -108,7 +201,6 @@ public class SettingsPageController {
 
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
-            currentStage.setFullScreen(true);
             currentStage.show();
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
@@ -121,12 +213,10 @@ public class SettingsPageController {
     @FXML
     private void handleLogout() throws IOException {
         // Clear the user data
-        Preferences prefs = Preferences.userNodeForPackage(HomePageController.class);
-        prefs.remove("ACCESS_TOKEN");
-        prefs.remove("REFRESH_TOKEN");
-        prefs.remove("USER_DATA");
-        prefs.remove("SUBJECTS");
-        prefs.remove("TEACHERS");
+        PreferenceServise.deletePreferences();
+        PreferenceServise.put("REMEMBER", false);
+        CacheService.clearCache();
+
 
         // Change scene to login
         Stage stage = (Stage) logoutbtn.getScene().getWindow();

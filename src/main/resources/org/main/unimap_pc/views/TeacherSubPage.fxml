@@ -1,65 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="500.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeacherSubPageController">
     <children>
-        <Label fx:id="name_code" style="-fx-text-fill: #9fa6b7;" text="AIS_ID">
+        <Label fx:id="teacher_aisID_text" layoutX="58.0" layoutY="81.0" style="-fx-text-fill: #9fa6b7;" text="AIS ID:">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="student_amount" layoutX="3.0" layoutY="36.0" style="-fx-text-fill: #9fa6b7;" text="email">
+        <Label fx:id="teacher_email_text" layoutX="58.0" layoutY="131.0" style="-fx-text-fill: #9fa6b7;" text="Email:">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature" layoutX="2.0" layoutY="18.0" style="-fx-text-fill: #9fa6b7;" text="Full name">
+        <Label fx:id="teacher_fullname" layoutX="151.0" layoutY="106.0" prefHeight="21.0" prefWidth="328.0" style="-fx-text-fill: #9fa6b7;" text="Ing. Meredov Nazar">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Regular" size="16.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature1" layoutX="3.0" layoutY="54.0" style="-fx-text-fill: #9fa6b7;" text="phone">
+        <Label fx:id="teacher_phone_text" layoutX="58.0" layoutY="156.0" style="-fx-text-fill: #9fa6b7;" text="Phone:">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature2" layoutX="3.0" layoutY="72.0" style="-fx-text-fill: #9fa6b7;" text="office">
+        <Label fx:id="teacher_office_text" layoutX="58.0" layoutY="181.0" style="-fx-text-fill: #9fa6b7;" text="Office">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature3" layoutX="3.0" layoutY="90.0" style="-fx-text-fill: #9fa6b7;" text="subjects">
+        <Label fx:id="teacher_subjects_text" layoutX="58.0" layoutY="233.0" style="-fx-text-fill: #9fa6b7;" text="Vedene predmety:">
             <font>
-                <Font name="Outfit Bold" size="14.0" />
+                <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="abreviature311111111" layoutX="35.0" layoutY="108.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
-            <font>
-                <Font name="Outfit Bold" size="14.0" />
-            </font>
-        </Label>
-        <Label fx:id="abreviature3111111111" layoutX="38.0" layoutY="126.0" style="-fx-text-fill: #9fa6b7;" text="roles">
-            <font>
-                <Font name="Outfit Bold" size="14.0" />
-            </font>
-        </Label>
-      <Label fx:id="closebtn" layoutX="511.0" layoutY="7.0" text="X" textFill="WHITE">
+      <Label fx:id="teacher_aisID" layoutX="117.0" layoutY="81.0" prefHeight="23.0" prefWidth="141.0" style="-fx-text-fill: #9fa6b7;" text="12345678">
          <font>
-            <Font name="System Bold" size="26.0" />
+            <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature3111111112" layoutX="27.0" layoutY="160.0" style="-fx-text-fill: #9fa6b7;" text="subjectName">
+      <Label fx:id="teacher_fullname_text" layoutX="58.0" layoutY="106.0" prefHeight="23.0" prefWidth="91.0" style="-fx-text-fill: #9fa6b7;" text="Full name:">
          <font>
-            <Font name="Outfit Bold" size="14.0" />
+            <Font name="Outfit Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="abreviature31111111111" layoutX="38.0" layoutY="178.0" style="-fx-text-fill: #9fa6b7;" text="roles">
+      <Label fx:id="teacher_email" layoutX="119.0" layoutY="131.0" prefHeight="23.0" prefWidth="165.0" style="-fx-text-fill: #9fa6b7;" text="xmeredov@stuba.sk">
          <font>
-            <Font name="Outfit Bold" size="14.0" />
+            <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
+      <Label fx:id="teacher_phone" layoutX="124.0" layoutY="156.0" prefHeight="23.0" prefWidth="121.0" style="-fx-text-fill: #9fa6b7;" text="+4219502222">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="teacher_office" layoutX="122.0" layoutY="181.0" prefHeight="23.0" prefWidth="129.0" style="-fx-text-fill: #9fa6b7;" text="6.02">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="20.0" layoutY="40.0" onMouseClicked="#handleCloseApp" size="30" text="" />
+      <Label fx:id="navi_username_text" contentDisplay="RIGHT" layoutX="329.0" layoutY="21.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="navi_login_text" contentDisplay="RIGHT" layoutX="374.0" layoutY="36.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+         <font>
+            <Font name="Outfit Regular" size="10.0" />
+         </font>
+      </Label>
+        <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" layoutX="-594.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+            <image>
+                <Image url="@../images/avatares/0.png" />
+            </image>
+        </ImageView>
+      <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleCommentsButton" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Button>
+      <AnchorPane fx:id="teachers_details_anchor" layoutX="50.0" layoutY="259.0" minHeight="0.0" minWidth="0.0" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent; -fx-background-radius: 0%;">
+         <children>
+            <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent;" vbarPolicy="NEVER" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

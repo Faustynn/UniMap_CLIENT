@@ -1,27 +1,27 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.RegistrationService;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.PropertyResourceBundle;
-
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class SignUpController implements LanguageSupport {
     @FXML
-    private Label closeApp;
+    private FontAwesomeIcon closeApp;
 
     @FXML
     private AnchorPane dragArea;
@@ -37,9 +37,11 @@ public class SignUpController implements LanguageSupport {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    private final SecurityService securityService = new SecurityService();
+
+
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
-        closeApp.setText(languageBundle.getString("close"));
         infoMess.setText(languageBundle.getString("info.message"));
         btnRegistr.setText(languageBundle.getString("register.button"));
         fieldUsername.setPromptText(languageBundle.getString("username.prompt"));
@@ -51,7 +53,7 @@ public class SignUpController implements LanguageSupport {
     }
     @FXML
     private void initialize() {
-        String lang = prefs.get("LANGUAGE", "en");
+        String lang = PreferenceServise.get("LANGUAGE").toString();
         LanguageManager.getInstance().registerController(this);
 
         LanguageManager.changeLanguage(lang);
@@ -77,90 +79,90 @@ public class SignUpController implements LanguageSupport {
     @FXML
     private Label infoMess;
     @FXML
-    private MFXTextField fieldUsername;
+    private TextField fieldUsername;
     @FXML
-    private MFXTextField fieldEmail;
+    private TextField fieldEmail;
     @FXML
-    private MFXTextField fieldLogin;
+    private TextField fieldLogin;
     @FXML
-    private MFXPasswordField fieldPassword;
+    private PasswordField fieldPassword;
     @FXML
-    private MFXPasswordField fieldControlPassword;
+    private PasswordField fieldControlPassword;
     @FXML
     private Button btnRegistr;
 
 
     @FXML
     private void handleRegisterBtn(){
-        if (fieldLogin.getText().isEmpty()) {
+        String username = fieldUsername.getText().trim();
+        String email = fieldEmail.getText().trim();
+        String login = fieldLogin.getText().trim();
+        String password = fieldPassword.getText().trim();
+        String confirmPassword = fieldControlPassword.getText().trim();
+
+
+        if (login.isEmpty()) {
             infoMess.setText("Please enter your login!");
             return;
-        }else if(fieldLogin.getText().length() < 3 || fieldLogin.getText().length() > 20){
+        } else if (login.length() < 3 || login.length() > 20) {
             infoMess.setText("Login must be at least 3-20 characters!");
             return;
         }
 
-        if (fieldEmail.getText().isEmpty()) {
+        if (email.isEmpty()) {
             infoMess.setText("Please enter your email!");
             return;
-        }
-        if (fieldEmail.getText().length() < 5 || !fieldEmail.getText().contains("@") || !fieldEmail.getText().contains(".")) {
+        } else if (!securityService.checkEmail(email)) {
             infoMess.setText("Please write correct email!");
             return;
         }
-        if (fieldUsername.getText().isEmpty()) {
+
+        if (username.isEmpty()) {
             infoMess.setText("Please enter your username!");
             return;
-        }else if(fieldUsername.getText().length() < 3 || fieldUsername.getText().length() > 50){
-            infoMess.setText("Username must be at least 3-50 characters!");
+        } else if (!securityService.checkNames(username)) {
+            infoMess.setText("Username must be 2-32 characters and contain only letters and numbers!");
             return;
         }
-        if (fieldPassword.getText().isEmpty()) {
+
+        if (password.isEmpty()) {
             infoMess.setText("Please enter your password!");
             return;
-        }else if (fieldPassword.getText().isEmpty()) {
-            infoMess.setText("Write minimal 8 characters!");
-            return;
-        }else if(fieldPassword.getText().contains(" ")) {
-            infoMess.setText("Password must contain at least one number or special character!");
+        } else if (!securityService.checkPassword(password)) {
+            infoMess.setText("Password must be at least 10 characters long, contain at least one letter and one digit!");
             return;
         }
-        if(fieldControlPassword.getText().isEmpty()){
+
+        if (confirmPassword.isEmpty()) {
             infoMess.setText("Please confirm your password!");
             return;
-        } else if (!fieldControlPassword.getText().equals(fieldPassword.getText())) {
-            infoMess.setText("Please check correctness of your password!");
+        } else if (!confirmPassword.equals(password)) {
+            infoMess.setText("Passwords do not match!");
             return;
         }
+
         infoMess.setText("Registration in progress...");
 
-
-        String username = fieldUsername.getText().trim();
-        String password = fieldPassword.getText().trim();
-        String email = fieldEmail.getText().trim();
-        String login = fieldLogin.getText().trim();
         AtomicInteger code = new AtomicInteger();
 
-        RegistrationService.registration(username, password,email,login,code).thenAccept(isLoginSuccessful -> {
-            Platform.runLater(() -> {
-                if (isLoginSuccessful) {
-                    infoMess.setText("Registration successful!");
-                    fieldUsername.clear();
-                    fieldEmail.clear();
-                    fieldLogin.clear();
-                    fieldPassword.clear();
-                    fieldControlPassword.clear();
-                } else if (code.get() == 303) {
-                    infoMess.setText("User with this login already exists!");
-                } else if (code.get() == 304) {
-                    infoMess.setText("User with this email already exists!");
-                } else if (code.get() == 305) {
-                    infoMess.setText("User with this username already exists!");
-                } else {
-                    infoMess.setText("Error during registration. Please try again later!");
-                }
-            });
-        }).exceptionally(ex -> {
+        RegistrationService.registration(username, password,email,login,code).thenAccept(isLoginSuccessful -> Platform.runLater(() -> {
+            if (isLoginSuccessful) {
+                infoMess.setText("Registration successful!");
+                fieldUsername.clear();
+                fieldEmail.clear();
+                fieldLogin.clear();
+                fieldPassword.clear();
+                fieldControlPassword.clear();
+            } else if (code.get() == 303) {
+                infoMess.setText("User with this login already exists!");
+            } else if (code.get() == 304) {
+                infoMess.setText("User with this email already exists!");
+            } else if (code.get() == 305) {
+                infoMess.setText("User with this username already exists!");
+            } else {
+                infoMess.setText("Error during registration. Please try again later!");
+            }
+        })).exceptionally(ex -> {
             Platform.runLater(() -> infoMess.setText("Registration request failed. Please try again later!"));
             return null;
         });

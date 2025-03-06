@@ -1,187 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1080.0" style="-fx-background-color: #191C22;  -fx-text-fill: white;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeachersPageController">
    <children>
+      <VBox prefHeight="640.0" prefWidth="240.0">
+         <children>
+            <Label style="-fx-text-fill: WHITE; -fx-font-family: 'Outfit Bold'; -fx-font-size: 24px;" text="UNIMAP">
+               <VBox.margin>
+                  <Insets left="24.0" top="24.0" />
+               </VBox.margin>
+            </Label>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="24.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_homepage" alignment="BOTTOM_LEFT" onMouseClicked="#handleHomePageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Home" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_profilepage" alignment="BOTTOM_LEFT" onMouseClicked="#handleProfilePageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Profile" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_subjectpage" alignment="BOTTOM_LEFT" onMouseClicked="#handleSubjectPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Subject" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_teacherspage" alignment="BOTTOM_LEFT" onMouseClicked="#handleTeachersPageClick" prefHeight="48.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: #79E3A5;" text="Teachers" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: TRANSPARENT;">
+               <VBox.margin>
+                  <Insets top="13.0" />
+               </VBox.margin>
+               <children>
+                  <MFXButton fx:id="btn_settingspage" alignment="BOTTOM_LEFT" onMouseClicked="#handleSettingsPageClick" prefHeight="47.0" prefWidth="240.0" style="-fx-text-fill: WHITE; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Settings" textFill="WHITE">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="24.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+            </Pane>
+            <Pane layoutY="100.0" prefHeight="56.0" prefWidth="240.0">
+               <children>
+                  <MFXButton fx:id="logoutbtn" alignment="BOTTOM_LEFT" onMouseClicked="#handleLogout" prefHeight="52.0" prefWidth="217.0" style="-fx-text-fill: #ff4989; -fx-stroke-width: 0; -fx-background-color: TRANSPARENT;" text="Log Out">
+                     <font>
+                        <Font name="Outfit Regular" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
+                  </MFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets left="24.0" top="220.0" />
+               </VBox.margin>
+            </Pane>
+         </children>
+      </VBox>
       <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
          <image>
             <Image url="@../images/avatares/0.png" />
          </image>
       </ImageView>
-      <VBox prefHeight="640.0" prefWidth="240.0" style="-fx-background-color: #1F222A;">
+      <Pane layoutX="270.0" layoutY="223.0" prefHeight="35.0" prefWidth="777.0" style="-fx-background-color: #232830;">
          <children>
-            <Text style="-fx-fill: WHITE;" text="UNIMAP">
+            <Label fx:id="name_teach" layoutX="122.0" layoutY="8.0" style="-fx-text-fill: #828ca1;" text="Name and Surname">
                <font>
-                  <Font name="Outfit Bold" size="24.0" />
+                  <Font name="Outfit Regular" size="14.0" />
                </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="24.0" />
-               </VBox.margin>
-            </Text>
-            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #1F222A;">
-               <VBox.margin>
-                  <Insets top="24.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_homepage" onMouseClicked="#handleHomePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Home">
+            </Label>
+            <Label fx:id="ais_id_teach" layoutX="10.0" layoutY="8.0" style="-fx-text-fill: #828ca1;" text="AIS_ID">
                <font>
-                  <Font name="Outfit Regular" size="16.0" />
+                  <Font name="Outfit Regular" size="14.0" />
                </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_profilepage" onMouseClicked="#handleProfilePageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Profile">
+            </Label>
+            <Label fx:id="room_teach" layoutX="675.0" layoutY="8.0" style="-fx-text-fill: #828ca1;" text="Room">
                <font>
-                  <Font name="Outfit Regular" size="16.0" />
+                  <Font name="Outfit Regular" size="14.0" />
                </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_subjectpage" onMouseClicked="#handleSubjectPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Subject">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_teacherspage" onMouseClicked="#handleTeachersPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Teachers">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <Pane opacity="0.0" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #79E3A5;">
-               <VBox.margin>
-                  <Insets top="13.0" />
-               </VBox.margin>
-            </Pane>
-            <MFXButton fx:id="btn_settingspage" onMouseClicked="#handleSettingsPageClick" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Settings">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="-34.0" />
-               </VBox.margin>
-            </MFXButton>
-            <MFXButton fx:id="logoutbtn" onMouseClicked="#handleLogout" style="-fx-text-fill: WHITE; -fx-stroke-width: 0;" text="Log Out">
-               <font>
-                  <Font name="Outfit Regular" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="24.0" top="286.0" />
-               </VBox.margin>
-            </MFXButton>
+            </Label>
          </children>
-      </VBox>
-      <Label fx:id="ais_id_teach" layoutX="289.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="AIS_ID">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="name_teach" layoutX="398.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Name and Surname">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="status_teach" layoutX="615.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Status">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="room_teach" layoutX="962.0" layoutY="225.0" style="-fx-text-fill: #828ca1;" text="Room">
-         <font>
-            <Font name="Outfit Bold" size="14.0" />
-         </font>
-      </Label>
-      <ScrollPane fx:id="scrollPane" layoutX="266.0" layoutY="275.0" prefHeight="342.0" prefWidth="791.0" style="-fx-background-color: #191C22;">
-        <content>
-          <AnchorPane fx:id="anchorScrollPane" minHeight="0.0" minWidth="0.0" prefHeight="419.0" prefWidth="775.0" style="-fx-background-color: #191C22;">
-               <children>
-                  <Pane prefHeight="48.0" prefWidth="774.0" style="-fx-background-color: #1F222A;">
-                     <children>
-                        <Label fx:id="id_ais" layoutX="20.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="103175">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="id_name" layoutX="128.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Ing. Patrik Velčický">
-                           <font>
-                              <Font name="Outfit Regular" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="id_status" layoutX="347.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="Doktorský typ studia, denní presenční forma">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="id_room" layoutX="692.0" layoutY="29.0" style="-fx-text-fill: WHITE;" text="NO ROOM">
-                           <font>
-                              <Font name="Outfit Bold" size="14.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </Pane>
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
-      <MFXComboBox fx:id="languageComboBox" layoutX="760.0" layoutY="16.0" text="EN">
-         <font>
-            <Font name="Outfit SemiBold" size="14.0" />
-         </font>
-      </MFXComboBox>
-      <Label fx:id="navi_login_text" layoutX="910.0" layoutY="17.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
-         <font>
-            <Font name="Outfit Regular" size="10.0" />
-         </font>
-      </Label>
-      <Label fx:id="navi_username_text" layoutX="895.0" layoutY="30.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+      </Pane>
+      <Label fx:id="navi_username_text" layoutX="922.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="13.0" />
          </font>
       </Label>
-      <Label fx:id="teach_list" layoutX="266.0" layoutY="171.0" style="-fx-text-fill: WHITE;" text="Teachers List">
+      <Label fx:id="navi_login_text" layoutX="967.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
          <font>
-            <Font name="Outfit Bold" size="24.0" />
+            <Font name="Outfit Regular" size="10.0" />
          </font>
       </Label>
-      <MFXTextField fx:id="searchField" layoutX="273.0" layoutY="100.0" prefHeight="54.0" prefWidth="773.0" promptText="Type a Teacher's name " style="-fx-background-color: #262A35;">
+      <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" layoutX="270.0" layoutY="262.0" prefHeight="350.0" prefWidth="777.0" style="-fx-background-color: #191C22;" vbarPolicy="NEVER">
+         <content>
+            <AnchorPane fx:id="anchorScrollPane" minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="777.0" style="-fx-background-color: #191C22;" />
+         </content>
+      </ScrollPane>
+
+      <HBox spacing="16.0" />
+      <ComboBox fx:id="languageComboBox" layoutX="789.0" layoutY="21.0" prefHeight="24.0" prefWidth="101.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+         <styleClass>
+            <String fx:value="custom-combo-box" />
+         </styleClass>
+         <stylesheets>
+            <URL value="@../views/style/style.css" />
+         </stylesheets>
+      </ComboBox>
+
+                  <TextField fx:id="searchField" layoutX="273.0" layoutY="129.0" prefHeight="48.0" prefWidth="542.0" promptText="Search by name or abbreviation..." style="-fx-background-color: #262A35; -fx-text-fill: white;">
          <font>
             <Font name="Outfit Regular" size="14.0" />
          </font>
-      </MFXTextField>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </TextField>
+
+
+      <VBox layoutX="848.0" layoutY="108.0" spacing="8.0">
+         <children>
+            <Label fx:id="semester_text" style="-fx-text-fill: #9fa6b7;" text="Type of role:">
+               <font>
+                  <Font name="Outfit Medium" size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="roleCombo" accessibleRole="COMBO_BOX" prefHeight="40.0" prefWidth="200.0" style="-fx-border-width: 0; -fx-background-color: #262A35;">
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:value="All Semesters" />
+                     <String fx:value="LS" />
+                     <String fx:value="ZS" />
+                  </FXCollections>
+               </items>
+            </ComboBox>
+         </children>
+      </VBox>
+      <Label fx:id="teach_list" layoutX="273.0" layoutY="201.0" style="-fx-text-fill: WHITE;" text="Teachers List">
+         <font>
+            <Font name="Outfit Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="filter_teacher_text" layoutX="276.0" layoutY="80.0" style="-fx-text-fill: WHITE;" text="Teachers">
+         <font>
+            <Font name="Outfit Bold" size="28.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

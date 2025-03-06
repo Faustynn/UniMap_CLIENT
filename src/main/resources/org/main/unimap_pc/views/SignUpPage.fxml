@@ -1,55 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SignUpController">
-   <AnchorPane fx:id="dragArea" prefHeight="83.0" prefWidth="450.0" style="-fx-background-color: #36436FFF;">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="450.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SignUpController">
+   <AnchorPane fx:id="dragArea" prefHeight="83.0" prefWidth="450.0" style="-fx-background-color: #262A35;">
       <children>
          <ImageView fitHeight="75.0" fitWidth="97.0" layoutX="5.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@../images/GPS_app.png" />
+               <Image url="@../images/app/GPS_app.png" />
             </image>
          </ImageView>
-         <Label layoutX="80.0" layoutY="29.0" text="UniMap" textFill="WHITE">
+         <Text fill="WHITE" layoutX="80.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
             <font>
-               <Font name="System Bold" size="28.0" />
+               <Font name="Outfit Bold" size="28.0" />
             </font>
-         </Label>
-         <Label fx:id="closeApp" layoutX="410.0" layoutY="26.0" onMouseClicked="#handleCloseApp" prefWidth="16.0" style="-fx-cursor: hand;" text="X" textFill="WHITE">
-            <font>
-               <Font name="System Bold" size="22.0" />
-            </font>
-         </Label>
+         </Text>
+         <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="405.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="" />
       </children>
    </AnchorPane>
    <AnchorPane layoutY="83.0" prefHeight="523.0" prefWidth="450.0">
-      <Label fx:id="userRegistr" layoutX="81.0" layoutY="32.0" prefHeight="39.0" prefWidth="352.0" text="User Registration">
+      <Label fx:id="userRegistr" layoutX="81.0" layoutY="32.0" prefHeight="40.0" prefWidth="288.0" text="User Registration" textFill="WHITE">
          <font>
-            <Font name="Arial Bold" size="30.0" />
+            <Font name="Outfit Regular" size="31.0" />
          </font>
       </Label>
-      <FontAwesomeIcon fill="#0d232f" glyphName="LOCK" layoutX="49.0" layoutY="294.0" size="25" />
-      <FontAwesomeIcon fill="#0d232f" glyphName="ENVELOPE" layoutX="47.0" layoutY="180.0" selectionStart="1" size="20" />
-      <FontAwesomeIcon fill="#0d232f" glyphName="USER" layoutX="47.0" layoutY="128.0" size="25" tabSize="12" />
-      <MFXButton fx:id="btnRegistr" layoutX="143.0" layoutY="399.0" onMouseClicked="#handleRegisterBtn" prefHeight="46.0" prefWidth="170.0" style="-fx-background-color: #36436F; -fx-cursor: hand;" text="Register" textFill="WHITE">
+      <FontAwesomeIcon fill="WHITE" glyphName="LOCK" layoutX="49.0" layoutY="287.0" size="25" />
+      <FontAwesomeIcon fill="WHITE" glyphName="ENVELOPE" layoutX="47.0" layoutY="173.0" selectionStart="1" size="20" />
+      <FontAwesomeIcon fill="WHITE" glyphName="USER" layoutX="47.0" layoutY="119.0" size="25" tabSize="12" />
+      <Button fx:id="btnRegistr" layoutX="143.0" layoutY="399.0" onMouseClicked="#handleRegisterBtn" prefHeight="46.0" prefWidth="170.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Register" textFill="WHITE">
          <font>
-            <Font name="Arial" size="16.0" />
+            <Font name="Outfit Bold" size="18.0" />
          </font>
-      </MFXButton>
-      <MFXTextField fx:id="fieldLogin" floatingText="Login" floatingTextGap="0.0" graphicTextGap="3.0" layoutX="75.0" layoutY="95.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Account login" />
-      <MFXTextField fx:id="fieldEmail" floatingText="Email" floatingTextGap="0.0" graphicTextGap="3.0" layoutX="75.0" layoutY="150.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Email" />
-      <MFXPasswordField fx:id="fieldPassword" borderGap="0.0" floatingText="Password" floatingTextGap="0.0" graphicTextGap="0.0" layoutX="76.0" layoutY="262.0" measureUnitGap="2.0" prefHeight="20.0" prefWidth="300.0" promptText="Password" />
-      <MFXPasswordField fx:id="fieldControlPassword" borderGap="0.0" floatingText="Confirm Password" floatingTextGap="0.0" graphicTextGap="0.0" layoutX="76.0" layoutY="317.0" measureUnitGap="2.0" prefHeight="20.0" prefWidth="300.0" promptText="Confirm your password" />
-      <MFXTextField fx:id="fieldUsername" floatingText="Username" floatingTextGap="0.0" graphicTextGap="3.0" layoutX="76.0" layoutY="205.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Username" />
-      <FontAwesomeIcon fill="#0d232f" glyphName="CHECK" layoutX="44.0" layoutY="236.0" selectionStart="1" size="25" />
+      </Button>
+      <TextField fx:id="fieldLogin" layoutX="75.0" layoutY="95.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Account login" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="fieldEmail" layoutX="75.0" layoutY="150.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="fieldPassword" layoutX="76.0" layoutY="262.0" prefHeight="20.0" prefWidth="300.0" promptText="Password" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </PasswordField>
+      <PasswordField fx:id="fieldControlPassword" layoutX="76.0" layoutY="317.0" prefHeight="20.0" prefWidth="300.0" promptText="Confirm your password" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </PasswordField>
+      <TextField fx:id="fieldUsername" layoutX="76.0" layoutY="205.0" prefColumnCount="3" prefHeight="13.0" prefWidth="300.0" promptText="Username" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </TextField>
+      <FontAwesomeIcon fill="WHITE" glyphName="CHECK" layoutX="44.0" layoutY="229.0" selectionStart="1" size="25" />
+      <Label fx:id="have_acc_text" layoutX="190.0" layoutY="346.0" prefHeight="39.0" prefWidth="144.0" text="Already have an account?" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="signIn_text" layoutX="334.0" layoutY="345.0" prefHeight="39.0" prefWidth="50.0" text="Sign In!" textFill="#79e3a5">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+      </Label>
    </AnchorPane>
    <Label fx:id="infoMess" layoutX="140.0" layoutY="154.0" textFill="#cd1d2c">
       <font>

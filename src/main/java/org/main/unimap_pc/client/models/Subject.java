@@ -3,6 +3,7 @@ package org.main.unimap_pc.client.models;
 import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.main.unimap_pc.client.services.FilterService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,12 @@ public class Subject {
     private String plannedActivities;
     private String evaluationMethods;
     private String garant;
-    public Subject(JSONObject jsonBase) {
+    private String evaluation;
+
+    private List<TeacherSubjectRoles> teachers_roles;
+    private List<Teacher> teachers;
+
+    public Subject(JSONObject jsonBase,JSONObject jsonTeachers) {
         try {
             code = jsonBase.getString("code");
         } catch (org.json.JSONException e) {
@@ -91,7 +97,7 @@ public class Subject {
             courseContents = "";
         }
         try {
-            aScore = jsonBase.getString("aScore");
+            aScore = jsonBase.getString("ascore");
         } catch (org.json.JSONException e) {
             aScore = "";
         }
@@ -127,10 +133,55 @@ public class Subject {
         } catch (org.json.JSONException e) {
             languages = new ArrayList<String>();
         }
+
         try {
-            garant = jsonBase.getString("garant"); // Add this field
+            plannedActivities = jsonBase.getString("plannedActivities");
         } catch (org.json.JSONException e) {
-            garant = "";
+            plannedActivities = "";
         }
+        garant = FilterService.subSearchForGarant(code);
+
+        try {
+            evaluationMethods = jsonBase.getString("evaluationMethods");
+        } catch (org.json.JSONException e) {
+            evaluationMethods = "";
+        }
+
+        try {
+            evaluation = jsonBase.getString("evaluation");
+        } catch (org.json.JSONException e) {
+            evaluation = "";
+        }
+
+        teachers_roles = new ArrayList<>();
+        teachers = new ArrayList<>();
+        if (jsonTeachers.has("teachers")) {
+            try {
+                JSONArray teachersArray = jsonTeachers.getJSONArray("teachers");
+                for (int i = 0; i < teachersArray.length(); i++) {
+                    JSONObject teacherJson = teachersArray.getJSONObject(i);
+                    JSONArray subjects = teacherJson.getJSONArray("subjects");
+
+                    for (int j = 0; j < subjects.length(); j++) {
+                        JSONObject subject = subjects.getJSONObject(j);
+                        String subjectName = subject.getString("subjectName");
+
+                        if (subjectName.equals(code)) {
+                            JSONObject specificSubjectRoles = new JSONObject();
+                            specificSubjectRoles.put("subjectName", subjectName);
+                            specificSubjectRoles.put("roles", subject.getJSONArray("roles"));
+
+                            TeacherSubjectRoles teacher = new TeacherSubjectRoles(specificSubjectRoles);
+                            teachers_roles.add(teacher);
+                            teachers.add(new Teacher(teacherJson));
+                            break;
+                        }
+                    }
+                }
+            } catch (org.json.JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

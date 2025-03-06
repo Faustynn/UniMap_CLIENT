@@ -1,18 +1,17 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.scene.control.Alert.AlertType;
 
 import java.awt.*;
@@ -20,6 +19,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -28,19 +30,23 @@ import javafx.stage.StageStyle;
 
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.AuthService;
+import org.main.unimap_pc.client.services.CheckClientConnection;
+import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.ErrorScreens;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
 
-import static org.main.unimap_pc.client.services.AuthService.prefs;
-
 public class LogInController implements LanguageSupport {
     public Label downlApp;
-    public MFXButton btnFacebook;
-    public MFXButton btnGoogle;
+    public Button btnFacebook;
+    public Button btnGoogle;
     @FXML
-    private Label closeApp;
+    private CheckBox remember_checkBox,checkTerms;
+    @FXML
+    private FontAwesomeIcon closeApp;
+
 
     @FXML
     private AnchorPane dragArea;
@@ -56,6 +62,7 @@ public class LogInController implements LanguageSupport {
 
     @FXML
     private void handleCloseApp() {
+        cleanup();
         Stage stage = (Stage) closeApp.getScene().getWindow();
         stage.close();
         System.exit(0);
@@ -64,19 +71,24 @@ public class LogInController implements LanguageSupport {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    private final SecurityService securityService = new SecurityService();
 
 
 
     @FXML
     private void initialize() {
         languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+        PreferenceServise.put(AppConfig.getLANGUAGE_KEY(), "Language");
+
         loadCurrentLanguage();
         dragArea.setOnMousePressed(this::handleMousePressed);
         dragArea.setOnMouseDragged(this::handleMouseDragged);
         LanguageManager.getInstance().registerController(this);
+
+        Platform.runLater(this::startConnectionCheck);
     }
     private void loadCurrentLanguage() {
-        String selectedLanguage = prefs.get(AppConfig.getLANGUAGE_KEY(), AppConfig.getDEFAULT_LANGUAGE());
+        String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
         languageComboBox.setValue(selectedLanguage);
 
         // listener for lang. editing
@@ -104,11 +116,12 @@ public class LogInController implements LanguageSupport {
             btnGoogle.setText(languageBundle.getString("google.button"));
             btnFacebook.setText(languageBundle.getString("facebook.button"));
             downlApp.setText(languageBundle.getString("download.app"));
-            languageComboBox.setText(languageBundle.getString("language.combobox"));
-            closeApp.setText(languageBundle.getString("close"));
+            languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
             madeby.setText(languageBundle.getString("madeby"));
             dontHaveAcc.setText(languageBundle.getString("dont.have.account"));
             or.setText(languageBundle.getString("or"));
+            remember_checkBox.setText(languageBundle.getString("remember.checkbox"));
+            checkTerms.setText(languageBundle.getString("check.terms"));
         } catch (Exception e) {
             Logger.error("Error updating UI language: " + e.getMessage());
             System.err.println("Error updating UI language: " + e.getMessage());
@@ -126,25 +139,25 @@ public class LogInController implements LanguageSupport {
     }
 
     @FXML
-    private MFXTextField fieldUsername;
+    private TextField fieldUsername;
 
     @FXML
-    private MFXPasswordField fieldPassword;
+    private PasswordField fieldPassword;
 
     @FXML
     private Label btnForgotPass;
 
     @FXML
-    private MFXButton btnSignin;
+    private Button btnSignin;
     @FXML
-    private MFXButton btnSignup;
+    private Button btnSignup;
 
 
     @FXML
     private Label infoMess;
 
     @FXML
-    private MFXComboBox<String> languageComboBox;
+    private ComboBox<String> languageComboBox;
 
     // If click into downlApp label open github page
     @FXML
@@ -272,20 +285,21 @@ public class LogInController implements LanguageSupport {
             infoMess.setText("Please enter your username and password!");
             return;
         }
-        if (username.length() < 3 || password.length() < 3) {
-            infoMess.setText("Username and password must be at least 3 characters long!");
+        if (!securityService.checkNames(username) || !securityService.checkPassword(password)) {
+            infoMess.setText("Invalid username or password format!");
             return;
         }
 
         AuthService.login(username, password).thenAccept(isLoginSuccessful -> Platform.runLater(() -> {
             if (isLoginSuccessful) {
+                if (connectionCheckService != null) {
+                    connectionCheckService.shutdown();
+                }
                 try {
-               //     prefs.put("LANGUAGE", languageComboBox.getValue());
                     Stage currentStage = (Stage) btnSignin.getScene().getWindow();
                     Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
                     Scene mainScene = new Scene(root);
                     currentStage.setScene(mainScene);
-                    currentStage.setFullScreen(true);
                     currentStage.show();
 
                 } catch (IOException e) {
@@ -296,11 +310,26 @@ public class LogInController implements LanguageSupport {
                 infoMess.setText("Invalid username or password!");
             }
         })).exceptionally(ex -> {
-            Platform.runLater(() -> infoMess.setText("Login request failed. Please try again later."));
+            Platform.runLater(() -> {
+                infoMess.setText("Login request failed. Please try again later.");
+
+                // Check connection status if login fails
+                CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                        .thenAccept(isConnected -> {
+                            if (!isConnected) {
+                                handleLostConnection();
+                            }
+                        });
+            });
             return null;
         });
     }
 
+    public void cleanup() {
+        if (connectionCheckService != null) {
+            connectionCheckService.shutdown();
+        }
+    }
 
 
     @FXML
@@ -328,6 +357,49 @@ public class LogInController implements LanguageSupport {
         } catch (Exception e) {
             Logger.error("Failed to open authentication page");
             ErrorScreens.showErrorScreen("Failed to open authentication page");
+        }
+    }
+
+    @FXML
+    private void handleCheckBox() {
+        if (remember_checkBox.isSelected()){
+                PreferenceServise.put("REMEMBER", true);
+        } else {
+            PreferenceServise.put("REMEMBER", false);
+        }
+    }
+
+    @FXML
+    private void handleCheckTerms() {
+        if (checkTerms.isSelected()) {
+            // TODO: terms
+        } else {
+        }
+    }
+
+    private ScheduledExecutorService connectionCheckService;
+
+    private void startConnectionCheck() {
+        connectionCheckService = Executors.newSingleThreadScheduledExecutor();
+
+        connectionCheckService.scheduleAtFixedRate(() -> CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+                .thenAccept(isConnected -> {
+                    if (!isConnected) {
+                        Platform.runLater(this::handleLostConnection);
+                    }
+                }), 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
+    }
+
+    private void handleLostConnection() {
+        if (connectionCheckService != null) {
+            connectionCheckService.shutdown();
+        }
+
+        try {
+            Stage currentStage = (Stage) btnSignin.getScene().getWindow();
+            LoadingScreenController.showLoadScreen(currentStage, "Потеряно подключение к интернету");
+        } catch (IOException e) {
+            ErrorScreens.showErrorScreen("Не удалось загрузить экран ожидания");
         }
     }
 }

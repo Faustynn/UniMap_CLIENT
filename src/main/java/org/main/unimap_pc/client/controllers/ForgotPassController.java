@@ -1,19 +1,22 @@
 package org.main.unimap_pc.client.controllers;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.EmailService;
+import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
@@ -23,26 +26,22 @@ import java.util.ResourceBundle;
 
 import static org.main.unimap_pc.client.configs.AppConfig.getForgotPassPagePath2;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
-import static org.main.unimap_pc.client.services.AuthService.prefs;
 
 public class ForgotPassController implements LanguageSupport {
     @FXML
-    private Label closeApp;
+    private FontAwesomeIcon closeApp;
 
     @FXML
     private AnchorPane dragArea;
 
     @FXML
-    private MFXButton btnSendMail;
+    private Button btnSendMail;
 
     @FXML
-    private MFXButton btnConfirmMail;
+    private TextField fieldEmail;
 
     @FXML
-    private MFXTextField fieldEmail;
-
-    @FXML
-    private MFXTextField fieldCode;
+    private TextField fieldCode;
 
     @FXML
     private Label infoMess;
@@ -55,6 +54,8 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private Label reset_text;
+
+    private final SecurityService securityService = new SecurityService();
 
 
     @FXML
@@ -84,7 +85,7 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private void initialize() {
-        String lang = prefs.get("LANGUAGE", "en");
+        String lang = PreferenceServise.get("LANGUAGE").toString();
         LanguageManager.getInstance().registerController(this);
 
         LanguageManager.changeLanguage(lang);
@@ -107,11 +108,11 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     private void SendMailbtn() {
-        if (fieldEmail.getText().isEmpty()) {
+        String emailInput = fieldEmail.getText();
+        if (emailInput.isEmpty()) {
             infoMess.setText("Please enter your email address");
-        } else if (fieldEmail.getText().length() < 5 || !fieldEmail.getText().contains("@") || !fieldEmail.getText().contains(".")) {
+        } else if (!securityService.checkEmail(emailInput)) {
             infoMess.setText("Invalid email address");
-            // fieldEmail.clear();
         } else {
             String url = AppConfig.getFindUserByEmailUrl() + fieldEmail.getText();
             System.out.println(url);
@@ -140,12 +141,13 @@ public class ForgotPassController implements LanguageSupport {
 
     @FXML
     public void ConfirmMailbtn() {
+        String codeInput = fieldCode.getText();
         String url = AppConfig.getConfirmCodeToEmail();
         String url2 = AppConfig.getChangePassword();
 
-        if (fieldCode.getText().isEmpty()) {
+        if (codeInput.isEmpty()) {
             infoMess2.setText("Please enter your code from email!");
-        } else if (fieldCode.getText().length() != 6) {
+        } else if (!securityService.checkEmailCode(codeInput)) {
             infoMess2.setText("The code must be 6 numbers!");
         } else {
             EmailService.checkCode(url, fieldCode.getText(), email).thenAccept(result -> Platform.runLater(() -> {
@@ -156,8 +158,8 @@ public class ForgotPassController implements LanguageSupport {
                     fieldCode.clear();
 
                     fieldCode.textProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue.length() < 6) {
-                            infoMess2.setText("Password must be at least 6 characters!");
+                        if (!securityService.checkPassword(newValue)) {
+                            infoMess2.setText("Password must be at least 10 characters long, contain at least one letter and one digit!");
                             return;
                         }
 

@@ -1,5 +1,4 @@
 package org.main.unimap_pc.client.models;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +15,7 @@ public class UserModel {
     private String email;
     private String login;
     private boolean isAdmin;
+    private boolean isPremium;
     private String avatar;
 
 }

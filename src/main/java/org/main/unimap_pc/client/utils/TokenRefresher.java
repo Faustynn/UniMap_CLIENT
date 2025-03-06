@@ -17,7 +17,7 @@ public class TokenRefresher {
 
     public void startTokenRefreshTask() {
         scheduler.scheduleAtFixedRate(() -> {
-            jwtService.refreshTokenService();
+            jwtService.refreshAccessToken();
         }, 0, 1, TimeUnit.MINUTES);
     }
 
