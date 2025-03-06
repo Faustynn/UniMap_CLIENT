@@ -390,21 +390,59 @@ public class CommentsPageController implements LanguageSupport {
         descriptionText.setPrefWidth(399);
         descriptionText.setStyle("-fx-text-fill: black;");
 
-        modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText);
+
+
+        Label comment_idText = new Label(String.valueOf(comment_id));
+        comment_idText.setLayoutX(450);
+        comment_idText.setLayoutY(10);
+        comment_idText.setStyle("-fx-text-fill: black;");
+        int paddingValue = comment_idText.getText().length() * 5;
+        comment_idText.setPadding(new Insets(0, paddingValue, 0, 0));
+
+        FontAwesomeIcon deleteIconBtn = new FontAwesomeIcon();
+        deleteIconBtn.setGlyphName("TRASH");
+        deleteIconBtn.setSize("1.5em");
+        deleteIconBtn.setLayoutX(475);
+        deleteIconBtn.setLayoutY(25);
+        deleteIconBtn.setFill(Color.BLACK);
+
+        deleteIconBtn.setOnMouseClicked(event -> {
+            if (page == 1) {
+                CommentsService.deleteSubjectComment(String.valueOf(comment_id)).thenAccept(success -> {
+                    if (success) {
+                        Platform.runLater(this::refreshComments);
+                    } else {
+                        showErrorDialog("Failed to delete comment");
+                    }
+                });
+            }else if (page == 2){
+                CommentsService.deleteTeacherComment(String.valueOf(comment_id)).thenAccept(success -> {
+                    if (success) {
+                        Platform.runLater(this::refreshComments);
+                    } else {
+                        showErrorDialog("Failed to delete comment");
+                    }
+                });
+            } else {
+                showErrorDialog("Invalid type");
+            }
+        });
+
+        if(UserService.getInstance().getCurrentUser().isAdmin()){
+            modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText,comment_idText,deleteIconBtn);
+        }else {
+            modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText);
+        }
 
         // Dynamically adjust module height based on description text
         descriptionText.heightProperty().addListener((obs, oldVal, newVal) -> {
             modulePane.setPrefHeight(newVal.doubleValue() + 70);
         });
 
-        Label comment_idText = new Label(String.valueOf(comment_id));
-        comment_idText.setLayoutX(450);
-        comment_idText.setLayoutY(10);
-        comment_idText.setStyle("-fx-text-fill: black;");
+
 
         return modulePane;
     }
-
 
     private HBox createRatingStars(double rating) {
         HBox starsBox = new HBox(5);
