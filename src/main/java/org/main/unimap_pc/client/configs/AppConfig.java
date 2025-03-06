@@ -210,7 +210,7 @@ public class AppConfig {
     }
     public static String getLogLevel() {
         return properties.getProperty("LOG_LEVEL", "INFO");
-
+    }
 
 
 

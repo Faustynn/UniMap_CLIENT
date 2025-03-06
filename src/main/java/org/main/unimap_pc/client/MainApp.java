@@ -11,7 +11,6 @@ import org.main.unimap_pc.client.controllers.SceneController;
 import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
 
-import org.main.unimap_pc.client.utils.LoadingScreens;
 import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
@@ -19,7 +18,6 @@ import org.main.unimap_pc.client.controllers.LoadingScreenController;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
