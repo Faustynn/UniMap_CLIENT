@@ -390,8 +390,6 @@ public class HomePageController implements LanguageSupport {
         descriptFXcom.setText(languageBundle.getString("descriptFXcom"));
         descriptMladost.setText(languageBundle.getString("descriptMladost"));
         descriptFIITTelegram.setText(languageBundle.getString("descriptFIITTelegram"));
-
-        languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
     }
 
     @FXML

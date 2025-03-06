@@ -413,7 +413,7 @@ public class SubjectsPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            System.err.println("Failed to load main page: " + e.getMessage());
+            System.err.println("Failed to load profile page: " + e.getMessage());
         }
     }
     @FXML

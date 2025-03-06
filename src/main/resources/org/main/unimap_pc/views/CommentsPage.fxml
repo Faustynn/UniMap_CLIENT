@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -11,53 +14,39 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.CommentsPageController">
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="550.0" style="-fx-background-color: #262A35;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.CommentsPageController">
     <children>
-        <VBox prefHeight="640.0" prefWidth="500.0" style="-fx-background-color: transparent;">
+        <VBox layoutX="25.0" prefHeight="640.0" prefWidth="500.0" style="-fx-background-color: transparent;">
             <children>
             <AnchorPane prefHeight="84.0" prefWidth="500.0" style="-fx-background-color: #191C22;">
                <children>
-                          <Pane prefHeight="56.0" prefWidth="500.0" style="-fx-background-color: #262A35;">
+                          <Pane layoutX="-25.0" prefHeight="56.0" prefWidth="550.0" style="-fx-background-color: #262A35;">
                               <children>
-                                  <Label fx:id="comments_text" layoutX="19.0" layoutY="18.0" text="COMMENTS:" textFill="WHITE">
+                                  <Label fx:id="comments_text" layoutX="28.0" layoutY="17.0" text="COMMENTS" textFill="WHITE">
                            <font>
                               <Font name="Outfit Bold" size="22.0" />
                            </font>
                         </Label>
-                        <FontAwesomeIcon fx:id="back_btn" fill="WHITE" glyphName="CLOSE" layoutX="466.0" layoutY="36.0" size="25" />
+                        <FontAwesomeIcon fx:id="back_btn" fill="WHITE" glyphName="CLOSE" layoutX="498.0" layoutY="36.0" onMouseClicked="#handleCloseApp" size="25" />
+                          <ComboBox fx:id="languageComboBox" layoutX="374.0" layoutY="16.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+                              <styleClass>
+                                  <String fx:value="custom-combo-box" />
+                              </styleClass>
+                              <stylesheets>
+                                  <URL value="@../views/style/style.css" />
+                              </stylesheets>
+                          </ComboBox>
+                        <FontAwesomeIcon fx:id="refresh_btn" fill="WHITE" glyphName="REFRESH" layoutX="172.0" layoutY="40.0" onMouseClicked="#refreshComments" size="25" />
                               </children>
                           </Pane>
                </children>
             </AnchorPane>
-                <ScrollPane hbarPolicy="NEVER" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;" vbarPolicy="NEVER">
-                    <content>
-                        <AnchorPane fx:id="commentAnchor" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;">
-                            <children>
-                                <Pane layoutY="39.0" prefHeight="79.0" prefWidth="500.0" style="-fx-background-color: green;">
-                                    <children>
-                                        <Label layoutX="48.0" layoutY="26.0" text="UserName">
-                                            <font>
-                                                <Font name="System Bold" size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label layoutX="11.0" layoutY="26.0" text="avatar">
-                                            <font>
-                                                <Font size="12.0" />
-                                            </font>
-                                        </Label>
-                                        <Label layoutX="332.0" layoutY="10.0" text="Звезды от 0 дл 6">
-                                            <font>
-                                                <Font size="6.0" />
-                                            </font>
-                                        </Label>
-                                        <Label alignment="TOP_LEFT" layoutX="106.0" layoutY="5.0" prefHeight="59.0" prefWidth="224.0" text="Описание" />
-                                    </children>
-                                </Pane>
-                            </children>
-                        </AnchorPane>
-                    </content>
-                </ScrollPane>
-                <AnchorPane prefHeight="140.0" prefWidth="405.0" style="-fx-background-color: #262A35;">
+                  <AnchorPane fx:id="commentAnchorInScrolPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;">
+               <children>
+                      <ScrollPane fx:id="scrollpane" hbarPolicy="NEVER" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;" vbarPolicy="NEVER" />
+               </children>
+                  </AnchorPane>
+                <AnchorPane prefHeight="140.0" prefWidth="404.0" style="-fx-background-color: #262A35;">
                     <children>
                         <Label fx:id="add_comment_text" layoutX="25.0" layoutY="13.0" text="Add your comment here:" textFill="WHITE">
                             <font>
@@ -89,5 +78,6 @@
                 </AnchorPane>
             </children>
         </VBox>
+
     </children>
 </AnchorPane>

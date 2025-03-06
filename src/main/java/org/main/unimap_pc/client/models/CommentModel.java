@@ -13,7 +13,8 @@ public class CommentModel {
     private String avatar;
     private String username;
     private String description;
-    private int rating;
+    private String rating;
+    private int levelAccess;
 
     @Override
     public String toString() {
@@ -22,6 +23,7 @@ public class CommentModel {
                 ", username='" + username + '\'' +
                 ", description='" + description + '\'' +
                 ", rating=" + rating +
+                ", levelAccess=" + levelAccess +
                 '}';
     }
 

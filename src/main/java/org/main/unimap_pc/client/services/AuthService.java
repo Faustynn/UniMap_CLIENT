@@ -12,9 +12,6 @@ import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.utils.TokenRefresher;
 
-import org.main.unimap_pc.client.services.CacheService;
-import org.main.unimap_pc.client.services.PreferenceServise;
-
 public class AuthService {
     private static final HttpClient httpClient = HttpClient.newBuilder().build();
     private static TokenRefresher tokenRefresher;
