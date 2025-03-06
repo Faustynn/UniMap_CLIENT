@@ -79,6 +79,7 @@ public class HomePageController implements LanguageSupport {
             cachedLanguage = PreferenceServise.get("LANGUAGE").toString();
 
             UserModel user = initUser(userData);
+            System.out.println(user.isPremium());
             if (user != null) {
                 UserService.getInstance().setCurrentUser(user);
                 navi_username_text.setText(user.getUsername());
@@ -230,14 +231,17 @@ public class HomePageController implements LanguageSupport {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(userData);
 
+                System.out.println(jsonNode);
+
                 String id = jsonNode.get("id").asText();
                 String login = jsonNode.get("login").asText();
                 String email = jsonNode.get("email").asText();
                 String username = jsonNode.get("username").asText();
                 String avatar = jsonNode.get("avatar").asText();
                 boolean admin = jsonNode.get("admin").asBoolean();
+                boolean premium = jsonNode.get("premium").asBoolean();
 
-                return new UserModel(id, username, email, login, admin, avatar);
+                return new UserModel(id, username, email, login, admin, premium,avatar);
             } catch (Exception e) {
                 e.printStackTrace();
             }

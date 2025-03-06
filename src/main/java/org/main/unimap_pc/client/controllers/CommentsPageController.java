@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.CommentsService;
 import org.main.unimap_pc.client.services.PreferenceServise;
+import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 
@@ -103,7 +104,14 @@ public class CommentsPageController implements LanguageSupport {
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
 
+            CommentTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.length() > 33) {
+                    CommentTextField.setText(newValue.substring(0, 33) + "\n" + newValue.substring(33));
+                }
+            });
+
             setupStarRating();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,9 +211,22 @@ public class CommentsPageController implements LanguageSupport {
             return;
         }
 
+        String user_id = UserService.getInstance().getCurrentUser().getId();
+        String levelAccess;
+        if (UserService.getInstance().getCurrentUser().isAdmin()) {
+            levelAccess = "2";
+        } else if (UserService.getInstance().getCurrentUser().isPremium()) {
+            levelAccess = "1";
+        }else {
+            levelAccess = "0";
+        }
+
         String jsonComment = new JSONObject()
+                .put("user_id", user_id)
+                .put("code", lookingParentID)
                 .put("text", commentText)
-                .put("parentID", lookingParentID)
+                .put("rating", currentRating)
+                .put("levelAccess", levelAccess)
                 .toString();
 
         CompletableFuture<Boolean> result;

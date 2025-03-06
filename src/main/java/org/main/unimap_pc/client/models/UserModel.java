@@ -15,6 +15,7 @@ public class UserModel {
     private String email;
     private String login;
     private boolean isAdmin;
+    private boolean isPremium;
     private String avatar;
 
 }
