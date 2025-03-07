@@ -250,4 +250,16 @@ public class AppConfig {
     public static String getDeleteSubjectsCommentURL(String id){
         return DELETE_SUBJECTS_COMMENT_URL+id;
     }
+
+
+    private static final String DELETE_USER_URL = API_URL+"user/delete/all/";
+    private static final String DELETE_COMMENTS_USER_URL = API_URL+"user/delete/comments/";
+
+    public static String getDeleteUserUrl(String id) {
+        return DELETE_USER_URL+id;
+    }
+    public static String getDeleteCommentsUserUrl(String id) {
+        return DELETE_COMMENTS_USER_URL+id;
+    }
+
 }

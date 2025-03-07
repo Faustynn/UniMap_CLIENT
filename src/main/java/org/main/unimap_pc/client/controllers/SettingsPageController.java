@@ -1,6 +1,9 @@
 package org.main.unimap_pc.client.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +15,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.services.JWTService;
 import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
@@ -26,6 +31,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
+import static org.main.unimap_pc.client.controllers.LogInController.showInfoDialog;
 
 public class SettingsPageController implements LanguageSupport {
 
@@ -35,7 +41,7 @@ public class SettingsPageController implements LanguageSupport {
     public Button btnStartDeleteAcc;
     public Button btnStartDeletComments;
     public Label privacy_text;
-    public Label profile_text;
+    public Label settings_text;
     public Label pair_mobile_text;
     public ImageView qr_image;
     public Label political_terms_text;
@@ -124,6 +130,15 @@ public class SettingsPageController implements LanguageSupport {
         btn_subjectpage.setText(languageBundle.getString("subjectpage"));
         btn_teacherspage.setText(languageBundle.getString("teacherspage"));
         btn_settingspage.setText(languageBundle.getString("settingspage"));
+
+        settings_text.setText(languageBundle.getString("settings_text"));
+        privacy_text.setText(languageBundle.getString("privacy_text"));
+        pair_mobile_text.setText(languageBundle.getString("pair_mobile_text"));
+        political_terms_text.setText(languageBundle.getString("political_terms_text"));
+        sourse_code_text.setText(languageBundle.getString("sourse_code_text"));
+        support_text.setText(languageBundle.getString("support_text"));
+        btnStartDeleteAcc.setText(languageBundle.getString("btnStartDeleteAcc"));
+        btnStartDeletComments.setText(languageBundle.getString("btnStartDeletComments"));
     }
 
     @FXML
@@ -225,6 +240,89 @@ public class SettingsPageController implements LanguageSupport {
         stage.setScene(mainScene);
         stage.show();
     }
+
+
+    @FXML
+    private void open_terms(){
+        try {
+            String url = "https://github.com/Faustynn/UniMap_CLIENT";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void open_source_code(){
+        try {
+            String url = "https://github.com/UniMapSTU";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void open_support(){
+        try {
+            String url = "https://bank.gov.ua/ua/about/support-the-armed-forces";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+@FXML
+private void handleStartDeleteAcc() {
+    System.out.println("Delete user");
+    UserService.delete_user(UserService.getInstance().getCurrentUser().getId())
+        .thenAccept(success -> {
+            if (success) {
+                Platform.runLater(() -> {
+                    PreferenceServise.deletePreferences();
+                    CacheService.clearCache();
+
+                    // Logout
+                    try {
+                        Stage stage = (Stage) btnStartDeleteAcc.getScene().getWindow();
+                        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getLoginPagePath())));
+                        Scene mainScene = new Scene(root);
+                        stage.setScene(mainScene);
+                        stage.show();
+                    } catch (IOException e) {
+                        Logger.error("Failed to load login page: " + e.getMessage());
+                        showErrorDialog("Error logging out. Please try again later.");
+                    }
+                });
+            } else {
+                Platform.runLater(() -> {
+                    showErrorDialog("Failed to delete account. Please try again later.");
+                });
+            }
+        });
+}
+
+@FXML
+private void handleStartDeleteComments() {
+    System.out.println("Delete comments");
+    UserService.delete_all_user_comments(UserService.getInstance().getCurrentUser().getId())
+            .thenAccept(success -> {
+                if (success) {
+                    Platform.runLater(() -> {
+                        showInfoDialog("Comments deleted successfully.");
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        showErrorDialog("Failed to delete comments. Please try again later.");
+                    });
+                }
+            });
+}
+
+
+
 
 
 }
