@@ -35,7 +35,7 @@ public class SettingsPageController implements LanguageSupport {
     public Button btnStartDeleteAcc;
     public Button btnStartDeletComments;
     public Label privacy_text;
-    public Label profile_text;
+    public Label settings_text;
     public Label pair_mobile_text;
     public ImageView qr_image;
     public Label political_terms_text;
@@ -124,6 +124,15 @@ public class SettingsPageController implements LanguageSupport {
         btn_subjectpage.setText(languageBundle.getString("subjectpage"));
         btn_teacherspage.setText(languageBundle.getString("teacherspage"));
         btn_settingspage.setText(languageBundle.getString("settingspage"));
+
+        settings_text.setText(languageBundle.getString("settings_text"));
+        privacy_text.setText(languageBundle.getString("privacy_text"));
+        pair_mobile_text.setText(languageBundle.getString("pair_mobile_text"));
+        political_terms_text.setText(languageBundle.getString("political_terms_text"));
+        sourse_code_text.setText(languageBundle.getString("sourse_code_text"));
+        support_text.setText(languageBundle.getString("support_text"));
+        btnStartDeleteAcc.setText(languageBundle.getString("btnStartDeleteAcc"));
+        btnStartDeletComments.setText(languageBundle.getString("btnStartDeletComments"));
     }
 
     @FXML
@@ -226,5 +235,35 @@ public class SettingsPageController implements LanguageSupport {
         stage.show();
     }
 
+
+    @FXML
+    private void open_terms(){
+
+    }
+
+    @FXML
+    private void open_source_code(){
+        try {
+            String url = "https://github.com/UniMapSTU";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void open_support(){
+
+    }
+
+    @FXML
+    private void handleStartDeleteAcc() {
+
+    }
+
+    @FXML
+    private void handleStartDeleteComments() {
+
+    }
 
 }
