@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<?import java.lang.String?>
-<?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -173,7 +171,10 @@
             </font>
         </Label>
 
-        <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="16.0" layoutY="37.0" onMouseClicked="#handleCloseApp" size="30" text="" />
+        <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="16.0" layoutY="37.0" onMouseClicked="#handleCloseApp" size="30" text="">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></FontAwesomeIcon>
       <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleCommentsButton" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
          <font>
             <Font name="Outfit Bold" size="16.0" />

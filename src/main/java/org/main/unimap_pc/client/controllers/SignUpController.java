@@ -3,6 +3,9 @@ package org.main.unimap_pc.client.controllers;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -10,16 +13,24 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.RegistrationService;
 import org.main.unimap_pc.client.services.SecurityService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
+import org.main.unimap_pc.client.utils.Logger;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
+
 public class SignUpController implements LanguageSupport {
+    public Label signIn_text;
+    public Label have_acc_text;
     @FXML
     private FontAwesomeIcon closeApp;
 
@@ -44,12 +55,15 @@ public class SignUpController implements LanguageSupport {
     public void updateUILanguage(ResourceBundle languageBundle) {
         infoMess.setText(languageBundle.getString("info.message"));
         btnRegistr.setText(languageBundle.getString("register.button"));
-        fieldUsername.setPromptText(languageBundle.getString("username.prompt"));
+        fieldUsername.setPromptText(languageBundle.getString("username.res.prompt"));
         fieldEmail.setPromptText(languageBundle.getString("email.prompt"));
         fieldLogin.setPromptText(languageBundle.getString("login.prompt"));
         fieldPassword.setPromptText(languageBundle.getString("password.prompt"));
         fieldControlPassword.setPromptText(languageBundle.getString("confirm.password.prompt"));
         userRegistr.setText(languageBundle.getString("user.reg"));
+
+        signIn_text.setText(languageBundle.getString("sign.in.text"));
+        have_acc_text.setText(languageBundle.getString("have.acc.text"));
     }
     @FXML
     private void initialize() {
@@ -168,4 +182,9 @@ public class SignUpController implements LanguageSupport {
         });
     }
 
+    @FXML
+    private void move_to_sign_in() {
+        Stage stage = (Stage) closeApp.getScene().getWindow();
+        stage.close();
+    }
 }

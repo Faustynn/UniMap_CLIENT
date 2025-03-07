@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -66,7 +67,10 @@
             <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
-      <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="20.0" layoutY="40.0" onMouseClicked="#handleCloseApp" size="30" text="" />
+      <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="20.0" layoutY="40.0" onMouseClicked="#handleCloseApp" size="30" text="">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></FontAwesomeIcon>
       <Label fx:id="navi_username_text" contentDisplay="RIGHT" layoutX="329.0" layoutY="21.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="13.0" />
@@ -86,6 +90,9 @@
          <font>
             <Font name="Outfit Bold" size="16.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
       <AnchorPane fx:id="teachers_details_anchor" layoutX="50.0" layoutY="259.0" minHeight="0.0" minWidth="0.0" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent; -fx-background-radius: 0%;">
          <children>

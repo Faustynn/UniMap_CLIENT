@@ -181,7 +181,7 @@ public class HomePageController implements LanguageSupport {
         pane_for_news.setStyle("-fx-background-color: #191C22;");
         pane_for_news.getChildren().add(newsContainer);
         pane_for_news.setPrefHeight(newsList.size()*(140+8));
-        pane_for_news.setMinHeight(444);
+        pane_for_news.setMinHeight(516);
 
     }
     private AnchorPane createNewsItem(NewsModel news) {

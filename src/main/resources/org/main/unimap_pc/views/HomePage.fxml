@@ -37,6 +37,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -52,6 +55,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -67,6 +73,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -82,6 +91,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -97,6 +109,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -109,6 +124,9 @@
                      <padding>
                         <Insets bottom="20.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
                <VBox.margin>
@@ -124,24 +142,27 @@
          </image>
       </ImageView>
 
-      <Label fx:id="navi_username_text" layoutX="922.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+      <Label fx:id="navi_username_text" alignment="CENTER_RIGHT" layoutX="865.0" layoutY="22.0" prefHeight="17.0" prefWidth="148.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="13.0" />
          </font>
       </Label>
-      <Label fx:id="navi_login_text" layoutX="967.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+      <Label fx:id="navi_login_text" alignment="CENTER_RIGHT" layoutX="865.0" layoutY="37.0" prefHeight="13.0" prefWidth="148.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="10.0" />
          </font>
       </Label>
 
-      <ComboBox fx:id="languageComboBox" layoutX="781.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+      <ComboBox fx:id="languageComboBox" layoutX="751.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
          <styleClass>
             <String fx:value="custom-combo-box" />
          </styleClass>
          <stylesheets>
             <URL value="@../views/style/style.css" />
          </stylesheets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ComboBox>
 
       <ScrollPane fx:id="scrollPane_news" cache="true" hbarPolicy="NEVER" layoutX="269.0" layoutY="98.0" prefHeight="515.0" prefWidth="444.0" snapToPixel="false" style="-fx-background-color: #191C22;" vbarPolicy="NEVER">
@@ -151,37 +172,49 @@
       </ScrollPane>
       <Label fx:id="news_upd_text" layoutX="269.0" layoutY="80.0" style="-fx-text-fill: #878fa1; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="Latest News and Updates">
       </Label>
-      <Pane layoutX="747.0" layoutY="98.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="98.0" onMouseClicked="#fiit_discord_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="11.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Discord">
             </Label>
             <Label fx:id="descriptFIITDISCORD" layoutX="11.0" layoutY="37.0" maxWidth="291.0" prefHeight="65.0" prefWidth="291.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
             </Label>
          </children>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="210.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="210.0" onMouseClicked="#fx_com_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="10.0" layoutY="9.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FX - com">
             </Label>
             <Label fx:id="descriptFXcom" layoutX="12.0" layoutY="30.0" maxWidth="305.0" prefHeight="65.0" prefWidth="291.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
             </Label>
          </children>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="322.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="322.0" onMouseClicked="#mladost_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="4.0" layoutY="12.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="Mladost Guide">
             </Label>
             <Label fx:id="descriptMladost" layoutX="8.0" layoutY="37.0" maxWidth="290.0" prefHeight="57.0" prefWidth="290.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
             </Label>
          </children>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="434.0" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="434.0" onMouseClicked="#fiit_telegram_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="8.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Telegram">
             </Label>
             <Label fx:id="descriptFIITTelegram" layoutX="12.0" layoutY="41.0" maxWidth="290.0" prefHeight="55.0" prefWidth="290.0" style="-fx-text-fill: #969db5; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="An official Discord of FIIT Students, all the years are present." wrapText="true">
             </Label>
          </children>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Pane>
       <Label fx:id="utils_text" layoutX="747.0" layoutY="80.0" style="-fx-text-fill: #878fa1; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="Links">
       </Label>
