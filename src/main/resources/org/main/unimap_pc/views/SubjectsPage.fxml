@@ -143,12 +143,12 @@
             <Image url="@../images/avatares/0.png" />
          </image>
       </ImageView>
-      <Label fx:id="navi_username_text" layoutX="922.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+      <Label fx:id="navi_username_text" alignment="CENTER_RIGHT" layoutX="889.0" layoutY="22.0" prefHeight="17.0" prefWidth="124.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="13.0" />
          </font>
       </Label>
-      <Label fx:id="navi_login_text" layoutX="967.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+      <Label fx:id="navi_login_text" alignment="CENTER_RIGHT" layoutX="889.0" layoutY="37.0" prefHeight="13.0" prefWidth="124.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
          <font>
             <Font name="Outfit Regular" size="10.0" />
          </font>
@@ -204,7 +204,7 @@
       </TextField>
 
       <HBox spacing="16.0" />
-      <ComboBox fx:id="languageComboBox" layoutX="766.0" layoutY="21.0" prefHeight="24.0" prefWidth="124.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+      <ComboBox fx:id="languageComboBox" layoutX="752.0" layoutY="21.0" prefHeight="24.0" prefWidth="124.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
          <styleClass>
             <String fx:value="custom-combo-box" />
          </styleClass>

@@ -116,7 +116,7 @@
                 </Pane>
             </children>
         </VBox>
-        <ComboBox fx:id="languageComboBox" layoutX="781.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+        <ComboBox fx:id="languageComboBox" layoutX="758.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
             <styleClass>
                 <String fx:value="custom-combo-box" />
             </styleClass>
@@ -130,12 +130,12 @@
             </image>
         </ImageView>
 
-        <Label fx:id="navi_username_text" layoutX="922.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+        <Label fx:id="navi_username_text" alignment="CENTER_RIGHT" layoutX="872.0" layoutY="22.0" prefHeight="17.0" prefWidth="141.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
             <font>
                 <Font name="Outfit Regular" size="13.0" />
             </font>
         </Label>
-        <Label fx:id="navi_login_text" layoutX="967.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+        <Label fx:id="navi_login_text" alignment="CENTER_RIGHT" layoutX="879.0" layoutY="37.0" prefHeight="13.0" prefWidth="134.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
             <font>
                 <Font name="Outfit Regular" size="10.0" />
             </font>
