@@ -231,7 +231,6 @@ public class AppConfig {
     private static final String DELETE_TEACHERS_COMMENT_URL = API_URL + "comments/teacher/";
     private static final String DELETE_SUBJECTS_COMMENT_URL = API_URL + "comments/subject/";
 
-
     public static String getAllTeacherURL(String id){
         return ALL_TEACHERS_URL+id;
     }
