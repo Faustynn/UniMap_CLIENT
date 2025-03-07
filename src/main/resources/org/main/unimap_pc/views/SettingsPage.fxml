@@ -163,7 +163,7 @@
       </Label>
       <Label fx:id="settings_text" layoutX="280.0" layoutY="84.0" style="-fx-text-fill: WHITE;" text="Settings" textAlignment="RIGHT">
          <font>
-            <Font name="Outfit Regular" size="32.0" />
+            <Font name="Outfit Bold" size="32.0" />
          </font>
       </Label>
       <Label fx:id="pair_mobile_text" layoutX="280.0" layoutY="267.0" style="-fx-text-fill: #848da0;" text="Pair with mobile:" textAlignment="RIGHT">

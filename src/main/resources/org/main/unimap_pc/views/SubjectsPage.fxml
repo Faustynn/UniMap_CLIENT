@@ -39,6 +39,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -54,6 +57,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -69,6 +75,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -84,6 +93,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -99,6 +111,9 @@
                      <padding>
                         <Insets bottom="10.0" left="24.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
             </Pane>
@@ -111,6 +126,9 @@
                      <padding>
                         <Insets bottom="20.0" />
                      </padding>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </MFXButton>
                </children>
                <VBox.margin>
@@ -181,18 +199,21 @@
             <Font name="Outfit Regular" size="14.0" />
          </font>
          <cursor>
-            <Cursor fx:constant="HAND" />
+            <Cursor fx:constant="TEXT" />
          </cursor>
       </TextField>
 
       <HBox spacing="16.0" />
-      <ComboBox fx:id="languageComboBox" layoutX="789.0" layoutY="21.0" prefHeight="24.0" prefWidth="101.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+      <ComboBox fx:id="languageComboBox" layoutX="766.0" layoutY="21.0" prefHeight="24.0" prefWidth="124.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
          <styleClass>
             <String fx:value="custom-combo-box" />
          </styleClass>
          <stylesheets>
             <URL value="@../views/style/style.css" />
          </stylesheets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ComboBox>
 <Label fx:id="filter_subject_text" layoutX="266.0" layoutY="70.0" style="-fx-text-fill: WHITE;" text="Subjects">
    <font>
@@ -216,6 +237,9 @@
                <String fx:value="Volitelny" />
             </FXCollections>
          </items>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
       </ComboBox>
          </children></VBox>
 
@@ -234,6 +258,9 @@
                <String fx:value="Ingeneer" />
             </FXCollections>
          </items>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
       </ComboBox>
    </children>
 </VBox>
@@ -252,6 +279,9 @@
                <String fx:value="ZS" />
             </FXCollections>
          </items>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
       </ComboBox>
          </children></VBox>
       <Label fx:id="subj_list" layoutX="265.0" layoutY="261.0" text="Result" textFill="#99a3bf">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -19,13 +20,19 @@
                         <Image url="@../images/app/GPS_app.png" />
                     </image>
                 </ImageView>
-            <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="304.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="" />
+            <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="304.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></FontAwesomeIcon>
             <Text fill="WHITE" layoutX="79.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
                <font>
                   <Font name="Outfit Bold" size="28.0" />
                </font>
             </Text>
             </children>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
         </AnchorPane>
         <AnchorPane layoutY="83.0" prefHeight="350.0" prefWidth="350.0">
             <children>
@@ -34,14 +41,20 @@
                         <Font name="Outfit Regular" size="32.0" />
                     </font>
                 </Label>
-            <Button fx:id="btnSendMail" layoutX="124.0" layoutY="129.0" onMouseClicked="#SendMailbtn" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Send" textFill="WHITE">
+            <Button fx:id="btnSendMail" layoutX="124.0" layoutY="129.0" onMouseClicked="#SendMailbtn" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Send" textFill="WHITE">
                <font>
                   <Font name="Outfit Bold" size="16.0" />
-               </font></Button>
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
             <TextField fx:id="fieldEmail" layoutX="54.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" promptText="                     Enter your Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
                <font>
                   <Font name="Outfit Regular" size="14.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
             </TextField>
             <AnchorPane layoutX="100.0" layoutY="187.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #262A35; -fx-background-radius: 25;">
                <children>
@@ -50,7 +63,10 @@
                         <Image url="@../images/qr/qr-code.png" />
                      </image>
                   </ImageView>
-               </children></AnchorPane>
+               </children>
+               <cursor>
+                  <Cursor fx:constant="WAIT" />
+               </cursor></AnchorPane>
             <Label fx:id="infoMess" layoutX="55.0" layoutY="55.0" textFill="#cd1d2c">
                <font>
                   <Font name="Roboto Bold Italic" size="14.0" />

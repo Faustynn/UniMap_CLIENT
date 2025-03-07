@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -19,13 +20,19 @@
                   <Image url="@../images/app/GPS_app.png" />
                </image>
             </ImageView>
-            <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="304.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="" />
+            <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="304.0" layoutY="52.0" onMouseClicked="#handleCloseApp" size="30" text="">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></FontAwesomeIcon>
             <Text fill="WHITE" layoutX="83.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
                <font>
                   <Font name="Outfit Bold" size="28.0" />
                </font>
             </Text>
          </children>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
       </AnchorPane>
       <AnchorPane layoutY="83.0" prefHeight="240.0" prefWidth="350.0">
          <children>
@@ -34,15 +41,21 @@
                   <Font name="Outfit Regular" size="32.0" />
                </font>
             </Label>
-            <Button fx:id="btnSendMail" layoutX="132.0" layoutY="139.0" onMouseClicked="#ConfirmMailbtn" prefHeight="35.0" prefWidth="93.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
+            <Button fx:id="btnSendMail" layoutX="117.0" layoutY="139.0" onMouseClicked="#ConfirmMailbtn" prefHeight="35.0" prefWidth="125.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
                <font>
                   <Font name="Outfit Bold" size="16.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
             <TextField fx:id="fieldCode" layoutX="54.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="250.0" promptText="               Enter code from Email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
                <font>
                   <Font name="Outfit Regular" size="14.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
             </TextField>
          </children>
       </AnchorPane>

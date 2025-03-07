@@ -232,7 +232,7 @@ public class FilterService {
                 type = removeDiacritics(type);
                 return switch (subjectType) {
                     case POV -> type.equals("povinny");
-                    case POV_VOL -> type.equals("povinne volitelny");
+                    case POV_VOL -> type.equals("povinne-volitelny");
                     case VOL -> type.equals("volitelny");
                     case NONE -> true;
                 };
@@ -243,7 +243,7 @@ public class FilterService {
                 type = removeDiacritics(type);
                 return switch (studyType) {
                     case BC -> type.equals("bakalarsky");
-                    case ING -> type.equals("inziniersky");
+                    case ING -> type.equals("inzeniersky");
                     case NONE -> true;
                 };
             };

@@ -3,6 +3,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -27,7 +28,10 @@
                               <Font name="Outfit Bold" size="22.0" />
                            </font>
                         </Label>
-                        <FontAwesomeIcon fx:id="back_btn" fill="WHITE" glyphName="CLOSE" layoutX="498.0" layoutY="36.0" onMouseClicked="#handleCloseApp" size="25" />
+                        <FontAwesomeIcon fx:id="back_btn" fill="WHITE" glyphName="CLOSE" layoutX="498.0" layoutY="36.0" onMouseClicked="#handleCloseApp" size="25">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></FontAwesomeIcon>
                           <ComboBox fx:id="languageComboBox" layoutX="374.0" layoutY="16.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
                               <styleClass>
                                   <String fx:value="custom-combo-box" />
@@ -35,15 +39,24 @@
                               <stylesheets>
                                   <URL value="@../views/style/style.css" />
                               </stylesheets>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                           </ComboBox>
-                        <FontAwesomeIcon fx:id="refresh_btn" fill="WHITE" glyphName="REFRESH" layoutX="172.0" layoutY="40.0" onMouseClicked="#refreshComments" size="25" />
+                        <FontAwesomeIcon fx:id="refresh_btn" fill="WHITE" glyphName="REFRESH" layoutX="172.0" layoutY="40.0" onMouseClicked="#refreshComments" size="25">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></FontAwesomeIcon>
                               </children>
                           </Pane>
                </children>
             </AnchorPane>
                   <AnchorPane fx:id="commentAnchorInScrolPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;">
                <children>
-                      <ScrollPane fx:id="scrollpane" hbarPolicy="NEVER" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;" vbarPolicy="NEVER" />
+                      <ScrollPane fx:id="scrollpane" hbarPolicy="NEVER" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #191C22;" vbarPolicy="NEVER">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor></ScrollPane>
                </children>
                   </AnchorPane>
                 <AnchorPane prefHeight="140.0" prefWidth="404.0" style="-fx-background-color: #262A35;">
@@ -53,11 +66,17 @@
                                 <Font name="Outfit Regular" size="12.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="CommentTextField" layoutX="25.0" layoutY="35.0" prefHeight="68.0" prefWidth="269.0" style="-fx-background-color: white; -fx-border-color: #191C22; -fx-border-width: 2px; -fx-text-fill: black; -fx-border-radius: 10px; -fx-background-radius: 10px;" />
+                        <TextField fx:id="CommentTextField" layoutX="25.0" layoutY="35.0" prefHeight="68.0" prefWidth="269.0" style="-fx-background-color: white; -fx-border-color: #191C22; -fx-border-width: 2px; -fx-text-fill: black; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+                     <cursor>
+                        <Cursor fx:constant="TEXT" />
+                     </cursor></TextField>
                   <Button fx:id="add_comments_btn" layoutX="320.0" layoutY="16.0" onMouseClicked="#handleСomments_button" prefHeight="30.0" prefWidth="126.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="ADD" textFill="#191c22">
                      <font>
                         <Font name="Outfit Bold" size="12.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <HBox fx:id="star_box" layoutX="320.0" layoutY="75.0" prefHeight="31.0" prefWidth="147.0">
                      <children>
@@ -68,6 +87,9 @@
                         <FontAwesomeIcon fx:id="star5" fill="WHITE" glyphName="STAR" size="25" />
                         <FontAwesomeIcon fx:id="star6" fill="WHITE" glyphName="STAR" size="25" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </HBox>
                   <Label fx:id="set_stars_text" layoutX="320.0" layoutY="56.0" text="Set your raiting here:" textFill="WHITE">
                      <font>
@@ -80,4 +102,7 @@
         </VBox>
 
     </children>
+   <cursor>
+      <Cursor fx:constant="OPEN_HAND" />
+   </cursor>
 </AnchorPane>

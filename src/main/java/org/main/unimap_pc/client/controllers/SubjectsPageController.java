@@ -272,7 +272,7 @@ public class SubjectsPageController implements LanguageSupport {
         AnchorPane.setRightAnchor(semesterLabel, 230.0);
 
         // Тип предмета
-        Label typeLabel = new Label(subject.getType().replace("povinne voliteľný", "PV").replace("povinný", "P").replace("voliteľný", "V"));
+        Label typeLabel = new Label(subject.getType().replace("povinné-voliteľný", "PV").replace("povinný", "P").replace("voliteľný", "V"));
         typeLabel.setStyle("-fx-text-fill: white;");
         card.getChildren().add(typeLabel);
         AnchorPane.setTopAnchor(typeLabel, 15.0);
