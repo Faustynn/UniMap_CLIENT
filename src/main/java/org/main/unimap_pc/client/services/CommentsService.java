@@ -30,7 +30,7 @@ public class CommentsService {
                     }
                 })
                 .exceptionally(throwable -> {
-                    Logger.error(System.err.println("Request failed: " + throwable.getMessage()););
+                    Logger.error("Request failed: " + throwable.getMessage());
                     return null;
                 });
     }

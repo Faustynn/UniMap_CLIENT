@@ -190,7 +190,7 @@ public class ProfilePageController implements LanguageSupport {
         try {
             requestBodyJson = objectMapper.writeValueAsString(requestBody);
         } catch (Exception e) {
-            System.err.println("Error creating JSON request body: " + e.getMessage());
+            Logger.error("Error creating JSON request body: " + e.getMessage());
             return;
         }
 
@@ -215,15 +215,15 @@ public class ProfilePageController implements LanguageSupport {
                                 alignEditUsernameBtn();
                             });
                         } catch (Exception e) {
-                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                            Logger.error("Failed to parse backend response: " + e.getMessage());
                         }
 
                     } else {
-                        System.err.println("Backend returned error: " + response.statusCode());
+                        Logger.error("Backend returned error: " + response.statusCode());
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    Logger.error("Error calling backend: " + throwable.getMessage());
                     return null;
                 });
     }
@@ -249,7 +249,7 @@ public class ProfilePageController implements LanguageSupport {
         try {
             requestBodyJson = objectMapper.writeValueAsString(requestBody);
         } catch (Exception e) {
-            System.err.println("Error creating JSON request body: " + e.getMessage());
+            Logger.error("Error creating JSON request body: " + e.getMessage());
             return;
         }
 
@@ -274,15 +274,15 @@ public class ProfilePageController implements LanguageSupport {
 //                                alignEditUsernameBtn();
                             });
                         } catch (Exception e) {
-                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                            Logger.error("Failed to parse backend response: " + e.getMessage());
                         }
 
                     } else {
-                        System.err.println("Backend returned error: " + response.statusCode());
+                        Logger.error("Backend returned error: " + response.statusCode());
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    Logger.error("Error calling backend: " + throwable.getMessage());
                     return null;
                 });
     }
@@ -350,7 +350,7 @@ public class ProfilePageController implements LanguageSupport {
                 tilePane.getChildren().addAll(avatarImageViews);
             }
         } else {
-            System.err.println("Avatar directory not found.");
+            Logger.error("Avatar directory not found.");
         }
 
         Scene scene = new Scene(tilePane, 600, 400);
@@ -384,7 +384,7 @@ public class ProfilePageController implements LanguageSupport {
         try {
             requestBodyJson = objectMapper.writeValueAsString(requestBody);
         } catch (Exception e) {
-            System.err.println("Error creating JSON request body: " + e.getMessage());
+            Logger.error("Error creating JSON request body: " + e.getMessage());
             return;
         }
 
@@ -405,15 +405,15 @@ public class ProfilePageController implements LanguageSupport {
                             PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
                             avatar_image_view.setImage(AppConfig.getAvatar(currentUser.getAvatar()));
                         } catch (Exception e) {
-                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                            Logger.error("Failed to parse backend response: " + e.getMessage());
                         }
 
                     } else {
-                        System.err.println("Backend returned error: " + response.statusCode());
+                        Logger.error("Backend returned error: " + response.statusCode());
                     }
                 })
                 .exceptionally(throwable -> {
-                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    Logger.error("Error calling backend: " + throwable.getMessage());
                     return null;
                 });
         }
@@ -464,7 +464,7 @@ public class ProfilePageController implements LanguageSupport {
                 showErrorDialog("Failed to change password: " + response.statusCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("An error occurred while changing the password: " + e.getMessage());
             showErrorDialog("An error occurred while changing the password: " + e.getMessage());
         }
 

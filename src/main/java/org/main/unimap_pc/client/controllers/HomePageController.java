@@ -248,7 +248,6 @@ public class HomePageController implements LanguageSupport {
                 return new UserModel(id, username, email, login, admin, premium,avatar);
             } catch (Exception e) {
                 Logger.error("Error parsing user data: " + e.getMessage());
-                e.printStackTrace();
             }
         }
         return null;
@@ -320,7 +319,6 @@ public class HomePageController implements LanguageSupport {
         } catch (IOException e) {
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
-            e.printStackTrace();
         }
     }
 

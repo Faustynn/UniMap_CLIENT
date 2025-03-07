@@ -248,7 +248,7 @@ public class SettingsPageController implements LanguageSupport {
             String url = "https://github.com/Faustynn/UniMap_CLIENT";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Failed to open terms URL: " + e.getMessage());
         }
     }
 
@@ -258,7 +258,7 @@ public class SettingsPageController implements LanguageSupport {
             String url = "https://github.com/UniMapSTU";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Failed to open source code URL: " + e.getMessage());
         }
     }
 
@@ -268,7 +268,7 @@ public class SettingsPageController implements LanguageSupport {
             String url = "https://bank.gov.ua/ua/about/support-the-armed-forces";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error("Failed to open support URL: " + e.getMessage());
         }
     }
 
@@ -298,6 +298,7 @@ private void handleStartDeleteAcc() {
                 });
             } else {
                 Platform.runLater(() -> {
+                    Logger.warning("Failed to delete account. Please try again later.");
                     showErrorDialog("Failed to delete account. Please try again later.");
                 });
             }
@@ -315,6 +316,7 @@ private void handleStartDeleteComments() {
                     });
                 } else {
                     Platform.runLater(() -> {
+                        Logger.warning("Failed to delete comments. Please try again later.");
                         showErrorDialog("Failed to delete comments. Please try again later.");
                     });
                 }

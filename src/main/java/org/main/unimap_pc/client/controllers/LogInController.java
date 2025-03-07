@@ -124,7 +124,6 @@ public class LogInController implements LanguageSupport {
             checkTerms.setText(languageBundle.getString("check.terms"));
         } catch (Exception e) {
             Logger.error("Error updating UI language: " + e.getMessage());
-            System.err.println("Error updating UI language: " + e.getMessage());
         }
     }
     private void handleMousePressed(MouseEvent event) {

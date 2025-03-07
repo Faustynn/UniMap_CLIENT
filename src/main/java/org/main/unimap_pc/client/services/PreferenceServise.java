@@ -72,6 +72,7 @@ public class PreferenceServise {
             if (file.delete()) {
                 System.out.println("Preferences file deleted successfully.");
             } else {
+                Logger.error("Failed to delete preferences file.");
                 System.err.println("Failed to delete preferences file.");
             }
         } else {
