@@ -8,12 +8,10 @@ import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.utils.Logger;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FilterService {
 
@@ -68,7 +66,12 @@ public class FilterService {
             TeacherArray = new JSONArray();
         }
     }
+
+    private static Map<String, String> garantorHitCache = new HashMap<>();
     public static String subSearchForGarant(String subjectCode) {
+        if (garantorHitCache.containsKey(subjectCode)) {
+            return garantorHitCache.get(subjectCode);
+        }
         for (int i = 0; i < TeacherArray.length(); i++) {
             JSONObject teacher = TeacherArray.getJSONObject(i);
             JSONArray subjects = teacher.getJSONArray("subjects");
@@ -79,7 +82,9 @@ public class FilterService {
                     for (int k = 0; k < roles.length(); k++) {
                         String role = roles.getString(k);
                         if (removeDiacritics(role).equalsIgnoreCase("zodpovedny za predmet")) {
-                            return teacher.getString("name");
+                            String tempName = teacher.getString("name");
+                            garantorHitCache.put(subjectCode, tempName);
+                            return tempName;
                         }
                     }
                 }
@@ -101,10 +106,7 @@ public class FilterService {
     public static List<Subject> filterSubjects(subjectSearchForm searchForm){
         List<Subject> SubjectList = SubjectArray.toList().stream()
                 .map(obj -> new JSONObject((Map<String, Object>)  obj))
-                .filter(searchForm.semesterPredicate)
-                .filter(searchForm.studyTypePredicate)
-                .filter(searchForm.subjectTypePredicate)
-                .filter(searchForm.nameSearch)
+                .filter(searchForm.finalPredicate)
                 .map(jsonObject -> new Subject(jsonObject, new JSONObject().put("teachers", TeacherArray)))
                 .collect(Collectors.toList());
         return SubjectList;
@@ -209,7 +211,11 @@ public class FilterService {
         private final Predicate<JSONObject> subjectTypePredicate;
         private final Predicate<JSONObject> studyTypePredicate;
         private final Predicate<JSONObject> semesterPredicate;
+        private Predicate<JSONObject> finalPredicate;
         public subjectSearchForm(String searchTerm, subjectTypeEnum subjectType, studyTypeEnum studyType,semesterEnum semester){
+            List<String> filteredTeachers = filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT,false))
+                    .stream().map(Teacher::getName)
+                    .toList();
             nameSearch = subject -> {
                 if(searchTerm.isBlank()){return true;}
                 String originalName = subject.getString("name");
@@ -217,10 +223,16 @@ public class FilterService {
                 String normalizedName = removeDiacritics(originalName).toLowerCase();
                 String normalizedCode = removeDiacritics(originalCode).toLowerCase();
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
-                List<String> guarantors= filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT,false))
-                        .stream().map(Teacher::getName)
-                        .filter(guarantor -> Objects.equals(subSearchForGarant(originalCode), guarantor))
-                        .toList();
+                Set<String> filteredTeachersSet = new HashSet<>(filteredTeachers);
+
+                String garant = subSearchForGarant(originalCode);
+                List<String> guarantors;
+                if (filteredTeachersSet.contains(garant)) {
+                    assert garant != null;
+                    guarantors = List.of(garant);
+                } else {
+                    guarantors = Collections.emptyList();
+                }
                 System.out.println(guarantors);
                 return normalizedName.contains(normalizedSearchTerm)
                         || normalizedCode.contains(normalizedSearchTerm)
@@ -257,6 +269,16 @@ public class FilterService {
                     case NONE -> true;
                 };
             };
+            finalPredicate = nameSearch;
+            if(subjectType!=subjectTypeEnum.NONE) {
+                finalPredicate = finalPredicate.and(subjectTypePredicate);
+            }
+            if(studyType!=studyTypeEnum.NONE){
+                finalPredicate = finalPredicate.and(studyTypePredicate);
+            }
+            if(semester!=semesterEnum.NONE){
+                finalPredicate = finalPredicate.and(semesterPredicate);
+            }
         }
     }
 
