@@ -305,7 +305,13 @@ public class CommentsPageController implements LanguageSupport {
         } else {
             for (int i = 0; i < commentsArray.length(); i++) {
                 JSONObject comment = commentsArray.getJSONObject(i);
-                String name = comment.getString("name");
+                String name;
+
+                if(comment.has("name")){
+                     name = comment.getString("name");
+                }else {
+                     name = "Deleted User";
+                }
                 Integer comment_id = comment.getInt("comment_id");
                 String lookingId = comment.getString("looking_id");
                 String description = comment.getString("description");
@@ -438,8 +444,6 @@ public class CommentsPageController implements LanguageSupport {
         descriptionText.heightProperty().addListener((obs, oldVal, newVal) -> {
             modulePane.setPrefHeight(newVal.doubleValue() + 70);
         });
-
-
 
         return modulePane;
     }
