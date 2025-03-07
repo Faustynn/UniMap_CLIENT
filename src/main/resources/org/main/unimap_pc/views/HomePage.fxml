@@ -172,7 +172,7 @@
       </ScrollPane>
       <Label fx:id="news_upd_text" layoutX="269.0" layoutY="80.0" style="-fx-text-fill: #878fa1; -fx-font-family: 'Outfit Regular'; -fx-font-size: 14px;" text="Latest News and Updates">
       </Label>
-      <Pane layoutX="747.0" layoutY="98.0" onMouseClicked="#fiit_discord_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="98.0" onMouseClicked="#fiit_discord_handler" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="11.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Discord">
             </Label>
@@ -183,7 +183,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="210.0" onMouseClicked="#fx_com_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="210.0" onMouseClicked="#fx_com_handler" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="10.0" layoutY="9.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FX - com">
             </Label>
@@ -194,7 +194,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="322.0" onMouseClicked="#mladost_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="322.0" onMouseClicked="#mladost_handler" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="4.0" layoutY="12.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="Mladost Guide">
             </Label>
@@ -205,7 +205,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane layoutX="747.0" layoutY="434.0" onMouseClicked="#fiit_telegram_handle" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
+      <Pane layoutX="747.0" layoutY="434.0" onMouseClicked="#fiit_telegram_handler" prefHeight="103.0" prefWidth="310.0" style="-fx-background-color: #2a2d38;">
          <children>
             <Label layoutX="8.0" layoutY="13.0" style="-fx-text-fill: #4aff98; -fx-font-family: 'Outfit Bold'; -fx-font-size: 20px;" text="FIIT Telegram">
             </Label>

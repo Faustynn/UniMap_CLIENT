@@ -139,7 +139,7 @@ public class Subject {
             eScore = "";
         }
         try {
-            fxScore = jsonBase.getString("ascore");
+            fxScore = jsonBase.getString("fxscore");
         } catch (org.json.JSONException e) {
             Logger.error("Error parsing 'ascore' in Subject: " + e.getMessage());
             fxScore = "";

@@ -405,4 +405,50 @@ public class HomePageController implements LanguageSupport {
     private Label navi_username_text;
     @FXML
     private ImageView navi_avatar;
+
+
+    @FXML
+    private void fiit_discord_handler() {
+        try {
+            String url = "https://discord.gg/dX48acpNS8";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            Logger.error("Failed to open Discord link: " + e.getMessage());
+            showErrorDialog("Failed to open Discord link: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void fx_com_handler() {
+        try {
+            String url = "https://www.notion.so/FX-com-54cdb158085e4377b832ece310a5603d";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            Logger.error("Failed to open FXcom link: " + e.getMessage());
+            showErrorDialog("Failed to open FXcom link: " + e.getMessage());
+        }
+    }
+
+    @FXML void mladost_handler() {
+        try {
+            String url = "https://protective-april-ef1.notion.site/SD-Mladost-abe968a31d404360810b53acbbb357cc";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            Logger.error("Failed to open Mladost link: " + e.getMessage());
+            showErrorDialog("Failed to open Mladost link: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void fiit_telegram_handler() {
+        try {
+            String url = "https://t.me/fiitstu";
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+        } catch (IOException e) {
+            Logger.error("Failed to open FIIT Telegram link: " + e.getMessage());
+            showErrorDialog("Failed to open FIIT Telegram link: " + e.getMessage());
+        }
+    }
+
+
 }
