@@ -3,8 +3,11 @@ package org.main.unimap_pc.client.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
@@ -91,6 +95,9 @@ public class ProfilePageController implements LanguageSupport {
                 navi_login_text1.setText(user.getLogin());
                 navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
                 avatar_image_view.setImage(AppConfig.getAvatar(user.getAvatar()));
+
+                // set x coordinate for edit_profile icon in the end of navi_username_text1
+                alignEditUsernameBtn();
             }
 
             dragArea.setOnMousePressed(this::handleMousePressed);
@@ -117,17 +124,171 @@ public class ProfilePageController implements LanguageSupport {
         }
     }
 
+    private void alignEditUsernameBtn(){
+        Platform.runLater(() -> {
+            double textWidth = navi_username_text1.getLayoutBounds().getWidth();
+            double textX = navi_username_text1.getLayoutX();
+            double iconWidth = edit_username.getLayoutBounds().getWidth();
+            edit_username.setLayoutX(textX + textWidth + 5); // 5 is a small padding
+            edit_username.setLayoutY(navi_username_text1.getLayoutY() + (navi_username_text1.getLayoutBounds().getHeight() - iconWidth)/2);
+
+        });
+    }
+
+    @FXML
+    private void handleChangeUsername() {
+        Stage stage = new Stage();
+        stage.setTitle("Change Username");
+        stage.initModality(Modality.APPLICATION_MODAL);
+
+        VBox vbox = new VBox(10);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(20));
+
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Enter new username");
+
+        Button confirmButton = new Button("Confirm");
+
+        confirmButton.setOnAction(event -> {
+            String newUsername = usernameField.getText().trim();
+            if (!newUsername.isEmpty()) {
+                updateUsername(newUsername);
+                stage.close();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Username cannot be empty.");
+                alert.showAndWait();
+            }
+        });
+
+        vbox.getChildren().addAll(usernameField, confirmButton);
+
+        Scene scene = new Scene(vbox, 300, 150);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    private void updateUsername(String newUsername) {
+        UserModel currentUser = UserService.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.getEmail() == null || currentUser.getEmail().isEmpty()) {
+            System.err.println("User email not available. Cannot call backend.");
+            return;
+        }
+
+        String backendUrl = AppConfig.getApiUrl() + "change_username";
+        HttpClient httpClient = HttpClient.newBuilder().build();
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("email", currentUser.getEmail());
+        requestBody.put("username", newUsername);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson;
+        try {
+            requestBodyJson = objectMapper.writeValueAsString(requestBody);
+        } catch (Exception e) {
+            System.err.println("Error creating JSON request body: " + e.getMessage());
+            return;
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(backendUrl))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            String responseBody = response.body();
+                            System.out.println("Username updated on backend: " + responseBody);
+                            currentUser.setUsername(newUsername);
+                            UserService.getInstance().setCurrentUser(currentUser);
+                            PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+                            Platform.runLater(() -> {
+                                navi_username_text.setText(newUsername);
+                                navi_username_text1.setText(newUsername); // Line 208
+                                alignEditUsernameBtn();
+                            });
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                        }
+
+                    } else {
+                        System.err.println("Backend returned error: " + response.statusCode());
+                    }
+                })
+                .exceptionally(throwable -> {
+                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    return null;
+                });
+    }
+
+    @FXML
+    private void handleChangeEmail() {
+        String newEmail = changeEmailField.getText();
+        UserModel currentUser = UserService.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.getEmail() == null || currentUser.getEmail().isEmpty()) {
+            System.err.println("User email not available. Cannot call backend.");
+            return;
+        }
+
+        String backendUrl = AppConfig.getApiUrl() + "change_email";
+        HttpClient httpClient = HttpClient.newBuilder().build();
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("login", currentUser.getLogin());
+        requestBody.put("email", newEmail);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBodyJson;
+        try {
+            requestBodyJson = objectMapper.writeValueAsString(requestBody);
+        } catch (Exception e) {
+            System.err.println("Error creating JSON request body: " + e.getMessage());
+            return;
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(backendUrl))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> {
+                    if (response.statusCode() == 200) {
+                        try {
+                            String responseBody = response.body();
+                            System.out.println("Email updated on backend: " + responseBody);
+                            currentUser.setEmail(newEmail);
+                            UserService.getInstance().setCurrentUser(currentUser);
+                            PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+                            Platform.runLater(() -> {
+//                                navi_username_text.setText(newUsername);
+//                                navi_username_text1.setText(newUsername); // Line 208
+//                                alignEditUsernameBtn();
+                            });
+                        } catch (Exception e) {
+                            System.err.println("Failed to parse backend response: " + e.getMessage());
+                        }
+
+                    } else {
+                        System.err.println("Backend returned error: " + response.statusCode());
+                    }
+                })
+                .exceptionally(throwable -> {
+                    System.err.println("Error calling backend: " + throwable.getMessage());
+                    return null;
+                });
+    }
+
     private int avatarID; // Assuming you have avatarID defined somewhere in your controller
     private ImageView avatarImageView; //ImageView where you display the avatar in the main window.
-
-    public void setAvatarID(int avatarID) {
-        this.avatarID = avatarID;
-    }
-
-    public void setAvatarImageView(ImageView avatarImageView){
-        this.avatarImageView = avatarImageView;
-    }
-
 
     @FXML
     private Image profile_picture;
@@ -255,8 +416,7 @@ public class ProfilePageController implements LanguageSupport {
                     System.err.println("Error calling backend: " + throwable.getMessage());
                     return null;
                 });
-
-}
+        }
 
     @FXML
     private void handleChangePass() {

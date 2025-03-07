@@ -201,8 +201,8 @@
             <Font name="Outfit Regular" size="24.0" />
          </font>
       </Label>
-      <FontAwesomeIcon fx:id="edit_username" fill="WHITE" glyphName="PENCIL" layoutX="645.0" layoutY="170.0" size="20" />
-      <Button fx:id="btnConfirmChangeEmal" layoutX="588.0" layoutY="377.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
+      <FontAwesomeIcon fx:id="edit_username" onMouseClicked="#handleChangeUsername" fill="WHITE" glyphName="PENCIL" layoutX="645.0" layoutY="170.0" size="20" />
+      <Button fx:id="btnConfirmChangeEmail" onMouseClicked="#handleChangeEmail" layoutX="588.0" layoutY="377.0" prefHeight="50.0" prefWidth="94.0" style="-fx-background-color: #93A9D7; -fx-cursor: hand;" text="Confirm" textFill="WHITE">
          <font>
             <Font name="Outfit Bold" size="16.0" />
          </font>
