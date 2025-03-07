@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class SceneController {
 
@@ -17,7 +18,7 @@ public class SceneController {
     }
 
     public void changeScene(String fxml) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource(fxml));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
         Scene scene = new Scene(root);
         stage.setScene(scene);
     }

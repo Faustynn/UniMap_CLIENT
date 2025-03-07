@@ -180,6 +180,17 @@ public class LogInController implements LanguageSupport {
         alert.showAndWait();
     }
 
+    public static void showInfoDialog(String message) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Info");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.getButtonTypes().setAll(ButtonType.OK);
+
+        alert.showAndWait();
+    }
+
+
     // Modal Window logic
     @FXML
     private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage) {
@@ -327,7 +338,6 @@ public class LogInController implements LanguageSupport {
             connectionCheckService.shutdown();
         }
     }
-
 
     @FXML
     private void handleSignByGoogle() {

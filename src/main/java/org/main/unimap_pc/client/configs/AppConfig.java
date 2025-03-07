@@ -52,7 +52,7 @@ public class AppConfig {
     private static final String FIND_USER_BY_EMAIL_URL = API_URL + "user/email/";
 
     private static final String CONFIRM_CODE_TO_EMAIL = API_URL + "user/email/code";
-    private static final String CHANGE_PASSWORD = API_URL + "user/email/password";
+    private static final String CHANGE_PASSWORD = API_URL + "user/email/change_pass";
 
     private static final String OAUTH2_GOOGLE = API_URL + "authenticate/google";
     private static final String OAUTH2_FACEBOOK = API_URL + "authenticate/facebook";
@@ -64,6 +64,8 @@ public class AppConfig {
 
     private static final String LOG_URL = API_URL + "log";
     private static final String COMMENTS_URL = API_URL + "comments/";
+    // Getters
+    public static String getApiUrl() { return API_URL; }
 
   // Getters
     public static String getLoginPagePath() {
@@ -212,7 +214,7 @@ public class AppConfig {
     }
     public static String getLogLevel() {
         return properties.getProperty("LOG_LEVEL", "INFO");
-
+    }
 
 
 
@@ -249,4 +251,16 @@ public class AppConfig {
     public static String getDeleteSubjectsCommentURL(String id){
         return DELETE_SUBJECTS_COMMENT_URL+id;
     }
+
+
+    private static final String DELETE_USER_URL = API_URL+"user/delete/all/";
+    private static final String DELETE_COMMENTS_USER_URL = API_URL+"user/delete/comments/";
+
+    public static String getDeleteUserUrl(String id) {
+        return DELETE_USER_URL+id;
+    }
+    public static String getDeleteCommentsUserUrl(String id) {
+        return DELETE_COMMENTS_USER_URL+id;
+    }
+
 }
