@@ -176,7 +176,7 @@ public class TeachersPageController implements LanguageSupport {
         };
 
         FilterService filterService = new FilterService();
-        FilterService.teacherSearchForm searchForm = new FilterService.teacherSearchForm(searchText,roleEnum,true);
+        FilterService.teacherSearchForm searchForm = new FilterService.teacherSearchForm(searchText,roleEnum,false);
         List<Teacher> filteredTeachers = filterService.filterTeachers(searchForm);
 
         System.out.println("Filtered teachers: " + filteredTeachers.size());
