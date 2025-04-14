@@ -1,0 +1,8 @@
+#!/bin/bash
+
+JAVAFX_SDK_PATH="javafx-sdk-22.0.2/lib"
+#
+java \
+  --module-path "$JAVAFX_SDK_PATH" \
+  --add-modules javafx.controls,javafx.fxml \
+  -jar UniMapClient-1.0-SNAPSHOT.jar

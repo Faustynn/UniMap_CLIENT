@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dragArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.LogInController">
+   <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: #191C22;">
+      <Label fx:id="btnForgotPass" layoutX="53.0" layoutY="345.0" onMouseClicked="#handleForgotPass" style="-fx-cursor: hand;" text="Forgot your password?" textFill="WHITE">
+         <font>
+            <Font name="Outfit Bold" size="13.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Label>
+      <Label fx:id="or" layoutX="239.0" layoutY="404.0" text="Or" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font></Label>
+      <Separator layoutX="29.0" layoutY="404.0" prefHeight="17.0" prefWidth="190.0" />
+      <Separator layoutX="281.0" layoutY="404.0" prefHeight="17.0" prefWidth="190.0" />
+      <Label fx:id="downlApp" layoutX="403.0" layoutY="576.0" onMouseClicked="#handleDownlApp" style="-fx-cursor: hand;" text=" Download App" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <FontAwesomeIcon fill="WHITE" glyphName="USERS" layoutX="53.0" layoutY="172.0" size="25" />
+      <FontAwesomeIcon fill="WHITE" glyphName="LOCK" layoutX="58.0" layoutY="223.0" size="25" />
+      <FontAwesomeIcon fill="WHITE" glyphName="DOWNLOAD" layoutX="383.0" layoutY="591.0" size="15" />
+      <Label fx:id="dontHaveAcc" layoutX="177.0" layoutY="493.0" text="Don't have an account?" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font></Label>
+      <TextField fx:id="fieldUsername" layoutX="92.0" layoutY="143.0" maxHeight="41.0" minHeight="25.0" prefColumnCount="0" prefHeight="40.0" prefWidth="359.0" promptText="Write your login or email" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+      </TextField>
+      <PasswordField fx:id="fieldPassword" layoutX="92.0" layoutY="194.0" maxHeight="40.0" minHeight="25.0" prefColumnCount="0" prefHeight="40.0" prefWidth="361.0" promptText="Write your password" style="-fx-background-color: #262A35; -fx-text-fill: white;">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></PasswordField>
+      <Button fx:id="btnSignin" layoutX="312.0" layoutY="333.0" onMouseClicked="#handleSignIn" prefHeight="48.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Log In" textFill="#191c22">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnSignup" layoutX="169.0" layoutY="515.0" onMouseClicked="#handleSignUp" prefHeight="47.0" prefWidth="161.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Sign Up" textFill="#191c22">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnFacebook" layoutX="73.0" layoutY="430.0" onMouseClicked="#handleSignByFacebook" prefHeight="41.0" prefWidth="106.0" style="-fx-background-color: #659ac9; -fx-cursor: hand;" text="Facebook" textFill="WHITE">
+         <font>
+            <Font name="Outfit Bold" size="14.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon fill="WHITE" glyphName="FACEBOOK" tabSize="20" wrappingWidth="14.92901611328125" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnGoogle" layoutX="329.0" layoutY="430.0" onMouseClicked="#handleSignByGoogle" prefHeight="41.0" prefWidth="106.0" style="-fx-background-color: #c72633; -fx-cursor: hand;" text="Google" textFill="WHITE">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIcon fill="WHITE" glyphName="GOOGLE" wrappingWidth="16.048017501831055" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+
+
+      <Label fx:id="infoMess" layoutX="92.0" layoutY="120.0" textFill="#d70015">
+         <font>
+            <Font name="Roboto Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="checkTerms" layoutX="53.0" layoutY="286.0" onAction="#handleCheckTerms" styleClass="check-box" text="I agree with Terms of Service and Privacy Policy" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+         <stylesheets>
+            <URL value="@../views/style/style.css" />
+         </stylesheets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </CheckBox>
+      <CheckBox fx:id="remember_checkBox" layoutX="53.0" layoutY="258.0" onAction="#handleCheckBox" styleClass="check-box" text="Save Password" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+         <stylesheets>
+            <URL value="@../views/style/style.css" />
+         </stylesheets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </CheckBox>
+      <Label layoutX="156.0" layoutY="73.0" style="-fx-text-fill: WHITE; -fx-font-family: 'Outfit Bold'; -fx-font-size: 42px;" text="UNIMAP">
+      </Label>
+      <ImageView fitHeight="66.0" fitWidth="185.0" layoutX="206.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../images/app/GPS_app.png" />
+      </ImageView>
+
+      <ComboBox fx:id="languageComboBox" layoutX="14.0" layoutY="14.0" prefHeight="24.0" prefWidth="136.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+         <styleClass>
+            <String fx:value="custom-combo-box" />
+         </styleClass>
+         <stylesheets>
+            <URL value="@../views/style/style.css" />
+         </stylesheets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ComboBox>
+      <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="459.0" layoutY="36.0" onMouseClicked="#handleCloseApp" size="30" text="">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></FontAwesomeIcon>
+      <Label fx:id="madeby" layoutX="8.0" layoutY="576.0" text="Design by Fausteam" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="13.0" />
+         </font>
+      </Label>
+
+   </AnchorPane>
+</AnchorPane>

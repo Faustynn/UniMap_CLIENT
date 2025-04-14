@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="500.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.SubjectsSubPageController">
+    <children>
+          <Label fx:id="subject_studentCount_text" layoutX="58.0" layoutY="213.0" style="-fx-text-fill: #9fa6b7;" text="Student count:">
+              <font>
+                  <Font name="Outfit Bold" size="16.0" />
+              </font>
+          </Label>
+      <Label fx:id="subject_Type_text" layoutX="58.0" layoutY="133.0" style="-fx-text-fill: #9fa6b7;" text="Type:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_credits_text" layoutX="58.0" layoutY="233.0" style="-fx-text-fill: #9fa6b7;" text="Credits:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_studyType_text" layoutX="58.0" layoutY="113.0" style="-fx-text-fill: #9fa6b7;" text="Study type:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_semester_text" layoutX="58.0" layoutY="193.0" style="-fx-text-fill: #9fa6b7;" text="Semester:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_languages_text" layoutX="58.0" layoutY="173.0" style="-fx-text-fill: #9fa6b7;" text="Languages:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_completionType_text" layoutX="58.0" layoutY="153.0" style="-fx-text-fill: #9fa6b7;" text="Completion type:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_A_text" layoutX="392.0" layoutY="120.0" style="-fx-text-fill: #9fa6b7;" text="A:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_B_text" layoutX="392.0" layoutY="140.0" style="-fx-text-fill: #9fa6b7;" text="B:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_C_text" layoutX="392.0" layoutY="160.0" style="-fx-text-fill: #9fa6b7;" text="C:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_D_text" layoutX="392.0" layoutY="180.0" style="-fx-text-fill: #9fa6b7;" text="D:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_E_text" layoutX="392.0" layoutY="200.0" style="-fx-text-fill: #9fa6b7;" text="E:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_FX_text" layoutX="392.0" layoutY="220.0" style="-fx-text-fill: #9fa6b7;" text="FX:">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_code" layoutX="58.0" layoutY="56.0" prefHeight="28.0" prefWidth="187.0" style="-fx-text-fill: #9fa6b7;" text="VAVA_B">
+         <font>
+            <Font name="Outfit Bold" size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_abbr" layoutX="58.0" layoutY="91.0" prefHeight="18.0" prefWidth="425.0" style="-fx-text-fill: #9fa6b7;" text="Vývoj aplikácií s viacvrstvovou architektúrou">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_studentCount" layoutX="168.0" layoutY="213.0" prefHeight="18.0" prefWidth="136.0" style="-fx-text-fill: #9fa6b7;" text="1234">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_Type" layoutX="108.0" layoutY="133.0" prefHeight="21.0" prefWidth="262.0" style="-fx-text-fill: #9fa6b7;" text="povinny">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_credits" layoutX="123.0" layoutY="233.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="6">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_studyType" layoutX="148.0" layoutY="113.0" prefHeight="21.0" prefWidth="197.0" style="-fx-text-fill: #9fa6b7;" text="bakalarsky">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_semester" layoutX="138.0" layoutY="193.0" prefHeight="21.0" prefWidth="66.0" style="-fx-text-fill: #9fa6b7;" text="ZS">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_languages" layoutX="148.0" layoutY="173.0" prefHeight="18.0" prefWidth="198.0" style="-fx-text-fill: #9fa6b7;" text="en,ua,sk">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_completionType" layoutX="188.0" layoutY="153.0" prefHeight="21.0" prefWidth="173.0" style="-fx-text-fill: #9fa6b7;" text="skuska">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_A" layoutX="412.0" layoutY="120.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_B" layoutX="412.0" layoutY="140.0" prefHeight="21.0" prefWidth="47.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_C" layoutX="412.0" layoutY="160.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_D" layoutX="412.0" layoutY="180.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_E" layoutX="412.0" layoutY="200.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="subject_FX" layoutX="422.0" layoutY="220.0" prefHeight="21.0" prefWidth="51.0" style="-fx-text-fill: #9fa6b7;" text="35%">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+
+
+        <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" layoutX="-594.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
+            <image>
+                <Image url="@../images/avatares/0.png" />
+            </image>
+        </ImageView>
+
+        <Label fx:id="navi_username_text" layoutX="328.0" layoutY="22.0" style="-fx-text-fill: WHITE;" text="Nazar Meredov" textAlignment="RIGHT">
+            <font>
+                <Font name="Outfit Regular" size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="navi_login_text" layoutX="373.0" layoutY="37.0" style="-fx-text-fill: #848da0;" text="xmeredov" textAlignment="RIGHT">
+            <font>
+                <Font name="Outfit Regular" size="10.0" />
+            </font>
+        </Label>
+
+        <FontAwesomeIcon fx:id="closeApp" fill="WHITE" glyphName="CLOSE" layoutX="16.0" layoutY="37.0" onMouseClicked="#handleCloseApp" size="30" text="">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></FontAwesomeIcon>
+      <Button fx:id="comments_button" layoutX="176.0" layoutY="592.0" onMouseClicked="#handleCommentsButton" prefHeight="35.0" prefWidth="140.0" style="-fx-background-color: #79E3A5; -fx-cursor: hand;" text="Comments" textFill="#191c22">
+         <font>
+            <Font name="Outfit Bold" size="16.0" />
+         </font>
+      </Button>
+    <AnchorPane fx:id="subj_details_anchor" layoutX="50.0" layoutY="259.0" minHeight="0.0" minWidth="0.0" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent; -fx-background-radius: 0%;">
+         <children>
+            <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent;" vbarPolicy="NEVER" />
+         </children>
+      </AnchorPane>
+
+    </children>
+</AnchorPane>

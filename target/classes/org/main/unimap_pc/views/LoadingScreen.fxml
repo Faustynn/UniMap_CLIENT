@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="540.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.LoadingScreenController">
+    <children>
+          <ProgressIndicator fx:id="loadingIndicator" layoutX="251.0" layoutY="119.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0">
+         <cursor>
+            <Cursor fx:constant="WAIT" />
+         </cursor></ProgressIndicator>
+          <Label fx:id="loadingText" layoutX="200.0" layoutY="191.0" text="Loading, please wait" textFill="WHITE">
+         <font>
+            <Font name="Outfit Regular" size="16.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="75.0" fitWidth="97.0" layoutX="179.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/app/GPS_app.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="245.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UNIMAP">
+         <font>
+            <Font name="Outfit Bold" size="28.0" />
+         </font>
+      </Text>
+    </children>
+   <cursor>
+      <Cursor fx:constant="OPEN_HAND" />
+   </cursor>
+</AnchorPane>
