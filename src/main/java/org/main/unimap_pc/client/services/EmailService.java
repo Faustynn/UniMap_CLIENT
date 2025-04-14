@@ -152,7 +152,7 @@ public class EmailService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
                 .build();
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())

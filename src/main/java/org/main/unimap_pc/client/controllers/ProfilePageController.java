@@ -197,7 +197,7 @@ public class ProfilePageController implements LanguageSupport {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(backendUrl))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson))
                 .build();
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
@@ -256,7 +256,7 @@ public class ProfilePageController implements LanguageSupport {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(backendUrl))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson))
                 .build();
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
@@ -391,7 +391,7 @@ public class ProfilePageController implements LanguageSupport {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(backendUrl))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson))
                 .build();
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
@@ -442,7 +442,7 @@ public class ProfilePageController implements LanguageSupport {
                     .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
             System.out.println(httpRequest);
