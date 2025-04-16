@@ -1,5 +1,7 @@
 package org.main.unimap_pc.client.controllers;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -79,13 +81,22 @@ public class HomePageController implements LanguageSupport {
             userData = PreferenceServise.get("USER_DATA").toString();
             cachedLanguage = PreferenceServise.get("LANGUAGE").toString();
 
+            System.out.println("Data user" + userData);
             UserModel user = initUser(userData);
-            System.out.println(user.isPremium());
-            if (user != null) {
-                UserService.getInstance().setCurrentUser(user);
-                navi_username_text.setText(user.getUsername());
-                navi_login_text.setText(user.getLogin());
-                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+            try {
+                if (user != null) {
+                    UserService.getInstance().setCurrentUser(user);
+                    navi_username_text.setText(user.getUsername());
+                    navi_login_text.setText(user.getLogin());
+                    navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
+                //    System.out.println("User avatar.jpg: " + user.getAvatar());
+                }else {
+                    System.out.println("User is null");
+                }
+            } catch (Exception e) {
+                Logger.error("Error while setting user data: " + e.getMessage());
+                System.err.println("Error while setting user data: " + e.getMessage());
+                showErrorDialog("An error occurred while loading user data. Please try again.");
             }
 
             LanguageManager.changeLanguage(cachedLanguage);
@@ -94,6 +105,7 @@ public class HomePageController implements LanguageSupport {
 
         } catch (Exception e) {
             Logger.error("Error during initialization: " + e.getMessage());
+            System.err.println("Error during initialization: " + e.getMessage());
         }
 
         dragArea.setOnMousePressed(this::handleMousePressed);
@@ -124,6 +136,7 @@ public class HomePageController implements LanguageSupport {
             } catch (Exception e) {
                 showErrorDialog("Error changing language: " + e.getMessage());
                 Logger.error("Error changing language: " + e.getMessage());
+                System.err.println("Error changing language: " + e.getMessage());
                 loadCurrentLanguage();
             }
         });
@@ -135,6 +148,7 @@ public class HomePageController implements LanguageSupport {
     private AnchorPane pane_for_news;
 
     private void loadNews() {
+        System.out.println("Loading news...");
         CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
 
         newsJsonFuture.thenAccept(newsJson -> {
@@ -152,7 +166,7 @@ public class HomePageController implements LanguageSupport {
                     });
                 } catch (Exception e) {
                     Logger.error("Failed to parse news JSON: " + e.getMessage());
-                    //System.err.println("Failed to parse news JSON: " + e.getMessage());
+                    System.err.println("Failed to parse news JSON: " + e.getMessage());
                 }
             } else {
                 Logger.error("Failed to load news.");
@@ -235,18 +249,64 @@ public class HomePageController implements LanguageSupport {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(userData);
 
-                System.out.println(jsonNode);
+                System.out.println("QWE "+jsonNode);
 
                 String id = jsonNode.get("id").asText();
                 String login = jsonNode.get("login").asText();
                 String email = jsonNode.get("email").asText();
                 String username = jsonNode.get("username").asText();
-                String avatar = jsonNode.get("avatar").asText();
                 boolean admin = jsonNode.get("admin").asBoolean();
-                boolean premium = jsonNode.get("premium").asBoolean();
+                boolean premium = jsonNode.get("premium") != null && jsonNode.get("premium").asBoolean();
+                String avatarBinary = jsonNode.get("avatarBinary").asText();
+                String avatarFileName = jsonNode.get("avatarName").asText();
 
-                return new UserModel(id, username, email, login, admin, premium,avatar);
+                if (avatarBinary != null && !avatarBinary.isEmpty() && !avatarBinary.equals("null")) {
+                    try {
+                        byte[] avatarBytes = java.util.Base64.getDecoder().decode(avatarBinary);
+
+                        String AvatarFolderPath;
+                        if(Objects.equals(avatarFileName, "0.png") ||
+                                Objects.equals(avatarFileName, "1.png") ||
+                                Objects.equals(avatarFileName, "2.png") ||
+                                Objects.equals(avatarFileName, "3.png") ||
+                                Objects.equals(avatarFileName, "4.png") ||
+                                Objects.equals(avatarFileName, "5.png") ||
+                                Objects.equals(avatarFileName, "6.png") ||
+                                Objects.equals(avatarFileName, "7.png") ||
+                                Objects.equals(avatarFileName, "8.png") ||
+                                Objects.equals(avatarFileName, "9.png")) {
+                            AvatarFolderPath = "src/main/resources/org/main/unimap_pc/images/avatares";
+                        }else {
+                            AvatarFolderPath = "src/main/resources/org/main/unimap_pc/images/avatares/custom";
+                        }
+                        File AvatarFolder = new File(AvatarFolderPath);
+
+                        // Create directory if it doesnt exist
+                        if (!AvatarFolder.exists()) {
+                            AvatarFolder.mkdirs();
+                        }
+
+                        File avatarFile = new File(AvatarFolder, avatarFileName);
+                        try (FileOutputStream fos = new FileOutputStream(avatarFile)) {
+                            fos.write(avatarBytes);
+                            System.out.println("Avatar saved to: " + avatarFile.getAbsolutePath());
+                        } catch (IOException e) {
+                            System.out.println("Error saving avatar.jpg file: " + e.getMessage());
+                            Logger.error("Error saving avatar.jpg file: " + e.getMessage());
+                            avatarFileName = "2.png";
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error processing avatar.jpg binary: " + e.getMessage());
+                        Logger.error("Error processing avatar.jpg binary: " + e.getMessage());
+                        avatarFileName = "2.png";
+                    }
+                } else if (avatarFileName == null || avatarFileName.isEmpty() || avatarFileName.equals("null")) {
+                    avatarFileName = "2.png"; // Default if no name
+                }
+
+                return new UserModel(id, username, email, login, admin, premium, avatarBinary.getBytes(),avatarFileName);
             } catch (Exception e) {
+                System.out.println("Error parsing user data: " + e.getMessage());
                 Logger.error("Error parsing user data: " + e.getMessage());
             }
         }
@@ -278,6 +338,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+            System.out.println("Failed to load main page: " + e.getMessage());
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
@@ -293,6 +354,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+            System.out.println("Failed to load main page: " + e.getMessage());
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
@@ -317,6 +379,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+            System.out.println("Failed to load main page: " + e.getMessage());
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
@@ -332,6 +395,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+            System.out.println("Failed to load main page: " + e.getMessage());
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
@@ -347,6 +411,7 @@ public class HomePageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+            System.out.println("Failed to load main page: " + e.getMessage());
             Logger.error("Failed to load main page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }
@@ -413,6 +478,7 @@ public class HomePageController implements LanguageSupport {
             String url = "https://discord.gg/dX48acpNS8";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
+            System.out.println("Failed to open Discord link: " + e.getMessage());
             Logger.error("Failed to open Discord link: " + e.getMessage());
             showErrorDialog("Failed to open Discord link: " + e.getMessage());
         }
@@ -424,6 +490,7 @@ public class HomePageController implements LanguageSupport {
             String url = "https://www.notion.so/FX-com-54cdb158085e4377b832ece310a5603d";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
+            System.out.println("Failed to open FXcom link: " + e.getMessage());
             Logger.error("Failed to open FXcom link: " + e.getMessage());
             showErrorDialog("Failed to open FXcom link: " + e.getMessage());
         }
@@ -434,6 +501,7 @@ public class HomePageController implements LanguageSupport {
             String url = "https://protective-april-ef1.notion.site/SD-Mladost-abe968a31d404360810b53acbbb357cc";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
+            System.out.println("Failed to open Mladost link: " + e.getMessage());
             Logger.error("Failed to open Mladost link: " + e.getMessage());
             showErrorDialog("Failed to open Mladost link: " + e.getMessage());
         }
@@ -445,6 +513,7 @@ public class HomePageController implements LanguageSupport {
             String url = "https://t.me/fiitstu";
             java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
         } catch (IOException e) {
+            System.out.println("Failed to open FIIT Telegram link: " + e.getMessage());
             Logger.error("Failed to open FIIT Telegram link: " + e.getMessage());
             showErrorDialog("Failed to open FIIT Telegram link: " + e.getMessage());
         }

@@ -314,7 +314,7 @@ public class LogInController implements LanguageSupport {
                     showErrorDialog("Error loading the application. Please try again later.");
                 }
             } else {
-                infoMess.setText("Invalid username or password!");
+                infoMess.setText("Failed to log in. Please check your username and password.");
             }
         })).exceptionally(ex -> {
             Platform.runLater(() -> {

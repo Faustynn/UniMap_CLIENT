@@ -1,5 +1,7 @@
 package org.main.unimap_pc.client.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -8,15 +10,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.main.unimap_pc.client.configs.AppConfig;
@@ -32,9 +40,13 @@ import org.main.unimap_pc.client.utils.LanguageSupport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
@@ -83,9 +95,23 @@ public class ProfilePageController implements LanguageSupport {
     @FXML
     private ImageView avatar_image_view;
 
+    private final String customAvatarsFolder = "src/main/resources/org/main/unimap_pc/images/avatares/custom";
+    private final String standartAvatarsFolder = "src/main/resources/org/main/unimap_pc/images/avatares";
+    private String AVATAR_FILENAME;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @FXML
     private void initialize() {
         try {
+            try {
+                String userData = PreferenceServise.get("USER_DATA").toString();
+                JsonNode jsonNode = objectMapper.readTree(userData);
+                AVATAR_FILENAME = jsonNode.get("avatarName").asText();
+            } catch (JsonProcessingException e) {
+                Logger.error("Error parsing JSON: " + e.getMessage());
+            }
+
             UserModel user = UserService.getInstance().getCurrentUser();
             if (user != null) {
                 UserService.getInstance().setCurrentUser(user);
@@ -93,8 +119,9 @@ public class ProfilePageController implements LanguageSupport {
                 navi_username_text1.setText(user.getUsername());
                 navi_login_text.setText(user.getLogin());
                 navi_login_text1.setText(user.getLogin());
-                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
-                avatar_image_view.setImage(AppConfig.getAvatar(user.getAvatar()));
+                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
+                System.out.println("QWERTY Avatar name: " + user.getAvatarName());
+                avatar_image_view.setImage(AppConfig.getAvatar(user.getAvatarName()));
 
                 // set x coordinate for edit_profile icon in the end of navi_username_text1
                 alignEditUsernameBtn();
@@ -120,7 +147,7 @@ public class ProfilePageController implements LanguageSupport {
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
         } catch (Exception e) {
-            Logger.error("Error during profile page initializing" + e.getMessage());
+            Logger.error("Error during profile page initializing: " + e.getMessage());
         }
     }
 
@@ -131,7 +158,6 @@ public class ProfilePageController implements LanguageSupport {
             double iconWidth = edit_username.getLayoutBounds().getWidth();
             edit_username.setLayoutX(textX + textWidth + 5); // 5 is a small padding
             edit_username.setLayoutY(navi_username_text1.getLayoutY() + (navi_username_text1.getLayoutBounds().getHeight() - iconWidth)/2);
-
         });
     }
 
@@ -211,7 +237,7 @@ public class ProfilePageController implements LanguageSupport {
                             PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
                             Platform.runLater(() -> {
                                 navi_username_text.setText(newUsername);
-                                navi_username_text1.setText(newUsername); // Line 208
+                                navi_username_text1.setText(newUsername);
                                 alignEditUsernameBtn();
                             });
                         } catch (Exception e) {
@@ -269,9 +295,7 @@ public class ProfilePageController implements LanguageSupport {
                             UserService.getInstance().setCurrentUser(currentUser);
                             PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
                             Platform.runLater(() -> {
-//                                navi_username_text.setText(newUsername);
-//                                navi_username_text1.setText(newUsername); // Line 208
-//                                alignEditUsernameBtn();
+                                // UI updates if needed
                             });
                         } catch (Exception e) {
                             Logger.error("Failed to parse backend response: " + e.getMessage());
@@ -286,12 +310,6 @@ public class ProfilePageController implements LanguageSupport {
                     return null;
                 });
     }
-
-    private int avatarID; // Assuming you have avatarID defined somewhere in your controller
-    private ImageView avatarImageView; //ImageView where you display the avatar in the main window.
-
-    @FXML
-    private Image profile_picture;
 
     @FXML
     private void handleChangeAvatar() {
@@ -300,134 +318,363 @@ public class ProfilePageController implements LanguageSupport {
         stage.initModality(Modality.APPLICATION_MODAL);
 
         TilePane tilePane = new TilePane();
-        tilePane.setAlignment(javafx.geometry.Pos.CENTER);
+        tilePane.setAlignment(Pos.CENTER);
         tilePane.setHgap(10);
         tilePane.setVgap(10);
+        tilePane.setPadding(new Insets(20));
 
-        File folder = new File(getClass().getResource("/org/main/unimap_pc/images/avatares/").getFile());
-        if (folder.exists() && folder.isDirectory()) {
-            File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
-            if (files != null) {
-                List<ImageView> avatarImageViews = new ArrayList<>();
-                for (File file : files) {
-                    String imagePath = "/org/main/unimap_pc/images/avatares/" + file.getName();
-                    Image image = new Image(getClass().getResourceAsStream(imagePath));
-                    ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(100);
-                    imageView.setFitHeight(100);
+        // Load standard avatars
+        loadStandardAvatars(tilePane);
 
-                    int avatarId = Integer.parseInt(file.getName().replace(".png", ""));
+        Label customAvatarLabel = new Label("Your Custom Avatar");
+        customAvatarLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-                    // so here images 2 and 3 will be blocked for casual user and there will be access to them only for premium users and admin
-                    if (avatarId == 2 || avatarId == 3) {
-                        if (UserService.getInstance().getCurrentUser().isAdmin() || UserService.getInstance().getCurrentUser().isPremium()) {
-                            // Admin or premium user, allow selection
-                            imageView.setOnMouseClicked(event -> {
-                                updateAvatar(avatarId);
-                                stage.close();
-                            });
-                        } else {
-                            // Casual user, block selection and provide feedback
-                            imageView.setOpacity(0.5); // Visually indicate it's disabled
-                            imageView.setOnMouseClicked(event -> {
-                                // Optionally show an alert or message
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle("Premium Avatar");
-                                alert.setHeaderText(null);
-                                alert.setContentText("This avatar is only available for premium users or administrators.");
-                                alert.showAndWait();
-                            });
-                        }
-                    } else {
-                        // Regular avatar, allow selection for all users
-                        imageView.setOnMouseClicked(event -> {
-                            updateAvatar(avatarId);
-                            stage.close();
-                        });
-                    }
-                    avatarImageViews.add(imageView);
-                }
-                tilePane.getChildren().addAll(avatarImageViews);
-            }
+        StackPane customAvatarContainer = new StackPane();
+        customAvatarContainer.setAlignment(Pos.CENTER);
+        customAvatarContainer.setPadding(new Insets(10));
+
+        File customAvatarFile = new File("src/main/resources/org/main/unimap_pc/images/avatares/custom/" + AVATAR_FILENAME);
+        if (customAvatarFile.exists()) {
+            loadCustomAvatars(customAvatarContainer);
         } else {
-            Logger.error("Avatar directory not found.");
+            Label nothingAvatarLabel = new Label("No custom avatar found");
+            nothingAvatarLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+            customAvatarContainer.getChildren().add(nothingAvatarLabel);
         }
 
-        Scene scene = new Scene(tilePane, 600, 400);
+        Button uploadAvatarButton = new Button("Upload New Avatar");
+        uploadAvatarButton.setOnAction(event -> uploadNewAvatar(stage, customAvatarContainer));
+
+        VBox mainContainer = new VBox(20, tilePane, new Separator(), customAvatarLabel, customAvatarContainer, uploadAvatarButton);
+        mainContainer.setAlignment(Pos.CENTER);
+        mainContainer.setPadding(new Insets(20));
+
+        Scene scene = new Scene(new ScrollPane(mainContainer), 600, 500);
         stage.setScene(scene);
         stage.showAndWait();
     }
 
-    public void updateAvatar(int selectedAvatarID) {
-        this.avatarID = selectedAvatarID;
-        String imagePath = "/org/main/unimap_pc/images/avatares/" + avatarID + ".png";
-        Image newAvatar = new Image(getClass().getResourceAsStream(imagePath));
-        if(avatarImageView != null){
-            avatarImageView.setImage(newAvatar);
-        }
+    private void loadStandardAvatars(TilePane tilePane) {
+        tilePane.getChildren().clear();
 
-        UserModel currentUser = UserService.getInstance().getCurrentUser();
-        if (currentUser == null || currentUser.getEmail() == null || currentUser.getEmail().isEmpty()) {
-            System.err.println("User email not available. Cannot call backend.");
-            return;
-        }
-
-        String backendUrl = AppConfig.getApiUrl() + "change_avatar";
-        HttpClient httpClient = HttpClient.newBuilder().build();
-
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("email", currentUser.getEmail());
-        requestBody.put("avatarPath", Integer.toString(avatarID)); // Send only the ID
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBodyJson;
         try {
-            requestBodyJson = objectMapper.writeValueAsString(requestBody);
+            String directoryPath = "/org/main/unimap_pc/images/avatares";
+            File folder = new File(getClass().getResource(directoryPath).toURI());
+
+            if (folder.exists() && folder.isDirectory()) {
+                File[] files = folder.listFiles((dir, name) ->
+                        name.toLowerCase().endsWith(".png") ||
+                                name.toLowerCase().endsWith(".jpg") ||
+                                name.toLowerCase().endsWith(".jpeg"));
+
+                if (files != null && files.length > 0) {
+                    for (File file : files) {
+                        String imagePath = directoryPath + "/" + file.getName();
+                        Image image = new Image(getClass().getResourceAsStream(imagePath));
+
+                        ImageView imageView = new ImageView(image);
+                        imageView.setFitWidth(100);
+                        imageView.setFitHeight(100);
+
+                        // avatar frame with hover effect
+                        StackPane avatarContainer = new StackPane();
+                        Rectangle border = new Rectangle(100, 100);
+                        border.setArcWidth(10);
+                        border.setArcHeight(10);
+                        border.setFill(Color.TRANSPARENT);
+                        border.setStroke(Color.TRANSPARENT);
+                        border.setStrokeWidth(3);
+
+                        avatarContainer.getChildren().addAll(imageView, border);
+
+                        // Hover effects
+                        avatarContainer.setOnMouseEntered(e -> {
+                            border.setStroke(Color.CORNFLOWERBLUE);
+                            imageView.setEffect(new DropShadow(10, Color.LIGHTBLUE));
+                        });
+
+                        avatarContainer.setOnMouseExited(e -> {
+                            border.setStroke(Color.TRANSPARENT);
+                            imageView.setEffect(null);
+                        });
+
+                        // Avatar selection
+                        avatarContainer.setOnMouseClicked(event -> {
+                            try {
+                                sendAvatarToServer(file, file.getName());
+
+                                // Update UI
+                                updateUserAvatar(file.getName(), file);
+
+                                // Close selection window
+                                ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+                            } catch (Exception e) {
+                                Logger.error("Error selecting avatar: " + e.getMessage());
+                                showErrorDialog("Failed to set avatar: " + e.getMessage());
+                            }
+                        });
+
+                        tilePane.getChildren().add(avatarContainer);
+                    }
+                } else {
+                    Label noAvatarsLabel = new Label("No standard avatars found");
+                    noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+                    tilePane.getChildren().add(noAvatarsLabel);
+                }
+            }
         } catch (Exception e) {
-            Logger.error("Error creating JSON request body: " + e.getMessage());
-            return;
+            Logger.error("Error loading standard avatars: " + e.getMessage());
+            Label errorLabel = new Label("Error loading avatars");
+            errorLabel.setStyle("-fx-text-fill: red;");
+            tilePane.getChildren().add(errorLabel);
         }
+    }
+
+    private void loadCustomAvatars(StackPane tilePane) {
+        tilePane.getChildren().clear();
+
+        try {
+            File customAvatarsDir = new File(customAvatarsFolder);
+            if (customAvatarsDir.exists() && customAvatarsDir.isDirectory()) {
+                File[] files = customAvatarsDir.listFiles((dir, name) ->
+                        name.toLowerCase().endsWith(".png") ||
+                                name.toLowerCase().endsWith(".jpg") ||
+                                name.toLowerCase().endsWith(".jpeg"));
+
+                if (files != null && files.length > 0) {
+                    for (File file : files) {
+                        Image image = new Image(file.toURI().toString());
+
+                        ImageView imageView = new ImageView(image);
+                        imageView.setFitWidth(100);
+                        imageView.setFitHeight(100);
+
+                        // avatar frame with hover effect
+                        StackPane avatarContainer = new StackPane();
+                        Rectangle border = new Rectangle(100, 100);
+                        border.setArcWidth(10);
+                        border.setArcHeight(10);
+                        border.setFill(Color.TRANSPARENT);
+                        border.setStroke(Color.TRANSPARENT);
+                        border.setStrokeWidth(3);
+
+                        avatarContainer.getChildren().addAll(imageView, border);
+
+                        // Hover effects
+                        avatarContainer.setOnMouseEntered(e -> {
+                            border.setStroke(Color.CORNFLOWERBLUE);
+                            imageView.setEffect(new DropShadow(10, Color.LIGHTBLUE));
+                        });
+
+                        avatarContainer.setOnMouseExited(e -> {
+                            border.setStroke(Color.TRANSPARENT);
+                            imageView.setEffect(null);
+                        });
+
+                        // Avatar selection
+                        avatarContainer.setOnMouseClicked(event -> {
+                            try {
+                                sendAvatarToServer(file, file.getName());
+                                updateUserAvatar(file.getName(), file);
+
+                                ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
+                            } catch (Exception e) {
+                                Logger.error("Error selecting custom avatar: " + e.getMessage());
+                                showErrorDialog("Failed to set avatar: " + e.getMessage());
+                            }
+                        });
+
+                        tilePane.getChildren().add(avatarContainer);
+                    }
+                } else {
+                    Label noAvatarsLabel = new Label("No custom avatars found");
+                    noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+                    tilePane.getChildren().add(noAvatarsLabel);
+                }
+            } else {
+                Label noAvatarsLabel = new Label("Custom avatars directory not found");
+                noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+                tilePane.getChildren().add(noAvatarsLabel);
+            }
+        } catch (Exception e) {
+            Logger.error("Error loading custom avatars: " + e.getMessage());
+            Label errorLabel = new Label("Error loading custom avatars");
+            errorLabel.setStyle("-fx-text-fill: red;");
+            tilePane.getChildren().add(errorLabel);
+        }
+    }
+
+    private void uploadNewAvatar(Stage parentStage, StackPane customAvatarContainer) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Avatar Image");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(parentStage);
+        if (selectedFile != null) {
+            try {
+                File destinationFile;
+                if (selectedFile.getName().equalsIgnoreCase(AVATAR_FILENAME)) {
+                    File customAvatarsDir = new File(customAvatarsFolder);
+                    if (!customAvatarsDir.exists()) {
+                        customAvatarsDir.mkdirs();
+                    }
+                    destinationFile = new File(customAvatarsDir, AVATAR_FILENAME);
+                } else {
+                    File standardAvatarsDir = new File(standartAvatarsFolder);
+                    if (!standardAvatarsDir.exists()) {
+                        standardAvatarsDir.mkdirs();
+                    }
+                    destinationFile = new File(standardAvatarsDir, selectedFile.getName());
+                }
+
+                Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                sendAvatarToServer(destinationFile, destinationFile.getName());
+                updateUserAvatar(destinationFile.getName(), destinationFile);
+
+                customAvatarContainer.getChildren().clear();
+                Image newCustomImage = new Image(destinationFile.toURI().toString());
+                ImageView newCustomImageView = new ImageView(newCustomImage);
+                newCustomImageView.setFitWidth(120);
+                newCustomImageView.setFitHeight(120);
+
+                // Add selection functionality to new custom avatar
+                newCustomImageView.setOnMouseClicked(event -> {
+                    try {
+                        sendAvatarToServer(destinationFile, destinationFile.getName());
+                        updateUserAvatar(destinationFile.getName(), destinationFile);
+                        ((Stage) customAvatarContainer.getScene().getWindow()).close();
+                    } catch (Exception e) {
+                        Logger.error("Error selecting custom avatar: " + e.getMessage());
+                        showErrorDialog("Failed to set avatar: " + e.getMessage());
+                    }
+                });
+
+                // Add hover effects
+                Rectangle border = new Rectangle(120, 120);
+                border.setArcWidth(10);
+                border.setArcHeight(10);
+                border.setFill(Color.TRANSPARENT);
+                border.setStroke(Color.TRANSPARENT);
+                border.setStrokeWidth(3);
+
+                StackPane avatarWrapper = new StackPane(newCustomImageView, border);
+
+                avatarWrapper.setOnMouseEntered(e -> {
+                    border.setStroke(Color.CORNFLOWERBLUE);
+                    newCustomImageView.setEffect(new DropShadow(10, Color.LIGHTBLUE));
+                });
+
+                avatarWrapper.setOnMouseExited(e -> {
+                    border.setStroke(Color.TRANSPARENT);
+                    newCustomImageView.setEffect(null);
+                });
+
+                customAvatarContainer.getChildren().add(avatarWrapper);
+                loadCustomAvatars(customAvatarContainer);
+
+            } catch (Exception e) {
+                Logger.error("Error uploading avatar: " + e.getMessage());
+                showErrorDialog("Failed to upload avatar: " + e.getMessage());
+            }
+        }
+    }
+
+    private void sendAvatarToServer(File avatarFile, String fileName) throws IOException, InterruptedException {
+        String backendUrl = AppConfig.getApiUrl() + "change_avatar?fileName=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        byte[] fileContent = Files.readAllBytes(avatarFile.toPath());
+        String contentType = Files.probeContentType(avatarFile.toPath());
+
+        System.out.println("File content type: " + contentType);
+        System.out.println("File size: " + fileContent.length + " bytes");
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(backendUrl))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(requestBodyJson))
+                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
+                .header("Content-Type", contentType != null ? contentType : "application/octet-stream")
+                .PUT(HttpRequest.BodyPublishers.ofByteArray(fileContent))
                 .build();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    if (response.statusCode() == 200) {
-                        try {
-                            String responseBody = response.body();
-                            System.out.println("Avatar updated on backend: " + responseBody);
-                            currentUser.setAvatar(Integer.toString(avatarID)); // Store only the ID
-                            UserService.getInstance().setCurrentUser(currentUser);
-                            PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
-                            avatar_image_view.setImage(AppConfig.getAvatar(currentUser.getAvatar()));
-                        } catch (Exception e) {
-                            Logger.error("Failed to parse backend response: " + e.getMessage());
-                        }
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("Response Status Code: " + response.statusCode());
 
-                    } else {
-                        Logger.error("Backend returned error: " + response.statusCode());
-                    }
-                })
-                .exceptionally(throwable -> {
-                    Logger.error("Error calling backend: " + throwable.getMessage());
-                    return null;
-                });
+        if (response.statusCode() != 200) {
+            throw new IOException("Server returned error code: " + response.statusCode() + " - " + response.body());
         }
+
+        // Process server response
+        String responseBody = response.body();
+        System.out.println("Avatar changed successfully, server response: " + responseBody);
+        Logger.info("Avatar changed successfully, server response: " + responseBody);
+
+        // Update user info
+        UserModel currentUser = UserService.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            currentUser.setAvatarName(fileName);
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+
+            } catch (Exception e) {
+                Logger.error("Error updating user data: " + e.getMessage());
+            }
+        }
+    }
+
+    private void updateUserAvatar(String avatarFileName, File avatarFile) {
+        try {
+            // Check input data
+            if (avatarFile == null || !avatarFile.exists()) {
+                Logger.error("Avatar file does not exist: " + avatarFile);
+                return;
+            }
+
+            UserModel currentUser = UserService.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                // Update user data
+                currentUser.setAvatarName(avatarFileName);
+                currentUser.setAvatarBinary(Files.readAllBytes(avatarFile.toPath()));
+                UserService.getInstance().setCurrentUser(currentUser);
+
+                // Save data to Prefs
+                ObjectMapper objectMapper = new ObjectMapper();
+                PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+
+                // Update UI
+                Platform.runLater(() -> {
+                    navi_avatar.setImage(new Image(avatarFile.toURI().toString()));
+                    avatar_image_view.setImage(new Image(avatarFile.toURI().toString()));
+                });
+
+                Logger.info("User avatar updated successfully: " + avatarFileName);
+            } else {
+                Logger.error("UserModel is null in updateUserAvatar");
+            }
+        } catch (Exception e) {
+            Logger.error("Error updating user avatar: " + e.getMessage());
+        }
+    }
 
     @FXML
     private void handleChangePass() {
         try {
             String newPassword = changePasswordField.getText();
-            String email = UserService.getInstance().getCurrentUser().getEmail();
+            String confirmPassword = changeConfirmPasswordField.getText();
 
             if (newPassword == null || newPassword.isEmpty()) {
                 showErrorDialog("Please enter a new password.");
                 return;
             }
+
+            if (!newPassword.equals(confirmPassword)) {
+                showErrorDialog("Passwords do not match.");
+                return;
+            }
+
+            String email = UserService.getInstance().getCurrentUser().getEmail();
 
             PasswordChangeRequest request = new PasswordChangeRequest();
             request.setEmail(email);
@@ -454,6 +701,7 @@ public class ProfilePageController implements LanguageSupport {
             if (response.statusCode() == 200) {
                 showErrorDialog("Password changed successfully.");
                 changePasswordField.clear();
+                changeConfirmPasswordField.clear();
             } else if (response.statusCode() == 404) {
                 showErrorDialog("User not found.");
             } else if (response.statusCode() == 302) {
@@ -467,7 +715,6 @@ public class ProfilePageController implements LanguageSupport {
             Logger.error("An error occurred while changing the password: " + e.getMessage());
             showErrorDialog("An error occurred while changing the password: " + e.getMessage());
         }
-
     }
 
     private void loadCurrentLanguage() {
@@ -479,8 +726,9 @@ public class ProfilePageController implements LanguageSupport {
                 LanguageManager.changeLanguage(languageCode);
                 PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
-            } catch (Exception e) {
-                Logger.error("Error in loadCurrentLanguage(): " + e.getMessage());
+            }catch (Exception e) {
+                Logger.error("Error changing language: " + e.getMessage());
+                showErrorDialog("Failed to change language: " + e.getMessage());
             }
         });
     }
@@ -597,6 +845,4 @@ public class ProfilePageController implements LanguageSupport {
         stage.setScene(mainScene);
         stage.show();
     }
-
-
 }

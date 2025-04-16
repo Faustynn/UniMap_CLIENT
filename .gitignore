@@ -1,6 +1,7 @@
 config.properties
 
 target/
+target/*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -41,7 +42,9 @@ build/
 
 ## DB secure ##
 .properties
+
 /org/main/unimap_pc/cashe/cache.ser
 /org/main/unimap_pc/cashe/preferences.ser
 /src/main/resources/org/main/unimap_pc/cashe/cache.ser
 /src/main/resources/org/main/unimap_pc/cashe/preferences.ser
+/src/main/resources/org/main/unimap_pc/images/avatares.zip

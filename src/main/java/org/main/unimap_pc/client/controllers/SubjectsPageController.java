@@ -90,7 +90,7 @@ public class SubjectsPageController implements LanguageSupport {
         if (user != null) {
             navi_username_text.setText(user.getUsername());
             navi_login_text.setText(user.getLogin());
-            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
         }
         LanguageManager.changeLanguage(defLang);
         LanguageManager.getInstance().registerController(this);

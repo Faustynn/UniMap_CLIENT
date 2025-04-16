@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 // TODO: Rewrite prop file with lombok
@@ -197,16 +198,37 @@ public class AppConfig {
 
 
     public static Image getAvatar(String avatarID) {
-        String imagePath = "/org/main/unimap_pc/images/avatares/" + avatarID + ".png";
+        String imagePath;
+        System.out.println("Avatar ID: " + avatarID);
+        if (Objects.equals(avatarID, "0.png") ||
+                Objects.equals(avatarID, "1.png") ||
+                Objects.equals(avatarID, "2.png") ||
+                Objects.equals(avatarID, "3.png") ||
+                Objects.equals(avatarID, "4.png") ||
+                Objects.equals(avatarID, "5.png") ||
+                Objects.equals(avatarID, "6.png") ||
+                Objects.equals(avatarID, "7.png") ||
+                Objects.equals(avatarID, "8.png") ||
+                Objects.equals(avatarID, "9.png")){
+            imagePath = "/org/main/unimap_pc/images/avatares/" + avatarID;
+        } else {
+            imagePath = "/org/main/unimap_pc/images/avatares/custom/" + avatarID;
+        }
         System.out.println(imagePath);
 
-        URL resource = AppConfig.class.getResource(imagePath);
-        if (resource == null) {
-            Logger.error("Avatar image not found: " + imagePath);
-            return null; // or return a default image
-        }
+        try (InputStream resourceStream = AppConfig.class.getResourceAsStream(imagePath)) {
+            if (resourceStream == null) {
+                System.out.println("!!Avatar image not found: " + imagePath);
+                Logger.error("Avatar image not found: " + imagePath);
+                return null; // or return a default image
+            }
 
-        return new Image(resource.toString());
+            System.out.println("!!Avatar image loaded successfully: " + imagePath);
+            return new Image(resourceStream);
+        } catch (IOException e) {
+            Logger.error("Error loading avatar image: " + e.getMessage());
+            return null;
+        }
     }
 
     public static String getNewsUrl() {

@@ -19,7 +19,7 @@ public class CommentModel {
     @Override
     public String toString() {
         return "CommentModel{" +
-                "avatar='" + avatar + '\'' +
+                "avatar.jpg='" + avatar + '\'' +
                 ", username='" + username + '\'' +
                 ", description='" + description + '\'' +
                 ", rating=" + rating +
