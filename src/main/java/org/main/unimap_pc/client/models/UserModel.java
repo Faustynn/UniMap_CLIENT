@@ -16,6 +16,8 @@ public class UserModel {
     private String login;
     private boolean isAdmin;
     private boolean isPremium;
-    private String avatar;
+    private byte[] avatarBinary;
+    private String avatarName;
+
 
 }

@@ -79,7 +79,7 @@ public class SettingsPageController implements LanguageSupport {
                 UserService.getInstance().setCurrentUser(user);
                 navi_username_text.setText(user.getUsername());
                 navi_login_text.setText(user.getLogin());
-                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatar()));
+                navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
             }
 
             dragArea.setOnMousePressed(this::handleMousePressed);
