@@ -200,6 +200,7 @@ public class AppConfig {
     public static Image getAvatar(String avatarID) {
         String imagePath;
         System.out.println("Avatar ID: " + avatarID);
+
         if (Objects.equals(avatarID, "0.png") ||
                 Objects.equals(avatarID, "1.png") ||
                 Objects.equals(avatarID, "2.png") ||

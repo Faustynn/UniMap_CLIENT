@@ -61,7 +61,9 @@ public class AuthService {
                             JsonNode jsonNode = objectMapper.readTree(response.body());
                             JsonNode userNode = jsonNode.get("user");
                             String accessToken = jsonNode.get("accessToken").asText();
-                           // System.out.println("!User node: " + userNode.toString());
+                            System.out.println("Access Token: " + accessToken);
+
+                            // System.out.println("!User node: " + userNode.toString());
 
                             String refreshToken = response.headers().firstValue("Set-Cookie")
                                     .map(cookie -> {
@@ -80,6 +82,8 @@ public class AuthService {
 
                                 JsonNode avatarData = userNode.get("avatar");
                                 JsonNode avatarName = userNode.get("avatarFileName");
+
+                                System.out.println("OUT FILEDATA:  " + avatarData);
 
                                 if (avatarData != null && !avatarData.asText().isEmpty() && !avatarData.asText().equals("null") &&
                                         avatarName != null && !avatarName.asText().isEmpty() && !avatarName.asText().equals("null")) {
