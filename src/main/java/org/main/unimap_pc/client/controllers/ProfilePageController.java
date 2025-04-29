@@ -120,7 +120,7 @@ public class ProfilePageController implements LanguageSupport {
                 navi_login_text.setText(user.getLogin());
                 navi_login_text1.setText(user.getLogin());
                 navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
-                System.out.println("QWERTY Avatar name: " + user.getAvatarName());
+             //   System.out.println("QWERTY Avatar name: " + user.getAvatarName());
                 avatar_image_view.setImage(AppConfig.getAvatar(user.getAvatarName()));
 
                 // set x coordinate for edit_profile icon in the end of navi_username_text1
@@ -317,35 +317,35 @@ public class ProfilePageController implements LanguageSupport {
         stage.setTitle("Select Avatar");
         stage.initModality(Modality.APPLICATION_MODAL);
 
-        TilePane tilePane = new TilePane();
-        tilePane.setAlignment(Pos.CENTER);
-        tilePane.setHgap(10);
-        tilePane.setVgap(10);
-        tilePane.setPadding(new Insets(20));
+        TilePane standardTilePane = new TilePane();
+        standardTilePane.setAlignment(Pos.CENTER);
+        standardTilePane.setHgap(10);
+        standardTilePane.setVgap(10);
+        standardTilePane.setPadding(new Insets(20));
 
-        // Load standard avatars
-        loadStandardAvatars(tilePane);
+        Label standardAvatarLabel = new Label("Standard Avatars");
+        standardAvatarLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        TilePane customTilePane = new TilePane();
+        customTilePane.setAlignment(Pos.CENTER);
+        customTilePane.setHgap(10);
+        customTilePane.setVgap(10);
+        customTilePane.setPadding(new Insets(20));
 
         Label customAvatarLabel = new Label("Your Custom Avatar");
         customAvatarLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-        StackPane customAvatarContainer = new StackPane();
-        customAvatarContainer.setAlignment(Pos.CENTER);
-        customAvatarContainer.setPadding(new Insets(10));
-
-        File customAvatarFile = new File("src/main/resources/org/main/unimap_pc/images/avatares/custom/" + AVATAR_FILENAME);
-        if (customAvatarFile.exists()) {
-            loadCustomAvatars(customAvatarContainer);
-        } else {
-            Label nothingAvatarLabel = new Label("No custom avatar found");
-            nothingAvatarLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
-            customAvatarContainer.getChildren().add(nothingAvatarLabel);
-        }
+        // Load avatars, sorting them into standard (0-9) and custom
+        loadAvatars(standardTilePane, customTilePane);
 
         Button uploadAvatarButton = new Button("Upload New Avatar");
-        uploadAvatarButton.setOnAction(event -> uploadNewAvatar(stage, customAvatarContainer));
+        uploadAvatarButton.setOnAction(event -> uploadNewAvatar(stage, customTilePane));
 
-        VBox mainContainer = new VBox(20, tilePane, new Separator(), customAvatarLabel, customAvatarContainer, uploadAvatarButton);
+        VBox mainContainer = new VBox(20,
+                standardAvatarLabel, standardTilePane,
+                new Separator(),
+                customAvatarLabel, customTilePane,
+                uploadAvatarButton);
         mainContainer.setAlignment(Pos.CENTER);
         mainContainer.setPadding(new Insets(20));
 
@@ -354,10 +354,12 @@ public class ProfilePageController implements LanguageSupport {
         stage.showAndWait();
     }
 
-    private void loadStandardAvatars(TilePane tilePane) {
-        tilePane.getChildren().clear();
+    private void loadAvatars(TilePane standardTilePane, TilePane customTilePane) {
+        standardTilePane.getChildren().clear();
+        customTilePane.getChildren().clear();
 
         try {
+            // Load from resources directory
             String directoryPath = "/org/main/unimap_pc/images/avatares";
             File folder = new File(getClass().getResource(directoryPath).toURI());
 
@@ -367,8 +369,24 @@ public class ProfilePageController implements LanguageSupport {
                                 name.toLowerCase().endsWith(".jpg") ||
                                 name.toLowerCase().endsWith(".jpeg"));
 
+                boolean hasStandardAvatars = false;
+                boolean hasCustomAvatars = false;
+
                 if (files != null && files.length > 0) {
                     for (File file : files) {
+                        String fileName = file.getName();
+                        String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                        // Check if filename is a digit from 0 to 9
+                        boolean isStandardAvatar = baseFileName.matches("[0-9]");
+
+                        TilePane targetPane = isStandardAvatar ? standardTilePane : customTilePane;
+                        if (isStandardAvatar) {
+                            hasStandardAvatars = true;
+                        } else {
+                            hasCustomAvatars = true;
+                        }
+
                         String imagePath = directoryPath + "/" + file.getName();
                         Image image = new Image(getClass().getResourceAsStream(imagePath));
 
@@ -376,7 +394,7 @@ public class ProfilePageController implements LanguageSupport {
                         imageView.setFitWidth(100);
                         imageView.setFitHeight(100);
 
-                        // avatar frame with hover effect
+                        // Avatar frame with hover effect
                         StackPane avatarContainer = new StackPane();
                         Rectangle border = new Rectangle(100, 100);
                         border.setArcWidth(10);
@@ -402,11 +420,7 @@ public class ProfilePageController implements LanguageSupport {
                         avatarContainer.setOnMouseClicked(event -> {
                             try {
                                 sendAvatarToServer(file, file.getName());
-
-                                // Update UI
                                 updateUserAvatar(file.getName(), file);
-
-                                // Close selection window
                                 ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
                             } catch (Exception e) {
                                 Logger.error("Error selecting avatar: " + e.getMessage());
@@ -414,25 +428,31 @@ public class ProfilePageController implements LanguageSupport {
                             }
                         });
 
-                        tilePane.getChildren().add(avatarContainer);
+                        targetPane.getChildren().add(avatarContainer);
                     }
-                } else {
+                }
+
+                // Add placeholders if no avatars found
+                if (!hasStandardAvatars) {
                     Label noAvatarsLabel = new Label("No standard avatars found");
                     noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
-                    tilePane.getChildren().add(noAvatarsLabel);
+                    standardTilePane.getChildren().add(noAvatarsLabel);
+                }
+
+                if (!hasCustomAvatars) {
+                    Label noAvatarsLabel = new Label("No custom avatars found");
+                    noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+                    customTilePane.getChildren().add(noAvatarsLabel);
                 }
             }
         } catch (Exception e) {
-            Logger.error("Error loading standard avatars: " + e.getMessage());
+            Logger.error("Error loading avatars: " + e.getMessage());
             Label errorLabel = new Label("Error loading avatars");
             errorLabel.setStyle("-fx-text-fill: red;");
-            tilePane.getChildren().add(errorLabel);
+            standardTilePane.getChildren().add(errorLabel);
         }
-    }
 
-    private void loadCustomAvatars(StackPane tilePane) {
-        tilePane.getChildren().clear();
-
+        // Also load custom avatars from custom folder if it exists
         try {
             File customAvatarsDir = new File(customAvatarsFolder);
             if (customAvatarsDir.exists() && customAvatarsDir.isDirectory()) {
@@ -443,13 +463,21 @@ public class ProfilePageController implements LanguageSupport {
 
                 if (files != null && files.length > 0) {
                     for (File file : files) {
+                        String fileName = file.getName();
+                        String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                        // Check if filename is a digit from 0 to 9
+                        boolean isStandardAvatar = baseFileName.matches("[0-9]");
+
+                        TilePane targetPane = isStandardAvatar ? standardTilePane : customTilePane;
+
                         Image image = new Image(file.toURI().toString());
 
                         ImageView imageView = new ImageView(image);
                         imageView.setFitWidth(100);
                         imageView.setFitHeight(100);
 
-                        // avatar frame with hover effect
+                        // Avatar frame with hover effect
                         StackPane avatarContainer = new StackPane();
                         Rectangle border = new Rectangle(100, 100);
                         border.setArcWidth(10);
@@ -476,7 +504,6 @@ public class ProfilePageController implements LanguageSupport {
                             try {
                                 sendAvatarToServer(file, file.getName());
                                 updateUserAvatar(file.getName(), file);
-
                                 ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
                             } catch (Exception e) {
                                 Logger.error("Error selecting custom avatar: " + e.getMessage());
@@ -484,27 +511,16 @@ public class ProfilePageController implements LanguageSupport {
                             }
                         });
 
-                        tilePane.getChildren().add(avatarContainer);
+                        targetPane.getChildren().add(avatarContainer);
                     }
-                } else {
-                    Label noAvatarsLabel = new Label("No custom avatars found");
-                    noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
-                    tilePane.getChildren().add(noAvatarsLabel);
                 }
-            } else {
-                Label noAvatarsLabel = new Label("Custom avatars directory not found");
-                noAvatarsLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
-                tilePane.getChildren().add(noAvatarsLabel);
             }
         } catch (Exception e) {
-            Logger.error("Error loading custom avatars: " + e.getMessage());
-            Label errorLabel = new Label("Error loading custom avatars");
-            errorLabel.setStyle("-fx-text-fill: red;");
-            tilePane.getChildren().add(errorLabel);
+            Logger.error("Error loading custom avatars folder: " + e.getMessage());
         }
     }
 
-    private void uploadNewAvatar(Stage parentStage, StackPane customAvatarContainer) {
+    private void uploadNewAvatar(Stage parentStage, TilePane customTilePane) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Avatar Image");
         fileChooser.getExtensionFilters().add(
@@ -514,65 +530,42 @@ public class ProfilePageController implements LanguageSupport {
         File selectedFile = fileChooser.showOpenDialog(parentStage);
         if (selectedFile != null) {
             try {
+                // Get the base filename without extension
+                String fileName = selectedFile.getName();
+                String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+                String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+
+                // Determine if this is a standard avatar (0-9) or custom
+                boolean isStandardAvatar = baseFileName.matches("[0-9]");
+
                 File destinationFile;
-                if (selectedFile.getName().equalsIgnoreCase(AVATAR_FILENAME)) {
-                    File customAvatarsDir = new File(customAvatarsFolder);
-                    if (!customAvatarsDir.exists()) {
-                        customAvatarsDir.mkdirs();
+                File destinationDir;
+
+                if (isStandardAvatar) {
+                    // Standard avatar (0-9)
+                    destinationDir = new File(standartAvatarsFolder);
+                    if (!destinationDir.exists()) {
+                        destinationDir.mkdirs();
                     }
-                    destinationFile = new File(customAvatarsDir, AVATAR_FILENAME);
+                    // Keep the original name for standard avatars
+                    destinationFile = new File(destinationDir, fileName);
                 } else {
-                    File standardAvatarsDir = new File(standartAvatarsFolder);
-                    if (!standardAvatarsDir.exists()) {
-                        standardAvatarsDir.mkdirs();
+                    // Custom avatar
+                    destinationDir = new File(customAvatarsFolder);
+                    if (!destinationDir.exists()) {
+                        destinationDir.mkdirs();
                     }
-                    destinationFile = new File(standardAvatarsDir, selectedFile.getName());
+                    destinationFile = new File(destinationDir, fileName);
                 }
 
                 Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 sendAvatarToServer(destinationFile, destinationFile.getName());
                 updateUserAvatar(destinationFile.getName(), destinationFile);
 
-                customAvatarContainer.getChildren().clear();
-                Image newCustomImage = new Image(destinationFile.toURI().toString());
-                ImageView newCustomImageView = new ImageView(newCustomImage);
-                newCustomImageView.setFitWidth(120);
-                newCustomImageView.setFitHeight(120);
-
-                // Add selection functionality to new custom avatar
-                newCustomImageView.setOnMouseClicked(event -> {
-                    try {
-                        sendAvatarToServer(destinationFile, destinationFile.getName());
-                        updateUserAvatar(destinationFile.getName(), destinationFile);
-                        ((Stage) customAvatarContainer.getScene().getWindow()).close();
-                    } catch (Exception e) {
-                        Logger.error("Error selecting custom avatar: " + e.getMessage());
-                        showErrorDialog("Failed to set avatar: " + e.getMessage());
-                    }
-                });
-
-                // Add hover effects
-                Rectangle border = new Rectangle(120, 120);
-                border.setArcWidth(10);
-                border.setArcHeight(10);
-                border.setFill(Color.TRANSPARENT);
-                border.setStroke(Color.TRANSPARENT);
-                border.setStrokeWidth(3);
-
-                StackPane avatarWrapper = new StackPane(newCustomImageView, border);
-
-                avatarWrapper.setOnMouseEntered(e -> {
-                    border.setStroke(Color.CORNFLOWERBLUE);
-                    newCustomImageView.setEffect(new DropShadow(10, Color.LIGHTBLUE));
-                });
-
-                avatarWrapper.setOnMouseExited(e -> {
-                    border.setStroke(Color.TRANSPARENT);
-                    newCustomImageView.setEffect(null);
-                });
-
-                customAvatarContainer.getChildren().add(avatarWrapper);
-                loadCustomAvatars(customAvatarContainer);
+                // Refresh the avatar display after upload
+                Stage currentStage = (Stage) customTilePane.getScene().getWindow();
+                currentStage.close();
+                handleChangeAvatar();
 
             } catch (Exception e) {
                 Logger.error("Error uploading avatar: " + e.getMessage());
@@ -588,36 +581,54 @@ public class ProfilePageController implements LanguageSupport {
         byte[] fileContent = Files.readAllBytes(avatarFile.toPath());
         String contentType = Files.probeContentType(avatarFile.toPath());
 
-        System.out.println("File content type: " + contentType);
-        System.out.println("File size: " + fileContent.length + " bytes");
+        if (contentType == null) {
+            // Provide a default content type based on file extension
+            String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+            switch (extension) {
+                case "png":
+                    contentType = "image/png";
+                    break;
+                case "jpg":
+                case "jpeg":
+                    contentType = "image/jpeg";
+                    break;
+                default:
+                    contentType = "application/octet-stream";
+            }
+        }
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(backendUrl))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
-                .header("Content-Type", contentType != null ? contentType : "application/octet-stream")
+                .header("Content-Type", contentType)
                 .PUT(HttpRequest.BodyPublishers.ofByteArray(fileContent))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Response Status Code: " + response.statusCode());
 
         if (response.statusCode() != 200) {
+            Logger.error("Server error when changing avatar: " + response.statusCode() + " - " + response.body());
             throw new IOException("Server returned error code: " + response.statusCode() + " - " + response.body());
         }
 
         // Process server response
         String responseBody = response.body();
-        System.out.println("Avatar changed successfully, server response: " + responseBody);
         Logger.info("Avatar changed successfully, server response: " + responseBody);
 
         // Update user info
         UserModel currentUser = UserService.getInstance().getCurrentUser();
         if (currentUser != null) {
+            // Get the base filename to check if standard avatar
+            String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+            boolean isStandardAvatar = baseFileName.matches("[0-9]");
+
             currentUser.setAvatarName(fileName);
+            // Можно добавить дополнительное поле для хранения типа аватара, если необходимо
+            // currentUser.setAvatarType(isStandardAvatar ? "standard" : "custom");
+
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
-
             } catch (Exception e) {
                 Logger.error("Error updating user data: " + e.getMessage());
             }
@@ -634,9 +645,16 @@ public class ProfilePageController implements LanguageSupport {
 
             UserModel currentUser = UserService.getInstance().getCurrentUser();
             if (currentUser != null) {
+                // Get the base filename to check if standard avatar
+                String baseFileName = avatarFileName.substring(0, avatarFileName.lastIndexOf('.'));
+                boolean isStandardAvatar = baseFileName.matches("[0-9]");
+
                 // Update user data
                 currentUser.setAvatarName(avatarFileName);
                 currentUser.setAvatarBinary(Files.readAllBytes(avatarFile.toPath()));
+                // Можно добавить дополнительное поле для хранения типа аватара, если необходимо
+                // currentUser.setAvatarType(isStandardAvatar ? "standard" : "custom");
+
                 UserService.getInstance().setCurrentUser(currentUser);
 
                 // Save data to Prefs
@@ -649,12 +667,14 @@ public class ProfilePageController implements LanguageSupport {
                     avatar_image_view.setImage(new Image(avatarFile.toURI().toString()));
                 });
 
-                Logger.info("User avatar updated successfully: " + avatarFileName);
+                Logger.info("User avatar updated successfully: " + avatarFileName +
+                        (isStandardAvatar ? " (standard)" : " (custom)"));
             } else {
                 Logger.error("UserModel is null in updateUserAvatar");
             }
         } catch (Exception e) {
             Logger.error("Error updating user avatar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
