@@ -2,11 +2,11 @@ package org.main.unimap_pc.client.models;
 
 import lombok.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.main.unimap_pc.client.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,40 +16,42 @@ import java.util.stream.Collectors;
 @Setter
 public class TeacherSubjectRoles {
     private String subjectName;
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
 
     public TeacherSubjectRoles(JSONObject jsonBase) {
-        System.out.println("TeacherSubjectRoles: " + jsonBase);
-        try {
-            subjectName = jsonBase.getString("subjectName");
-        } catch (JSONException e) {
-            subjectName = "";
-        }
+        this.subjectName = parseSubjectName(jsonBase);
+        this.roles = parseRoles(jsonBase);
+    }
 
+    private String parseSubjectName(JSONObject json) {
         try {
-            JSONArray rolesArray = jsonBase.optJSONArray("roles");
-            if (rolesArray != null) {
-                roles = rolesArray.toList().stream()
+            return json.getString("subjectName");
+        } catch (Exception e) {
+            Logger.error("Error parsing 'subjectName' in TeacherSubjectRoles: " + e.getMessage());
+            return "";
+        }
+    }
+
+    private List<String> parseRoles(JSONObject json) {
+        try {
+            if (json.has("roles") && json.get("roles") instanceof JSONArray rolesArray) {
+                return rolesArray.toList().stream()
                         .map(Object::toString)
                         .map(role -> role.replaceAll("[{}\"']", "").trim())
+                        .filter(role -> !role.isEmpty())
                         .collect(Collectors.toList());
             } else {
-                String rolesString = jsonBase.optString("roles", "");
-                roles = parseRolesString(rolesString);
+                return parseRolesString(json.optString("roles", ""));
             }
         } catch (Exception e) {
-            roles = new ArrayList<>();
             Logger.error("Error parsing 'roles' in TeacherSubjectRoles: " + e.getMessage());
+            return Collections.emptyList();
         }
     }
 
     private List<String> parseRolesString(String rolesString) {
-        if (rolesString == null || rolesString.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return List.of(rolesString.replaceAll("[{}\"']", "")
-                        .split(","))
+        if (rolesString == null || rolesString.isBlank()) return Collections.emptyList();
+        return List.of(rolesString.replaceAll("[{}\"']", "").split(","))
                 .stream()
                 .map(String::trim)
                 .filter(role -> !role.isEmpty())

@@ -1,15 +1,5 @@
 package org.main.unimap_pc.client.services;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.URI;
-import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,16 +8,27 @@ import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.utils.TokenRefresher;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 public class AuthService {
-    private static final HttpClient httpClient = HttpClient.newBuilder().build();
-    private static TokenRefresher tokenRefresher;
+    private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final DataFetcher dataFetcher = new DataFetcher();
+    private static TokenRefresher tokenRefresher;
 
     public static CompletableFuture<Boolean> login(String username, String password) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String data = username + ":" + password;
-                return sendAuthenticationRequest(AppConfig.getAuthUrl(), data).join();
+                return sendAuthenticationRequest(AppConfig.getAUTH_URL(), data).join();
             } catch (Exception e) {
                 Logger.error("Error during login for user: " + username + " - " + e.getMessage());
                 return false;
@@ -35,15 +36,10 @@ public class AuthService {
         });
     }
 
-    private static CompletableFuture<Boolean> sendAuthenticationRequest(String url, String encryptedData) {
-        if (encryptedData == null) {
-            return CompletableFuture.completedFuture(false);
-        }
-        System.out.println("I send auth request with data: " + encryptedData);
+    private static CompletableFuture<Boolean> sendAuthenticationRequest(String url, String credentials) {
+        if (credentials == null) return CompletableFuture.completedFuture(false);
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("data", encryptedData);
-        System.out.println("Request body: " + requestBody.toString());
+        JSONObject requestBody = new JSONObject().put("data", credentials);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -55,165 +51,124 @@ public class AuthService {
                 .thenApply(response -> {
                     if (response.statusCode() == 200) {
                         try {
-                       //     System.out.println("Auth response body: " + response.body());
-
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            JsonNode jsonNode = objectMapper.readTree(response.body());
-                            JsonNode userNode = jsonNode.get("user");
-                            String accessToken = jsonNode.get("accessToken").asText();
-                            System.out.println("Access Token: " + accessToken);
-
-                            // System.out.println("!User node: " + userNode.toString());
-
-                            String refreshToken = response.headers().firstValue("Set-Cookie")
-                                    .map(cookie -> {
-                                        for (String part : cookie.split(";")) {
-                                            if (part.trim().startsWith("refreshToken=")) {
-                                                return part.substring("refreshToken=".length());
-                                            }
-                                        }
-                                        return null;
-                                    }).orElse(null);
+                            ObjectMapper mapper = new ObjectMapper();
+                            JsonNode json = mapper.readTree(response.body());
+                            JsonNode user = json.get("user");
+                            String accessToken = json.get("accessToken").asText();
+                            String refreshToken = extractRefreshToken(response);
 
                             if (accessToken != null && refreshToken != null) {
                                 PreferenceServise.put("ACCESS_TOKEN", accessToken);
                                 PreferenceServise.put("REFRESH_TOKEN", refreshToken);
 
+                                handleAvatar(user);
 
-                                JsonNode avatarData = userNode.get("avatar");
-                                JsonNode avatarName = userNode.get("avatarFileName");
-
-                                System.out.println("OUT FILEDATA:  " + avatarData);
-
-                                if (avatarData != null && !avatarData.asText().isEmpty() && !avatarData.asText().equals("null") &&
-                                        avatarName != null && !avatarName.asText().isEmpty() && !avatarName.asText().equals("null")) {
-
-                                    // Parse the avatar.jpg name and binary
-                                    String fileName = avatarName.asText();
-                                    String fileData = avatarData.asText();
-
-                                    // Create directory if it doesn't exist
-                                    String customAvatarFolderPath = "src/main/resources/org/main/unimap_pc/images/avatares/custom";
-                                    String defltAvatarFolderPath = "src/main/resources/org/main/unimap_pc/images/avatares";
-                                    File customAvatarFolder = new File(customAvatarFolderPath);
-                                    File defltAvatarFolder = new File(defltAvatarFolderPath);
-                                    if (!customAvatarFolder.exists()) {
-                                        customAvatarFolder.mkdirs();
-                                    }
-
-                                    File avatarFile;
-                                    if (avatarName.asText().equals("0.png") ||
-                                            avatarName.asText().equals("1.png") ||
-                                            avatarName.asText().equals("2.png") ||
-                                            avatarName.asText().equals("3.png") ||
-                                            avatarName.asText().equals("4.png") ||
-                                            avatarName.asText().equals("5.png") ||
-                                            avatarName.asText().equals("6.png") ||
-                                            avatarName.asText().equals("7.png") ||
-                                            avatarName.asText().equals("8.png") ||
-                                            avatarName.asText().equals("9.png")) {
-                                        avatarFile = new File(defltAvatarFolder, avatarName.asText());
-                                    }else{
-                                        avatarFile = new File(customAvatarFolder, avatarName.asText());
-                                    }
-
-
-                                    try {
-                                        byte[] imageBytes = Base64.getDecoder().decode(fileData);
-                                        try (FileOutputStream fos = new FileOutputStream(avatarFile)) {
-                                            fos.write(imageBytes);
-                                            System.out.println("Avatar saved to: " + avatarFile.getAbsolutePath());
-                                        }
-
-                                        // Store the filename in the user node
-                                        ((ObjectNode) userNode).put("avatarBinary", fileData);
-                                        ((ObjectNode) userNode).put("avatarName", fileName);
-                                        ((ObjectNode) userNode).put("avatar.jpg", fileName);
-
-                                    } catch (IOException e) {
-                                        Logger.error("Failed to save avatar.jpg image: " + e.getMessage());
-                                        ((ObjectNode) userNode).put("avatarBinary", "");
-                                        ((ObjectNode) userNode).put("avatarName", "2.png");
-                                        ((ObjectNode) userNode).put("avatar.jpg", "2.png");
-                                    }
-                                } else {
-                                    System.out.println("Avatar is null or empty, setting default value.");
-                                    ((ObjectNode) userNode).put("avatarBinary", "");
-                                    ((ObjectNode) userNode).put("avatarName", "2.png");
-                                    ((ObjectNode) userNode).put("avatar.jpg", "2.png");
-                                }
-
-                                PreferenceServise.put("USER_DATA", userNode.toString());
-
+                                PreferenceServise.put("USER_DATA", user.toString());
                                 tokenRefresher = new TokenRefresher(new JWTService());
                                 tokenRefresher.startTokenRefreshTask();
-
-                                System.out.println("User Data: " + userNode.toString());
                                 dataFetcher.fetchData();
                                 return true;
-                            } else {
-                                Logger.error("Tokens not found in the response.");
-                                return false;
                             }
+                            Logger.error("Tokens not found in the response.");
+                            return false;
                         } catch (Exception e) {
                             Logger.error("Failed to parse JSON response: " + e.getMessage());
                             return false;
                         }
                     } else {
-                        System.out.println("Auth FAILED Response body: " + response.statusCode() + response.body());
                         Logger.error("Authentication failed with status code: " + response.statusCode());
                         return false;
                     }
                 })
-                .exceptionally(throwable -> {
-                    Logger.error("Authentication request failed: " + throwable.getMessage());
+                .exceptionally(e -> {
+                    Logger.error("Authentication request failed: " + e.getMessage());
                     return false;
                 });
     }
 
-    public static CompletableFuture<Boolean> refreshAccessToken() {
-        String refreshToken = PreferenceServise.get("REFRESH_TOKEN").toString();
-        if (refreshToken == null) {
-            return CompletableFuture.completedFuture(false);
+    private static String extractRefreshToken(HttpResponse<String> response) {
+        return response.headers().firstValue("Set-Cookie")
+                .flatMap(cookie -> List.of(cookie.split(";")).stream()
+                        .filter(part -> part.trim().startsWith("refreshToken="))
+                        .map(part -> part.substring("refreshToken=".length()))
+                        .findFirst())
+                .orElse(null);
+    }
+
+    private static void handleAvatar(JsonNode user) {
+        JsonNode data = user.get("avatar");
+        JsonNode name = user.get("avatarFileName");
+        ObjectNode userNode = (ObjectNode) user;
+
+        if (data == null || name == null || data.asText().isBlank() || name.asText().isBlank()) {
+            userNode.put("avatarBinary", "");
+            userNode.put("avatarName", "2.png");
+            userNode.put("avatar.jpg", "2.png");
+            return;
         }
 
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("refreshToken", refreshToken);
+        String fileName = name.asText();
+        String fileData = data.asText();
+
+        File targetDir = isDefaultAvatar(fileName)
+                ? new File("src/main/resources/org/main/unimap_pc/images/avatares")
+                : new File("src/main/resources/org/main/unimap_pc/images/avatares/custom");
+
+        if (!targetDir.exists()) targetDir.mkdirs();
+
+        File avatarFile = new File(targetDir, fileName);
+        try (FileOutputStream fos = new FileOutputStream(avatarFile)) {
+            fos.write(Base64.getDecoder().decode(fileData));
+            userNode.put("avatarBinary", fileData);
+            userNode.put("avatarName", fileName);
+            userNode.put("avatar.jpg", fileName);
+        } catch (IOException e) {
+            Logger.error("Failed to save avatar image: " + e.getMessage());
+            userNode.put("avatarBinary", "");
+            userNode.put("avatarName", "2.png");
+            userNode.put("avatar.jpg", "2.png");
+        }
+    }
+
+    private static boolean isDefaultAvatar(String fileName) {
+        return List.of("0.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png")
+                .contains(fileName);
+    }
+
+    public static CompletableFuture<Boolean> refreshAccessToken() {
+        String refreshToken = String.valueOf(PreferenceServise.get("REFRESH_TOKEN"));
+        if (refreshToken == null || refreshToken.isBlank()) return CompletableFuture.completedFuture(false);
+
+        JSONObject requestBody = new JSONObject().put("refreshToken", refreshToken);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getRefreshTokenUrl()))
+                .uri(URI.create(AppConfig.getREFRESH_TOKENS_URL()))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
                 .build();
 
-        System.out.println("Refresh Token to refresh access token: " + refreshToken);
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
                     if (response.statusCode() == 200) {
                         try {
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            JsonNode jsonNode = objectMapper.readTree(response.body());
-                            String newAccessToken = jsonNode.get("accessToken").asText();
-
-                            if (newAccessToken != null) {
-                                PreferenceServise.put("ACCESS_TOKEN", newAccessToken);
+                            String newToken = new ObjectMapper()
+                                    .readTree(response.body())
+                                    .get("accessToken")
+                                    .asText();
+                            if (newToken != null) {
+                                PreferenceServise.put("ACCESS_TOKEN", newToken);
                                 return true;
-                            } else {
-                                Logger.error("New access token not found in the response.");
-                                return false;
                             }
                         } catch (Exception e) {
-                            Logger.error("Failed to parse JSON response: " + e.getMessage());
-                            return false;
+                            Logger.error("Failed to parse token refresh response: " + e.getMessage());
                         }
                     } else {
-                        System.out.println("Response body: " + response.body());
-                        Logger.error("Token refresh failed with status code: " + response.statusCode());
-                        return false;
+                        Logger.error("Token refresh failed with status: " + response.statusCode());
                     }
+                    return false;
                 })
-                .exceptionally(throwable -> {
-                    Logger.error("Token refresh request failed: " + throwable.getMessage());
+                .exceptionally(e -> {
+                    Logger.error("Refresh request error: " + e.getMessage());
                     return false;
                 });
     }

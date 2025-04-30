@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -17,6 +17,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.UserModel;
@@ -27,8 +29,7 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
-import javafx.scene.control.TextField;
-
+import org.main.unimap_pc.client.utils.WindowDragHandler;
 
 import java.awt.*;
 import java.io.IOException;
@@ -38,80 +39,55 @@ import java.util.ResourceBundle;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
+@Getter
+@RequiredArgsConstructor
 public class SubjectsPageController implements LanguageSupport {
+    private static final String ALL_TYPES = "All Types";
+    private static final String ALL_LEVELS = "All Levels";
+    private static final String ALL_SEMESTERS = "All Semesters";
+    private static final String ACTIVE_FILTER_STYLE = "-fx-text-fill: #1976D2;";
+    private static final String DEFAULT_FILTER_STYLE = "-fx-text-fill: black;";
+    private static final String CARD_STYLE = "-fx-background-color: #2f3541;";
+    private static final String ERROR_LOADING_PAGE = "Error loading the application. Please try again later.";
 
-    @FXML
-    private AnchorPane dragArea;
-    private double xOffset = 0;
-    private double yOffset = 0;
+    @FXML private AnchorPane dragArea;
+    @FXML private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code,
+            garant, student_amount, study_level_text, subject_type_text,
+            semester_text, filter_subject_text, semester, type;
+    @FXML private ImageView navi_avatar;
+    @FXML private ComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
+    @FXML private TextField searchField;
+    @FXML private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage,
+            btn_teacherspage, btn_settingspage;
+    @FXML private ScrollPane scrollPane;
+    @FXML private AnchorPane anchorScrollPane;
 
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) dragArea.getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
-
-    @FXML
-    private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code, garant, student_amount, study_level_text, subject_type_text, semester_text, filter_subject_text,semester,type;
-    @FXML
-    private ImageView navi_avatar;
-    @FXML
-    private ComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
-    @FXML
-    private TextField searchField;
-    @FXML
-    private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage, btn_teacherspage, btn_settingspage, btnForgotPass, btnSignup;
-    @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private AnchorPane anchorScrollPane;
     private Label noResultsLabel;
-
-    private String defLang;
-    private String accessToken;
+    private String defaultLanguage;
+    private final WindowDragHandler windowDragHandler = new WindowDragHandler();
 
     @FXML
     private void initialize() {
-        languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
-        loadCurrentLanguage();
-
+        setupLanguageSelector();
+        displayUserInfo();
         setupFilters();
+        initializeWindowDragging();
         applyFilters();
+        setupWindowResizeListeners();
+    }
 
-        defLang = PreferenceServise.get("LANGUAGE").toString();
-        UserModel user = UserService.getInstance().getCurrentUser();
-        if (user != null) {
-            navi_username_text.setText(user.getUsername());
-            navi_login_text.setText(user.getLogin());
-            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
-        }
-        LanguageManager.changeLanguage(defLang);
+    private void setupLanguageSelector() {
+        languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+        defaultLanguage = PreferenceServise.get("LANGUAGE").toString();
+        loadCurrentLanguage();
+        LanguageManager.changeLanguage(defaultLanguage);
         LanguageManager.getInstance().registerController(this);
         updateUILanguage(LanguageManager.getCurrentBundle());
-
-        dragArea.setOnMousePressed(this::handleMousePressed);
-        dragArea.setOnMouseDragged(this::handleMouseDragged);
-
-        Scene scene = dragArea.getScene();
-        if (scene != null) {
-            scene.widthProperty().addListener((obs, oldVal, newVal) -> {
-                // TODO:Resize logic
-            });
-            scene.heightProperty().addListener((obs, oldVal, newVal) -> {
-                // TODO:Resize logic
-            });
-        }
     }
 
     private void loadCurrentLanguage() {
-        languageComboBox.setValue(defLang);
+        languageComboBox.setValue(defaultLanguage);
+
         languageComboBox.setOnAction(event -> {
             try {
                 String newLanguage = languageComboBox.getValue();
@@ -121,182 +97,235 @@ public class SubjectsPageController implements LanguageSupport {
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 Logger.error("Error changing language: " + e.getMessage());
+                System.out.println("Error changing language: " + e.getMessage());
+                showErrorDialog("Failed to change language: " + e.getMessage());
             }
         });
     }
 
+    private void displayUserInfo() {
+        UserModel user = UserService.getInstance().getCurrentUser();
+        if (user != null) {
+            navi_username_text.setText(user.getUsername());
+            navi_login_text.setText(user.getLogin());
+            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
+        }
+    }
+
+    private void initializeWindowDragging() {
+        windowDragHandler.setupWindowDragging(dragArea);
+    }
+
+    private void setupWindowResizeListeners() {
+        Scene scene = dragArea.getScene();
+        if (scene != null) {
+            scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+                // TODO: Resize logic
+            });
+            scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+                // TODO: Resize logic
+            });
+        }
+    }
+
     private void setupFilters() {
-        subjectTypeCombo.getItems().setAll("All Types", "povinny", "povinne volitelny", "volitelny");
-        studyLevelCombo.getItems().setAll("All Levels", "bakalarsky", "inziniersky");
-        semesterCombo.getItems().setAll("All Semesters", "ZS", "LS");
+        // Initialize filter combos
+        initializeFilterCombo(subjectTypeCombo, List.of(ALL_TYPES, "povinny", "povinne volitelny", "volitelny"));
+        initializeFilterCombo(studyLevelCombo, List.of(ALL_LEVELS, "bakalarsky", "inziniersky"));
+        initializeFilterCombo(semesterCombo, List.of(ALL_SEMESTERS, "ZS", "LS"));
 
-        subjectTypeCombo.setValue("All Types");
-        studyLevelCombo.setValue("All Levels");
-        semesterCombo.setValue("All Semesters");
-
+        // Set filter change listeners
         subjectTypeCombo.setOnAction(event -> applyFilters());
         studyLevelCombo.setOnAction(event -> applyFilters());
         semesterCombo.setOnAction(event -> applyFilters());
-
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
+
+    private void initializeFilterCombo(ComboBox<String> combo, List<String> items) {
+        combo.getItems().setAll(items);
+        combo.setValue(items.get(0));
+    }
+
     private void applyFilters() {
-        String searchText = searchField.getText().trim();
+        String searchText = searchField.getText().trim().isEmpty() ? "" : searchField.getText().trim();
 
-        if (searchText.isEmpty()) {
-            searchText = "";
-        }
+        FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = getSubjectTypeEnum();
+        FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = getStudyTypeEnum();
+        FilterService.subjectSearchForm.semesterEnum semesterEnum = getSemesterEnum();
 
-        String subjectType = subjectTypeCombo.getValue();
-        String studyLevel = studyLevelCombo.getValue();
-        String semester = semesterCombo.getValue();
-
-        FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = switch (subjectType) {
-            case "povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
-            case "povinne volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
-            case "volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
-            default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
-        };
-
-        FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = switch (studyLevel) {
-            case "bakalarsky" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
-            case "inziniersky" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
-            default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
-        };
-
-        FilterService.subjectSearchForm.semesterEnum semesterEnum = switch (semester) {
-            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
-            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
-            default -> FilterService.subjectSearchForm.semesterEnum.NONE;
-        };
-
-        FilterService filterService = new FilterService();
-        FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(searchText, subjectTypeEnum, studyTypeEnum, semesterEnum);
+        FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(
+                searchText, subjectTypeEnum, studyTypeEnum, semesterEnum
+        );
         List<Subject> filteredSubjects = FilterService.filterSubjects(searchForm);
-        System.out.println("Filtered subjects: " + filteredSubjects.size());
+    //    System.out.println("Filtered subjects: " + filteredSubjects.size());
 
         updateSubjectList(filteredSubjects);
         updateSelectedFiltersText();
     }
 
-    private void updateSelectedFiltersText() {
-        if (!subjectTypeCombo.getValue().equals("All Types")) {
-            subjectTypeCombo.setStyle("-fx-text-fill: #1976D2;");
-        } else {
-            subjectTypeCombo.setStyle("-fx-text-fill: black;");
-        }
-
-        if (!semesterCombo.getValue().equals("All Semesters")) {
-            semesterCombo.setStyle("-fx-text-fill: #1976D2;");
-        } else {
-            semesterCombo.setStyle("-fx-text-fill: black;");
-        }
-
-        if (!studyLevelCombo.getValue().equals("All Levels")) {
-            studyLevelCombo.setStyle("-fx-text-fill: #1976D2;");
-        } else {
-            studyLevelCombo.setStyle("-fx-text-fill: black;");
-        }
-
+    private FilterService.subjectSearchForm.subjectTypeEnum getSubjectTypeEnum() {
+        return switch (subjectTypeCombo.getValue()) {
+            case "povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
+            case "povinne volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
+            case "volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
+            default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+        };
     }
+
+    private FilterService.subjectSearchForm.studyTypeEnum getStudyTypeEnum() {
+        return switch (studyLevelCombo.getValue()) {
+            case "bakalarsky" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
+            case "inziniersky" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
+            default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
+        };
+    }
+
+    private FilterService.subjectSearchForm.semesterEnum getSemesterEnum() {
+        return switch (semesterCombo.getValue()) {
+            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
+            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
+            default -> FilterService.subjectSearchForm.semesterEnum.NONE;
+        };
+    }
+
+    private void updateSelectedFiltersText() {
+        updateFilterStyle(subjectTypeCombo, ALL_TYPES);
+        updateFilterStyle(semesterCombo, ALL_SEMESTERS);
+        updateFilterStyle(studyLevelCombo, ALL_LEVELS);
+    }
+
+    private void updateFilterStyle(ComboBox<String> combo, String defaultValue) {
+        combo.setStyle(combo.getValue().equals(defaultValue) ? DEFAULT_FILTER_STYLE : ACTIVE_FILTER_STYLE);
+    }
+
     private void updateSubjectList(List<Subject> subjects) {
         anchorScrollPane.getChildren().clear();
 
-        VBox subjectsContainer = new VBox(5);
-        subjectsContainer.setPrefWidth(anchorScrollPane.getPrefWidth());
-        VBox.setVgrow(subjectsContainer, Priority.ALWAYS);
+        VBox subjectsContainer = createSubjectsContainer();
 
         if (subjects.isEmpty()) {
-            ResourceBundle languageBundle = LanguageManager.getCurrentBundle();
-            noResultsLabel = new Label(languageBundle.getString("criteria_subjects"));
-            noResultsLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-alignment: center;");
-            subjectsContainer.getChildren().add(noResultsLabel);
+            addNoResultsLabel(subjectsContainer);
         } else {
-            // Создаем карточку для каждого предмета
-            for (int i = 0; i < subjects.size(); i++) {
-                Subject subject = subjects.get(i);
-                AnchorPane subjectCard = createSubjectCard(subject);
-                subjectsContainer.getChildren().add(subjectCard);
-            }
+            addSubjectCards(subjectsContainer, subjects);
         }
 
         anchorScrollPane.setStyle("-fx-background-color: #191C22;");
         anchorScrollPane.getChildren().add(subjectsContainer);
-        anchorScrollPane.setPrefHeight(subjects.size()*(50+8));
+        anchorScrollPane.setPrefHeight(Math.max(300, subjects.size() * (50 + 8)));
         anchorScrollPane.setMinHeight(300);
     }
+
+    private VBox createSubjectsContainer() {
+        VBox container = new VBox(5);
+        container.setPrefWidth(anchorScrollPane.getPrefWidth());
+        VBox.setVgrow(container, Priority.ALWAYS);
+        return container;
+    }
+
+    private void addNoResultsLabel(VBox container) {
+        ResourceBundle languageBundle = LanguageManager.getCurrentBundle();
+        noResultsLabel = new Label(languageBundle.getString("criteria_subjects"));
+        noResultsLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-alignment: center;");
+        container.getChildren().add(noResultsLabel);
+    }
+
+    private void addSubjectCards(VBox container, List<Subject> subjects) {
+        for (Subject subject : subjects) {
+            AnchorPane subjectCard = createSubjectCard(subject);
+            container.getChildren().add(subjectCard);
+        }
+    }
+
     private AnchorPane createSubjectCard(Subject subject) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(50);
         card.setPrefWidth(anchorScrollPane.getPrefWidth() - 20);
-        card.setStyle("-fx-background-color: #2f3541;");
+        card.setStyle(CARD_STYLE);
 
-        // Аббревиатура предмета
-        Label abbreviationLabel = new Label(subject.getCode());
-        abbreviationLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        // Add card elements
+        addSubjectCode(card, subject.getCode());
+        addSubjectName(card, subject.getName());
+        addSubjectGuarantor(card, subject.getGarant());
+        addSubjectSemester(card, subject.getSemester());
+        addSubjectType(card, subject.getType());
+        addStudentCount(card, subject.getStudentCount());
 
-        card.getChildren().add(abbreviationLabel);
-        AnchorPane.setTopAnchor(abbreviationLabel, 15.0);
-        AnchorPane.setLeftAnchor(abbreviationLabel, 10.0);
-
-        // Название предмета
-        String name = subject.getName();
-        if (name.length() > 36) {
-            name = name.substring(0, 36) + "...";
-        }
-
-        Label nameLabel = new Label(name);
-        nameLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
-        nameLabel.setMaxWidth(300);
-        card.getChildren().add(nameLabel);
-        AnchorPane.setTopAnchor(nameLabel, 15.0);
-        AnchorPane.setLeftAnchor(nameLabel, 90.0);
-
-        // Гарант
-        String guarantor = subject.getGarant();
-        if (guarantor != null && guarantor.length() > 30) {
-            guarantor = guarantor.substring(0, 30) + "...";
-        }
-        Label guarantorLabel = new Label(guarantor);
-        guarantorLabel.setStyle("-fx-text-fill: white;");
-        card.getChildren().add(guarantorLabel);
-        AnchorPane.setTopAnchor(guarantorLabel, 15.0);
-        AnchorPane.setLeftAnchor(guarantorLabel, 333.0);
-
-
-        // Семестр
-        Label semesterLabel = new Label(subject.getSemester());
-        semesterLabel.setStyle("-fx-text-fill: white;");
-        card.getChildren().add(semesterLabel);
-        AnchorPane.setTopAnchor(semesterLabel, 15.0);
-        AnchorPane.setRightAnchor(semesterLabel, 230.0);
-
-        // Тип предмета
-        Label typeLabel = new Label(subject.getType().replace("povinné-voliteľný", "PV").replace("povinný", "P").replace("voliteľný", "V"));
-        typeLabel.setStyle("-fx-text-fill: white;");
-        card.getChildren().add(typeLabel);
-        AnchorPane.setTopAnchor(typeLabel, 15.0);
-        AnchorPane.setRightAnchor(typeLabel, 145.0);
-
-
-        // Количество студентов
-        Label studentsLabel = new Label(String.valueOf(subject.getStudentCount()));
-        studentsLabel.setStyle("-fx-text-fill: white;");
-        card.getChildren().add(studentsLabel);
-        AnchorPane.setTopAnchor(studentsLabel, 15.0);
-        AnchorPane.setRightAnchor(studentsLabel, 80.0);
-        // Добавляем обработчик клика
+        // Add click handler
         card.setOnMouseClicked(event -> openSubjectSubPage(subject));
 
         return card;
     }
 
+    private void addSubjectCode(AnchorPane card, String code) {
+        Label codeLabel = new Label(code);
+        codeLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        card.getChildren().add(codeLabel);
+        AnchorPane.setTopAnchor(codeLabel, 15.0);
+        AnchorPane.setLeftAnchor(codeLabel, 10.0);
+    }
 
-    // Modal Window logic
-    @FXML
-    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage, Subject subject) {
+    private void addSubjectName(AnchorPane card, String name) {
+        String displayName = name.length() > 36 ? name.substring(0, 36) + "..." : name;
+        Label nameLabel = new Label(displayName);
+        nameLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
+        nameLabel.setMaxWidth(300);
+        card.getChildren().add(nameLabel);
+        AnchorPane.setTopAnchor(nameLabel, 15.0);
+        AnchorPane.setLeftAnchor(nameLabel, 90.0);
+    }
+
+    private void addSubjectGuarantor(AnchorPane card, String guarantor) {
+        String displayGuarantor = guarantor;
+        if (guarantor != null && guarantor.length() > 30) {
+            displayGuarantor = guarantor.substring(0, 30) + "...";
+        }
+        Label guarantorLabel = new Label(displayGuarantor);
+        guarantorLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(guarantorLabel);
+        AnchorPane.setTopAnchor(guarantorLabel, 15.0);
+        AnchorPane.setLeftAnchor(guarantorLabel, 333.0);
+    }
+
+    private void addSubjectSemester(AnchorPane card, String semester) {
+        Label semesterLabel = new Label(semester);
+        semesterLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(semesterLabel);
+        AnchorPane.setTopAnchor(semesterLabel, 15.0);
+        AnchorPane.setRightAnchor(semesterLabel, 230.0);
+    }
+
+    private void addSubjectType(AnchorPane card, String type) {
+        String displayType = type
+                .replace("povinné-voliteľný", "PV")
+                .replace("povinný", "P")
+                .replace("voliteľný", "V");
+        Label typeLabel = new Label(displayType);
+        typeLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(typeLabel);
+        AnchorPane.setTopAnchor(typeLabel, 15.0);
+        AnchorPane.setRightAnchor(typeLabel, 145.0);
+    }
+
+    private void addStudentCount(AnchorPane card, long count) {
+        Label studentsLabel = new Label(String.valueOf(count));
+        studentsLabel.setStyle("-fx-text-fill: white;");
+        card.getChildren().add(studentsLabel);
+        AnchorPane.setTopAnchor(studentsLabel, 15.0);
+        AnchorPane.setRightAnchor(studentsLabel, 80.0);
+    }
+
+    private void openSubjectSubPage(Subject subject) {
+        openModalWindow(
+                AppConfig.getSUBJECTS_SUB_PAGE_PATH(),
+                "Subject: " + subject.getCode(),
+                subject
+        );
+    }
+
+    private void openModalWindow(String fxmlPath, String windowTitle, Subject subject) {
         try {
-            Stage parentStage = (Stage) (windowTitle.equals("SubjectPage") ? btn_subjectpage : btn_settingspage).getScene().getWindow();
+            Stage parentStage = (Stage) (windowTitle.startsWith("Subject") ?
+                    btn_subjectpage : btn_settingspage).getScene().getWindow();
 
             if (getClass().getResource(fxmlPath) == null) {
                 showErrorDialog("Resource not found: " + fxmlPath);
@@ -304,62 +333,52 @@ public class SubjectsPageController implements LanguageSupport {
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-
             if (LanguageManager.getCurrentBundle() != null) {
                 loader.setResources(LanguageManager.getCurrentBundle());
             }
 
-            try {
-                AnchorPane modalPane = loader.load();
-                SubjectsSubPageController controller = loader.getController();
-                controller.setSubject(subject);
+            AnchorPane modalPane = loader.load();
+            SubjectsSubPageController controller = loader.getController();
+            controller.setSubject(subject);
 
-                Scene modalScene = new Scene(modalPane);
-                Stage modalStage = new Stage();
-
-                modalStage.initStyle(StageStyle.TRANSPARENT);
-                modalStage.initModality(Modality.WINDOW_MODAL);
-                modalStage.initOwner(parentStage);
-                modalStage.setTitle(windowTitle);
-
-                modalStage.setScene(modalScene);
-
-                StackPane overlay = createOverlay(parentStage);
-
-                Scene parentScene = parentStage.getScene();
-                AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
-                parentRoot.getChildren().add(overlay);
-
-                modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
-
-                modalStage.showAndWait();
-            } catch (IOException e) {
-                Logger.error("Failed to load FXML from path: " + fxmlPath);
-                showErrorDialog(errorMessage + ": " + e.getMessage());
-            }
+            createAndShowModalStage(modalPane, windowTitle, parentStage);
+        } catch (IOException e) {
+            System.out.println("Failed to load FXML: " + e.getMessage());
+            Logger.error("Failed to load FXML from path: " + fxmlPath);
+            showErrorDialog("Error loading the subject details window" + ": " + e.getMessage());
         } catch (Exception e) {
+            System.out.println("Unexpected error in openModalWindow: " + e.getMessage());
             Logger.error("Unexpected error in openModalWindow");
-            showErrorDialog(errorMessage + ": " + e.getMessage());
+            showErrorDialog("Error loading the subject details window" + ": " + e.getMessage());
         }
     }
+
+    private void createAndShowModalStage(Parent modalPane, String windowTitle, Stage parentStage) {
+        Scene modalScene = new Scene(modalPane);
+        Stage modalStage = new Stage();
+
+        modalStage.initStyle(StageStyle.TRANSPARENT);
+        modalStage.initModality(Modality.WINDOW_MODAL);
+        modalStage.initOwner(parentStage);
+        modalStage.setTitle(windowTitle);
+        modalStage.setScene(modalScene);
+
+        StackPane overlay = createOverlay(parentStage);
+        Scene parentScene = parentStage.getScene();
+        AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
+        parentRoot.getChildren().add(overlay);
+
+        modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
+        modalStage.showAndWait();
+    }
+
     private StackPane createOverlay(Stage parentStage) {
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         overlay.setPrefSize(parentStage.getWidth(), parentStage.getHeight());
-
         overlay.setOnMouseClicked(event -> Toolkit.getDefaultToolkit().beep());
-
         return overlay;
     }
-    private void openSubjectSubPage(Subject subject) {
-        openModalWindow(
-                AppConfig.getSubjectsSubPagePath(),
-                "Subject: " + subject.getCode(),
-                "Error loading the forgot password window",
-                subject
-        );
-    }
-
 
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
@@ -379,92 +398,66 @@ public class SubjectsPageController implements LanguageSupport {
         subject_type_text.setText(languageBundle.getString("subject.type"));
         semester_text.setText(languageBundle.getString("semester"));
         filter_subject_text.setText(languageBundle.getString("filter.subject"));
-
-        searchField.setPromptText(languageBundle.getString("search"));
         type.setText(languageBundle.getString("type"));
         semester.setText(languageBundle.getString("semester"));
+
+        searchField.setPromptText(languageBundle.getString("search"));
 
         if (noResultsLabel != null) {
             noResultsLabel.setText(languageBundle.getString("criteria_subjects"));
         }
     }
 
+
     @FXML
-    public void handleHomePageClick() {
+    private void handleHomePageClick() {
+        navigateToPage(AppConfig.getMAIN_PAGE_PATH());
+    }
+
+    @FXML
+    private void handleProfilePageClick() {
+        navigateToPage(AppConfig.getPROFILE_PAGE_PATH());
+    }
+
+    @FXML
+    private void handleSubjectPageClick() {
+        navigateToPage(AppConfig.getSUBJECTS_PAGE_PATH());
+    }
+
+    @FXML
+    private void handleTeachersPageClick() {
+        navigateToPage(AppConfig.getTEACHERS_PAGE_PATH());
+    }
+
+    @FXML
+    private void handleSettingsPageClick() {
+        navigateToPage(AppConfig.getSETTINGS_PAGE_PATH());
+    }
+
+    private void navigateToPage(String resourcePath) {
         try {
             Stage currentStage = (Stage) btn_homepage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
-
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(resourcePath)));
             Scene mainScene = new Scene(root);
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
-            Logger.error("Failed to load main page: " + e.getMessage());
+            System.out.println("Failed to load page: " + e.getMessage());
+            Logger.error("Failed to load page: " + e.getMessage());
+            showErrorDialog(ERROR_LOADING_PAGE);
         }
     }
-    @FXML
-    public void handleProfilePageClick() {
-        try {
-            Stage currentStage = (Stage) btn_profilepage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getProfilePagePath())));
 
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.show();
-        } catch (IOException e) {
-            Logger.error("Failed to load main page: " + e.getMessage());
-        }
-    }
-    @FXML
-    public void handleSubjectPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_subjectpage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSubjectsPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.show();
-        } catch (IOException e) {
-            Logger.error("Failed to load main page: " + e.getMessage());
-        }
-    }
-    @FXML
-    public void handleTeachersPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_teacherspage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getTeachersPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.show();
-        } catch (IOException e) {
-            Logger.error("Failed to load main page: " + e.getMessage());
-        }
-    }
-    @FXML
-    public void handleSettingsPageClick() {
-        try {
-            Stage currentStage = (Stage) btn_settingspage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSettingsPagePath())));
-
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.show();
-        } catch (IOException e) {
-            Logger.error("Failed to load main page: " + e.getMessage());
-        }
-    }
     @FXML
     private void handleLogout() throws IOException {
-        // Clear the user data
+        // Clear user data
         PreferenceServise.deletePreferences();
         PreferenceServise.put("REMEMBER", false);
         CacheService.clearCache();
 
-
-        // Change scene to login
+        // Navigate to login page
         Stage stage = (Stage) logoutbtn.getScene().getWindow();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getLoginPagePath())));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH())));
         Scene mainScene = new Scene(root);
         stage.setScene(mainScene);
         stage.show();

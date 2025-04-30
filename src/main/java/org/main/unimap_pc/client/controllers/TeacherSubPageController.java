@@ -9,13 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.RequiredArgsConstructor;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Teacher;
 import org.main.unimap_pc.client.models.TeacherSubjectRoles;
@@ -25,64 +24,76 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
+import org.main.unimap_pc.client.utils.WindowDragHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Getter
 @Setter
-@Accessors(chain = true)
+@RequiredArgsConstructor
 public class TeacherSubPageController implements LanguageSupport {
-    @FXML
-    public Label navi_username_text,navi_login_text;
-    @FXML
-    public ImageView navi_avatar;
+    private static final String NOT_SPECIFIED = "Not specified";
+    private static final String CARD_STYLE = "-fx-background-color: #2F3541;" +
+            "-fx-background-radius: 10;" +
+            "-fx-border-color: #e0e0e0;" +
+            "-fx-border-radius: 10;" +
+            "-fx-padding: 15;";
+    private static final String SCROLL_PANE_STYLE = "-fx-background: transparent;" +
+            "-fx-background-color: transparent;" +
+            "-fx-control-inner-background: transparent;";
 
-    public Button comments_button;
-    private Teacher teacher_entity;
+    @FXML public Label navi_username_text, navi_login_text;
+    @FXML public ImageView navi_avatar;
+    @FXML public Button comments_button;
 
-    @FXML
-    private FontAwesomeIcon closeApp;
-
-    @FXML
-    private Label teacher_aisID_text, teacher_fullname_text, teacher_email_text,
+    @FXML private FontAwesomeIcon closeApp;
+    @FXML private Label teacher_aisID_text, teacher_fullname_text, teacher_email_text,
             teacher_phone_text, teacher_office_text, teacher_subjects_text;
-
-    @FXML
-    private Label teacher_aisID, teacher_fullname, teacher_email,
+    @FXML private Label teacher_aisID, teacher_fullname, teacher_email,
             teacher_phone, teacher_office;
+    @FXML private AnchorPane dragArea, teachers_details_anchor;
+    @FXML private ScrollPane scroll_pane;
+
+    private Teacher teacher_entity;
+    private final WindowDragHandler windowDragHandler = new WindowDragHandler();
 
     @FXML
-    private AnchorPane dragArea, teachers_details_anchor;
+    private void initialize() {
+        initializeLanguage();
+        initializeUserInfo();
+        initializeScrollPane();
+        windowDragHandler.setupWindowDragging(dragArea);
+    }
 
-    @FXML
-    private ScrollPane scroll_pane;
+    private void initializeLanguage() {
+        LanguageManager.getInstance().registerController(this);
+        LanguageManager.changeLanguage(PreferenceServise.get("LANGUAGE").toString());
+        updateUILanguage(LanguageManager.getCurrentBundle());
+    }
 
-    private List<Teacher> teachers;
+    private void initializeUserInfo() {
+        UserModel user = UserService.getInstance().getCurrentUser();
+        if (user != null) {
+            UserService.getInstance().setCurrentUser(user);
+            navi_username_text.setText(user.getUsername());
+            navi_login_text.setText(user.getLogin());
+            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
+        }
+    }
 
-    private double xOffset = 0;
-    private double yOffset = 0;
+    private void initializeScrollPane() {
+        scroll_pane.setFitToWidth(true);
+        scroll_pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll_pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    }
 
     @FXML
     private void handleCloseApp() {
         Stage stage = (Stage) closeApp.getScene().getWindow();
         stage.close();
-    }
-
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) dragArea.getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
     }
 
     public void setTeacher_entity(Teacher teacher_entity) {
@@ -97,40 +108,22 @@ public class TeacherSubPageController implements LanguageSupport {
         }
     }
 
-    @FXML
-    private void initialize() {
-        LanguageManager.getInstance().registerController(this);
-        LanguageManager.changeLanguage(PreferenceServise.get("LANGUAGE").toString());
-        updateUILanguage(LanguageManager.getCurrentBundle());
-
-        UserModel user = UserService.getInstance().getCurrentUser();
-        if (user != null) {
-            UserService.getInstance().setCurrentUser(user);
-            navi_username_text.setText(user.getUsername());
-            navi_login_text.setText(user.getLogin());
-            navi_avatar.setImage(AppConfig.getAvatar(user.getAvatarName()));
-        }
-
-        dragArea.setOnMousePressed(this::handleMousePressed);
-        dragArea.setOnMouseDragged(this::handleMouseDragged);
-
-        // Configure scroll pane
-        scroll_pane.setFitToWidth(true);
-        scroll_pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll_pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-    }
-
     public void updateContent(Teacher teacher) {
         if (teacher == null) {
             return;
         }
-        teacher_aisID.setText(teacher.getId() != null && !teacher.getId().isEmpty() ? teacher.getId() : "Not specified");
-        teacher_fullname.setText(teacher.getName() != null && !teacher.getName().isEmpty() ? teacher.getName() : "Not specified");
-        teacher_email.setText(teacher.getEmail() != null && !teacher.getEmail().isEmpty() ? teacher.getEmail() : "Not specified");
-        teacher_phone.setText(teacher.getPhone() != null && !teacher.getPhone().isEmpty() ? teacher.getPhone() : "Not specified");
-        teacher_office.setText(teacher.getOffice() != null && !teacher.getOffice().isEmpty() ? teacher.getOffice() : "Not specified");
+        teacher_aisID.setText(getValueOrDefault(teacher.getId()));
+        teacher_fullname.setText(getValueOrDefault(teacher.getName()));
+        teacher_email.setText(getValueOrDefault(teacher.getEmail()));
+        teacher_phone.setText(getValueOrDefault(teacher.getPhone()));
+        teacher_office.setText(getValueOrDefault(teacher.getOffice()));
     }
 
+    private String getValueOrDefault(String value) {
+        return value != null && !value.isEmpty() ? value : NOT_SPECIFIED;
+    }
+
+    @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
         teacher_aisID_text.setText(languageBundle.getString("teacher_aisID"));
         teacher_fullname_text.setText(languageBundle.getString("teacher_fullname"));
@@ -154,57 +147,43 @@ public class TeacherSubPageController implements LanguageSupport {
                 "This teacher has no subjects";
 
         if (subjects.isEmpty()) {
-            Label noResultsLabel = new Label(noSubjectsText);
-            noResultsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
-            subjectsContainer.getChildren().add(noResultsLabel);
+            addNoSubjectsLabel(subjectsContainer, noSubjectsText);
         } else {
-            for (int i = 0; i < subjects.size(); i++) {
-                TeacherSubjectRoles teacherSubjectRoles = subjects.get(i);
-                AnchorPane subjectCard = createSubjectCard(teacherSubjectRoles, i);
-                subjectsContainer.getChildren().add(subjectCard);
-            }
+            addSubjectCards(subjectsContainer, subjects);
         }
 
         scroll_pane.setContent(subjectsContainer);
-        scroll_pane.setStyle(
-                "-fx-background: transparent;" +
-                        "-fx-background-color: transparent;" +
-                        "-fx-control-inner-background: transparent;"
-
-        );
+        scroll_pane.setStyle(SCROLL_PANE_STYLE);
     }
 
-    private AnchorPane createSubjectCard(TeacherSubjectRoles teacherSubjectRoles, int index) {
+    private void addNoSubjectsLabel(VBox container, String text) {
+        Label noResultsLabel = new Label(text);
+        noResultsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
+        container.getChildren().add(noResultsLabel);
+    }
+
+    private void addSubjectCards(VBox container, List<TeacherSubjectRoles> subjects) {
+        for (int i = 0; i < subjects.size(); i++) {
+            TeacherSubjectRoles subject = subjects.get(i);
+            AnchorPane subjectCard = createSubjectCard(subject, i);
+            container.getChildren().add(subjectCard);
+        }
+    }
+
+    private AnchorPane createSubjectCard(TeacherSubjectRoles subject, int index) {
         AnchorPane card = new AnchorPane();
         card.setPrefHeight(70);
         card.setMinWidth(380);
-        card.setStyle(
-                "-fx-background-color: #2F3541;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-color: #e0e0e0;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-padding: 15;"
-        );
+        card.setStyle(CARD_STYLE);
 
         // Subject name
-        Label nameLabel = new Label(teacherSubjectRoles.getSubjectName());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white;");
+        Label nameLabel = createSubjectNameLabel(subject.getSubjectName());
         card.getChildren().add(nameLabel);
         AnchorPane.setTopAnchor(nameLabel, 0.0);
         AnchorPane.setLeftAnchor(nameLabel, 0.0);
 
         // Roles
-        String rolesStr = teacherSubjectRoles.getFormattedRoles()
-                .replace("{", "")
-                .replace("}", "")
-                .replace("\"", "")
-                .replace("null", "Not specified")
-                .replace("zodpovedný za predmet", "Garant");
-
-        Label rolesLabel = new Label(rolesStr);
-        rolesLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
-        rolesLabel.setWrapText(true);
-        rolesLabel.setMaxWidth(350);
+        Label rolesLabel = createRolesLabel(subject.getFormattedRoles());
         card.getChildren().add(rolesLabel);
         AnchorPane.setTopAnchor(rolesLabel, 25.0);
         AnchorPane.setLeftAnchor(rolesLabel, 0.0);
@@ -212,15 +191,35 @@ public class TeacherSubPageController implements LanguageSupport {
         return card;
     }
 
+    private Label createSubjectNameLabel(String subjectName) {
+        Label nameLabel = new Label(subjectName);
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: white;");
+        return nameLabel;
+    }
+
+    private Label createRolesLabel(String formattedRoles) {
+        String rolesStr = formattedRoles
+                .replace("{", "")
+                .replace("}", "")
+                .replace("\"", "")
+                .replace("null", NOT_SPECIFIED)
+                .replace("zodpovedný za predmet", "Garant");
+
+        Label rolesLabel = new Label(rolesStr);
+        rolesLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
+        rolesLabel.setWrapText(true);
+        rolesLabel.setMaxWidth(350);
+        return rolesLabel;
+    }
+
     @FXML
     public void handleCommentsButton() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getCommentsPagePath()));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getCOMMENTS_PAGE_PATH()));
             Parent root = loader.load();
 
             CommentsPageController controller = loader.getController();
             controller.setDatas(2, teacher_entity.getId());
-
 
             Stage currentStage = (Stage) comments_button.getScene().getWindow();
             Scene mainScene = new Scene(root);

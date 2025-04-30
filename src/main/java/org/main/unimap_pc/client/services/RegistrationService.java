@@ -18,7 +18,7 @@ public class RegistrationService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String data = username + ":" + email + ":" + login + ":" + password;
-                return sendRegistrationRequest(AppConfig.getRegistrUrl(), data,code).join();
+                return sendRegistrationRequest(AppConfig.getREGISTR_URL(), data,code).join();
             } catch (Exception e) {
                 Logger.error("Error during registration for user: " + username + " - " + e.getMessage());
                 return false;

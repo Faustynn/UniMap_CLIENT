@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.NewsModel;
 import org.main.unimap_pc.client.utils.Logger;
 
 public class DataFetcher {
@@ -29,7 +28,7 @@ public class DataFetcher {
 
     private CompletableFuture<Boolean> fetchSubjects() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getSubjectsUrl()))
+                .uri(URI.create(AppConfig.getSUBJECTS_URL()))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
@@ -62,7 +61,7 @@ public class DataFetcher {
 
     public static CompletableFuture<String> fetchNews() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getNewsUrl()))
+                .uri(URI.create(AppConfig.getGET_NEWS_URL()))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
@@ -90,7 +89,7 @@ public class DataFetcher {
 
     private CompletableFuture<Boolean> fetchTeachers() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(AppConfig.getTeachersUrl()))
+                .uri(URI.create(AppConfig.getTEACHERS_URL()))
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();

@@ -7,7 +7,9 @@ import org.main.unimap_pc.client.services.FilterService;
 import org.main.unimap_pc.client.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @NoArgsConstructor
@@ -37,173 +39,90 @@ public class Subject {
     private String evaluationMethods;
     private String garant;
     private String evaluation;
+    private List<TeacherSubjectRoles> teachers_roles = new ArrayList<>();
+    private List<Teacher> teachers = new ArrayList<>();
 
-    private List<TeacherSubjectRoles> teachers_roles;
-    private List<Teacher> teachers;
-
-    public Subject(JSONObject jsonBase,JSONObject jsonTeachers) {
-        try {
-            code = jsonBase.getString("code");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'code' in Subject: " + e.getMessage());
-            code = "";
-        }
-        try {
-            name = jsonBase.getString("name");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'name' in Subject: " + e.getMessage());
-            name = "";
-        }
-        try {
-            type = jsonBase.getString("type");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'type' in Subject: " + e.getMessage());
-            type = "";
-        }
-        try {
-            credits = jsonBase.getInt("credits");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'credits' in Subject: " + e.getMessage());
-            credits = -1;
-        }
-        try {
-            studyType = jsonBase.getString("studyType");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'studyType' in Subject: " + e.getMessage());
-            studyType = "";
-        }
-        try {
-            semester = jsonBase.getString("semester");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'semester' in Subject: " + e.getMessage());
-            semester = "";
-        }
-        try {
-            completionType = jsonBase.getString("completionType");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'completionType' in Subject: " + e.getMessage());
-            completionType = "";
-        }
-        try {
-            studentCount = jsonBase.getInt("studentCount");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'studentCount' in Subject: " + e.getMessage());
-            studentCount = -1;
-        }
-        try {
-            assesmentMethods = jsonBase.getString("assesmentMethods");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'assesmentMethods' in Subject: " + e.getMessage());
-            assesmentMethods = "";
-        }
-        try {
-            learningOutcomes = jsonBase.getString("learningOutcomes");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'learningOutcomes' in Subject: " + e.getMessage());
-            learningOutcomes = "";
-        }
-        try {
-            courseContents = jsonBase.getString("courseContents");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'courseContents' in Subject: " + e.getMessage());
-            courseContents = "";
-        }
-        try {
-            aScore = jsonBase.getString("ascore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'ascore' in Subject: " + e.getMessage());
-            aScore = "";
-        }
-        try {
-            bScore = jsonBase.getString("bscore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'bscore' in Subject: " + e.getMessage());
-            bScore = "";
-        }
-        try {
-            cScore = jsonBase.getString("cscore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'cscore' in Subject: " + e.getMessage());
-            cScore = "";
-        }
-        try {
-            dScore = jsonBase.getString("dscore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'dscore' in Subject: " + e.getMessage());
-            dScore = "";
-        }
-        try {
-            eScore = jsonBase.getString("escore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'escore' in Subject: " + e.getMessage());
-            eScore = "";
-        }
-        try {
-            fxScore = jsonBase.getString("fxscore");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'ascore' in Subject: " + e.getMessage());
-            fxScore = "";
-        }
-        try {
-            languages = jsonBase.getJSONArray("languages").toList().stream()
-                    .map(Object::toString)
-                    .toList();
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'languages' in Subject: " + e.getMessage());
-            languages = new ArrayList<String>();
-        }
-
-        try {
-            plannedActivities = jsonBase.getString("plannedActivities");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'plannedActivities' in Subject: " + e.getMessage());
-            plannedActivities = "";
-        }
+    public Subject(JSONObject jsonBase, JSONObject jsonTeachers) {
+        code = getString(jsonBase, "code");
+        name = getString(jsonBase, "name");
+        type = getString(jsonBase, "type");
+        credits = getInt(jsonBase, "credits", -1);
+        studyType = getString(jsonBase, "studyType");
+        semester = getString(jsonBase, "semester");
+        completionType = getString(jsonBase, "completionType");
+        studentCount = getInt(jsonBase, "studentCount", -1);
+        assesmentMethods = getString(jsonBase, "assesmentMethods");
+        learningOutcomes = getString(jsonBase, "learningOutcomes");
+        courseContents = getString(jsonBase, "courseContents");
+        aScore = getString(jsonBase, "ascore");
+        bScore = getString(jsonBase, "bscore");
+        cScore = getString(jsonBase, "cscore");
+        dScore = getString(jsonBase, "dscore");
+        eScore = getString(jsonBase, "escore");
+        fxScore = getString(jsonBase, "fxscore");
+        plannedActivities = getString(jsonBase, "plannedActivities");
+        evaluationMethods = getString(jsonBase, "evaluationMethods");
+        evaluation = getString(jsonBase, "evaluation");
         garant = FilterService.subSearchForGarant(code);
+        languages = getStringList(jsonBase, "languages");
+        parseTeachers(jsonTeachers);
+    }
+
+    private String getString(JSONObject json, String key) {
+        try {
+            return json.getString(key);
+        } catch (Exception e) {
+            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+            return "";
+        }
+    }
+
+    private int getInt(JSONObject json, String key, int defaultValue) {
+        try {
+            return json.getInt(key);
+        } catch (Exception e) {
+            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+            return defaultValue;
+        }
+    }
+
+    private List<String> getStringList(JSONObject json, String key) {
+        try {
+            return json.getJSONArray(key).toList().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    private void parseTeachers(JSONObject jsonTeachers) {
+        if (!jsonTeachers.has("teachers")) return;
 
         try {
-            evaluationMethods = jsonBase.getString("evaluationMethods");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'evaluationMethods' in Subject: " + e.getMessage());
-            evaluationMethods = "";
-        }
+            JSONArray teachersArray = jsonTeachers.getJSONArray("teachers");
+            for (int i = 0; i < teachersArray.length(); i++) {
+                JSONObject teacherJson = teachersArray.getJSONObject(i);
+                JSONArray subjects = teacherJson.getJSONArray("subjects");
 
-        try {
-            evaluation = jsonBase.getString("evaluation");
-        } catch (org.json.JSONException e) {
-            Logger.error("Error parsing 'evaluation' in Subject: " + e.getMessage());
-            evaluation = "";
-        }
+                for (int j = 0; j < subjects.length(); j++) {
+                    JSONObject subject = subjects.getJSONObject(j);
+                    String subjectName = subject.getString("subjectName");
 
-        teachers_roles = new ArrayList<>();
-        teachers = new ArrayList<>();
-        if (jsonTeachers.has("teachers")) {
-            try {
-                JSONArray teachersArray = jsonTeachers.getJSONArray("teachers");
-                for (int i = 0; i < teachersArray.length(); i++) {
-                    JSONObject teacherJson = teachersArray.getJSONObject(i);
-                    JSONArray subjects = teacherJson.getJSONArray("subjects");
+                    if (subjectName.equals(code)) {
+                        JSONObject specificSubjectRoles = new JSONObject();
+                        specificSubjectRoles.put("subjectName", subjectName);
+                        specificSubjectRoles.put("roles", subject.getJSONArray("roles"));
 
-                    for (int j = 0; j < subjects.length(); j++) {
-                        JSONObject subject = subjects.getJSONObject(j);
-                        String subjectName = subject.getString("subjectName");
-
-                        if (subjectName.equals(code)) {
-                            JSONObject specificSubjectRoles = new JSONObject();
-                            specificSubjectRoles.put("subjectName", subjectName);
-                            specificSubjectRoles.put("roles", subject.getJSONArray("roles"));
-
-                            TeacherSubjectRoles teacher = new TeacherSubjectRoles(specificSubjectRoles);
-                            teachers_roles.add(teacher);
-                            teachers.add(new Teacher(teacherJson));
-                            break;
-                        }
+                        teachers_roles.add(new TeacherSubjectRoles(specificSubjectRoles));
+                        teachers.add(new Teacher(teacherJson));
+                        break;
                     }
                 }
-            } catch (org.json.JSONException e) {
-                Logger.error("Error parsing JSON in teachers processing: " + e.getMessage());
             }
+        } catch (Exception e) {
+            Logger.error("Error parsing JSON in teachers processing: " + e.getMessage());
         }
-
     }
 }

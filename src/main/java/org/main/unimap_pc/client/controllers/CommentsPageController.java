@@ -14,9 +14,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.CommentsService;
@@ -25,6 +26,7 @@ import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
+import org.main.unimap_pc.client.utils.WindowDragHandler;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -34,61 +36,81 @@ import java.util.concurrent.CompletableFuture;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
 public class CommentsPageController implements LanguageSupport {
-    // 1 - from subject page, 2 - from teacher page
+    // Type of page
+    private static final int SUBJECT_PAGE = 1;
+    private static final int TEACHER_PAGE = 2;
+
+    // Style constants for different user levels
+    private static final String STYLE_REGULAR = "#FFFFFF";
+    private static final String STYLE_PREMIUM = "#FFFACD";
+    private static final String STYLE_ADMIN = "#E6E6FA";
+    private static final String BORDER_REGULAR = "#CCCCCC";
+    private static final String BORDER_PREMIUM = "#FFD700";
+    private static final String BORDER_ADMIN = "#800080";
+
     @Setter
     private int page = 0;
-    // subjectid or teacherid
+
     @Setter
     private String lookingParentID = null;
 
-    public ScrollPane scrollpane;
-    public AnchorPane dragArea, commentAnchorInScrolPane;
-    public FontAwesomeIcon back_btn;
-    public Label comments_text,add_comment_text,set_stars_text;
-    public Button add_comments_btn;
-    public TextField CommentTextField;
-    public FontAwesomeIcon star1,star2,star3,star4,star5,star6,refresh_btn;
-    public HBox star_box;
-    public ComboBox languageComboBox;
     private double xOffset = 0;
     private double yOffset = 0;
 
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) dragArea.getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
+    @Getter
+    private int currentRating = 0;
+
+    @FXML public ScrollPane scrollpane;
+    @FXML public AnchorPane dragArea, commentAnchorInScrolPane;
+    @FXML public FontAwesomeIcon back_btn, star1, star2, star3, star4, star5, star6, refresh_btn;
+    @FXML public Label comments_text, add_comment_text, set_stars_text;
+    @FXML public Button add_comments_btn;
+    @FXML public TextField CommentTextField;
+    @FXML public HBox star_box;
+    @FXML public ComboBox<String> languageComboBox;
+
+    private final WindowDragHandler windowDragHandler = new WindowDragHandler();
 
     @FXML
-    private void handleCloseApp() throws IOException {
-        Stage stage = (Stage) back_btn.getScene().getWindow();
-
-        if (page == 1){
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getSubjectsSubPagePath())));
-            Scene mainScene = new Scene(root);
-            stage.setScene(mainScene);
-            stage.show();
-        }else if (page == 2){
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getTeachersSubPagePath())));
-            Scene mainScene = new Scene(root);
-            stage.setScene(mainScene);
-            stage.show();
-        } else {
-            stage.close();
+    public void initialize() {
+        try {
+            initLanguageSupport();
+            initCommentTextField();
+            setupStarRating();
+            windowDragHandler.setupWindowDragging(dragArea);
+        } catch (Exception e) {
+            Logger.error("Error during comments page initializing: " + e.getMessage());
         }
     }
 
-    public void setDatas(Integer numb, String text) {
-        if (numb != null && text != null) {
-            System.out.println("numb: " + numb + " text: " + text);
-            page = numb;
-            lookingParentID = text;
+
+    private void initLanguageSupport() {
+        languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
+        loadCurrentLanguage();
+        LanguageManager.changeLanguage((String) PreferenceServise.get("LANGUAGE"));
+        LanguageManager.getInstance().registerController(this);
+        updateUILanguage(LanguageManager.getCurrentBundle());
+    }
+
+    private void initCommentTextField() {
+        CommentTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 33) {
+                CommentTextField.setText(newValue.substring(0, 33) + "\n" + newValue.substring(33));
+            }
+        });
+    }
+
+
+    /**
+     * Set page data
+     * @param pageType page type (1 - Subjects, 2 - Teachers)
+     * @param id Subject or Teacher ID
+     */
+    public void setDatas(Integer pageType, String id) {
+        if (pageType != null && id != null) {
+            System.out.println("Page type: " + pageType + " ID: " + id);
+            this.page = pageType;
+            this.lookingParentID = id;
 
             Platform.runLater(this::loadComments);
         } else {
@@ -97,40 +119,29 @@ public class CommentsPageController implements LanguageSupport {
     }
 
     @FXML
-    public void initialize() {
-        try {
-            languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
-            loadCurrentLanguage();
-            LanguageManager.changeLanguage((String) PreferenceServise.get("LANGUAGE"));
-            LanguageManager.getInstance().registerController(this);
-            updateUILanguage(LanguageManager.getCurrentBundle());
+    private void handleCloseApp() throws IOException {
+        Stage stage = (Stage) back_btn.getScene().getWindow();
 
-            CommentTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.length() > 33) {
-                    CommentTextField.setText(newValue.substring(0, 33) + "\n" + newValue.substring(33));
-                }
-            });
-
-            setupStarRating();
-
-        } catch (Exception e) {
-            Logger.error("Error during comments page initializing: " + e.getMessage());
-        }
-
-
-        dragArea.setOnMousePressed(this::handleMousePressed);
-        dragArea.setOnMouseDragged(this::handleMouseDragged);
-
-        Scene scene = dragArea.getScene();
-        if (scene != null) {
-            scene.widthProperty().addListener((obs, oldVal, newVal) -> {
-                // TODO:Resize logic
-            });
-            scene.heightProperty().addListener((obs, oldVal, newVal) -> {
-                // TODO:Resize logic
-            });
+        String resourcePath = getReturnPagePath();
+        if (resourcePath != null) {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(resourcePath)));
+            Scene mainScene = new Scene(root);
+            stage.setScene(mainScene);
+            stage.show();
+        } else {
+            stage.close();
         }
     }
+
+
+    private String getReturnPagePath() {
+        return switch (page) {
+            case SUBJECT_PAGE -> AppConfig.getSUBJECTS_SUB_PAGE_PATH();
+            case TEACHER_PAGE -> AppConfig.getTEACHERS_SUB_PAGE_PATH();
+            default -> null;
+        };
+    }
+
 
     private void loadCurrentLanguage() {
         String selectedLanguage = PreferenceServise.get(AppConfig.getLANGUAGE_KEY()).toString();
@@ -139,7 +150,7 @@ public class CommentsPageController implements LanguageSupport {
         // listener for lang. editing
         languageComboBox.setOnAction(event -> {
             try {
-                String newLanguage = (String) languageComboBox.getValue();
+                String newLanguage = languageComboBox.getValue();
                 String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
                 LanguageManager.changeLanguage(languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
@@ -150,6 +161,8 @@ public class CommentsPageController implements LanguageSupport {
             }
         });
     }
+
+
     @Override
     public void updateUILanguage(ResourceBundle languageBundle) {
         languageComboBox.setPromptText(languageBundle.getString("language.combobox"));
@@ -160,7 +173,9 @@ public class CommentsPageController implements LanguageSupport {
     }
 
 
-    private int currentRating = 0;
+
+
+
     private void setupStarRating() {
         currentRating = 0;
 
@@ -192,19 +207,23 @@ public class CommentsPageController implements LanguageSupport {
         updateStarAppearance();
     }
 
+
     private void highlightStars(int count) {
-        star1.setFill(count >= 1 ? Color.GOLD : Color.web("#dddddd"));
-        star2.setFill(count >= 2 ? Color.GOLD : Color.web("#dddddd"));
-        star3.setFill(count >= 3 ? Color.GOLD : Color.web("#dddddd"));
-        star4.setFill(count >= 4 ? Color.GOLD : Color.web("#dddddd"));
-        star5.setFill(count >= 5 ? Color.GOLD : Color.web("#dddddd"));
-        star6.setFill(count >= 6 ? Color.GOLD : Color.web("#dddddd"));
+        Color goldColor = Color.GOLD;
+        Color grayColor = Color.web("#dddddd");
+
+        star1.setFill(count >= 1 ? goldColor : grayColor);
+        star2.setFill(count >= 2 ? goldColor : grayColor);
+        star3.setFill(count >= 3 ? goldColor : grayColor);
+        star4.setFill(count >= 4 ? goldColor : grayColor);
+        star5.setFill(count >= 5 ? goldColor : grayColor);
+        star6.setFill(count >= 6 ? goldColor : grayColor);
     }
+
 
     private void updateStarAppearance() {
         highlightStars(currentRating);
     }
-
 
 
     @FXML
@@ -215,28 +234,41 @@ public class CommentsPageController implements LanguageSupport {
             return;
         }
 
-        String user_id = UserService.getInstance().getCurrentUser().getId();
-        String levelAccess;
-        if (UserService.getInstance().getCurrentUser().isAdmin()) {
-            levelAccess = "2";
-        } else if (UserService.getInstance().getCurrentUser().isPremium()) {
-            levelAccess = "1";
-        }else {
-            levelAccess = "0";
-        }
+        JSONObject commentJson = createCommentJson(commentText);
+        sendCommentToServer(commentJson.toString());
+    }
 
-        String jsonComment = new JSONObject()
-                .put("user_id", user_id)
+
+    private JSONObject createCommentJson(String commentText) {
+        String userId = UserService.getInstance().getCurrentUser().getId();
+        String levelAccess = getUserAccessLevel();
+
+        return new JSONObject()
+                .put("user_id", userId)
                 .put("code", lookingParentID)
                 .put("text", commentText)
                 .put("rating", currentRating)
-                .put("levelAccess", levelAccess)
-                .toString();
+                .put("levelAccess", levelAccess);
+    }
 
+
+    private String getUserAccessLevel() {
+        if (UserService.getInstance().getCurrentUser().isAdmin()) {
+            return "2";
+        } else if (UserService.getInstance().getCurrentUser().isPremium()) {
+            return "1";
+        } else {
+            return "0";
+        }
+    }
+
+
+    private void sendCommentToServer(String jsonComment) {
         CompletableFuture<Boolean> result;
-        if (page == 1) {
+
+        if (page == SUBJECT_PAGE) {
             result = CommentsService.putNewSubjectComment(jsonComment);
-        } else if (page == 2) {
+        } else if (page == TEACHER_PAGE) {
             result = CommentsService.putNewTeacherComment(jsonComment);
         } else {
             Logger.error("Invalid page type");
@@ -258,14 +290,15 @@ public class CommentsPageController implements LanguageSupport {
             }
         });
     }
+
+
     private void loadComments() {
         CompletableFuture<String> result;
-        System.out.println(AppConfig.getAllTeacherURL("1234"));
 
         try {
-            if (page == 1) {
+            if (page == SUBJECT_PAGE) {
                 result = CommentsService.loadAllSubjectComments(lookingParentID);
-            } else if (page == 2) {
+            } else if (page == TEACHER_PAGE) {
                 result = CommentsService.loadAllTeacherComments(lookingParentID);
             } else {
                 showErrorDialog("Invalid page type");
@@ -277,8 +310,7 @@ public class CommentsPageController implements LanguageSupport {
                     Platform.runLater(() -> {
                         try {
                             commentAnchorInScrolPane.getChildren().clear();
-                            System.out.println(commentsJson);
-                            org.json.JSONArray commentsArray = new org.json.JSONArray(commentsJson);
+                            JSONArray commentsArray = new JSONArray(commentsJson);
                             displayComments(commentsArray);
                         } catch (Exception e) {
                             Logger.error("Error parsing comments: " + e.getMessage());
@@ -297,41 +329,52 @@ public class CommentsPageController implements LanguageSupport {
     }
 
 
-    private AnchorPane displayComments(org.json.JSONArray commentsArray) {
+    private void displayComments(JSONArray commentsArray) {
         VBox modulesContainer = new VBox(10);
 
-        if (commentsArray.length() == 0) {
-            Label noCommentsLabel = new Label("No comments available");
-            noCommentsLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: white;");
-            VBox.setMargin(noCommentsLabel, new Insets(150, 0, 0, 150));
-
-            modulesContainer.getChildren().add(noCommentsLabel);
+        if (commentsArray.isEmpty()) {
+            addNoCommentsLabel(modulesContainer);
         } else {
-            for (int i = 0; i < commentsArray.length(); i++) {
-                JSONObject comment = commentsArray.getJSONObject(i);
-                String name;
-
-                if(comment.has("name")){
-                     name = comment.getString("name");
-                }else {
-                     name = "Deleted User";
-                }
-                Integer comment_id = comment.getInt("comment_id");
-                String lookingId = comment.getString("looking_id");
-                String description = comment.getString("description");
-                double rating = comment.getDouble("rating");
-                int levelAccess = comment.getInt("levelAccess");
-
-                AnchorPane commentCard = createCommentCard(name,comment_id, lookingId, description, rating, levelAccess);
-                modulesContainer.getChildren().add(commentCard);
-            }
+            addCommentsToContainer(commentsArray, modulesContainer);
         }
+
+        setupScrollPane(modulesContainer, commentsArray.length());
+
+    }
+
+
+    private void addNoCommentsLabel(VBox container) {
+        Label noCommentsLabel = new Label("No comments available");
+        noCommentsLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: white;");
+        VBox.setMargin(noCommentsLabel, new Insets(150, 0, 0, 150));
+        container.getChildren().add(noCommentsLabel);
+    }
+
+
+    private void addCommentsToContainer(JSONArray commentsArray, VBox container) {
+        for (int i = 0; i < commentsArray.length(); i++) {
+            JSONObject comment = commentsArray.getJSONObject(i);
+            String name = comment.has("name") ? comment.getString("name") : "Deleted User";
+            Integer commentId = comment.getInt("comment_id");
+            String lookingId = comment.getString("looking_id");
+            String description = comment.getString("description");
+            double rating = comment.getDouble("rating");
+            int levelAccess = comment.getInt("levelAccess");
+
+            AnchorPane commentCard = createCommentCard(name, commentId, lookingId, description, rating, levelAccess);
+            container.getChildren().add(commentCard);
+        }
+    }
+
+
+    private void setupScrollPane(VBox modulesContainer, int commentCount) {
         double totalHeight = 0;
         for (Node child : modulesContainer.getChildren()) {
             totalHeight += child.getBoundsInParent().getHeight();
         }
         totalHeight += (modulesContainer.getChildren().size() - 1) * modulesContainer.getSpacing();
-        modulesContainer.setPrefHeight(totalHeight+40*commentsArray.length());
+        modulesContainer.setPrefHeight(totalHeight + 40 * commentCount);
+
         scrollpane.setContent(modulesContainer);
         scrollpane.setFitToWidth(true);
         scrollpane.setStyle(
@@ -344,107 +387,32 @@ public class CommentsPageController implements LanguageSupport {
         if (!commentAnchorInScrolPane.getChildren().contains(scrollpane)) {
             commentAnchorInScrolPane.getChildren().add(scrollpane);
         }
-
-        return commentAnchorInScrolPane;
     }
 
-    private AnchorPane createCommentCard(String name,int comment_id, String lookingId, String description, double rating, int levelAccess) {
+
+    private AnchorPane createCommentCard(String name, int commentId, String lookingId, String description, double rating, int levelAccess) {
         AnchorPane modulePane = new AnchorPane();
+        applyCardStyle(modulePane, levelAccess);
 
-        String borderColor;
-        String backgroundColor;
-        switch (levelAccess) {
-            case 1:
-                // Gold style for level 1
-                borderColor = "#FFD700";
-                backgroundColor = "#FFFACD";
-                break;
-            case 2:
-                // Purple style for level 2
-                borderColor = "#800080";
-                backgroundColor = "#E6E6FA";
-                break;
-            default:
-                // White style for level 0
-                borderColor = "#CCCCCC";
-                backgroundColor = "#FFFFFF";
-                break;
-        }
-
-        // Apply styles
-        modulePane.setStyle(
-                "-fx-background-color: " + backgroundColor + "; " +
-                        "-fx-border-color: " + borderColor + "; " +
-                        "-fx-border-width: 2; " +
-                        "-fx-border-radius: 5; " +
-                        "-fx-background-radius: 5; "
-        );
-
-        // User ID
-        Label userLabel = new Label(name);
-        userLabel.setLayoutX(10);
-        userLabel.setLayoutY(10);
-        userLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: black;");
+        // User name
+        Label userLabel = createUserLabel(name);
 
         // Rating display as stars
         HBox ratingBox = createRatingStars(rating);
-        ratingBox.setLayoutX(10);
-        ratingBox.setLayoutY(35);
-        ratingBox.setStyle("-fx-alignment: center-left;");
 
         // Description text
-        Label descriptionText = new Label(description);
-        descriptionText.setLayoutX(10);
-        descriptionText.setLayoutY(65);
-        descriptionText.setWrapText(true);
-        descriptionText.setPrefWidth(399);
-        descriptionText.setStyle("-fx-text-fill: black;");
+        Label descriptionText = createDescriptionLabel(description);
 
+        modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText);
 
-
-        Label comment_idText = new Label(String.valueOf(comment_id));
-        comment_idText.setLayoutX(450);
-        comment_idText.setLayoutY(10);
-        comment_idText.setStyle("-fx-text-fill: black;");
-        int paddingValue = comment_idText.getText().length() * 5;
-        comment_idText.setPadding(new Insets(0, paddingValue, 0, 0));
-
-        FontAwesomeIcon deleteIconBtn = new FontAwesomeIcon();
-        deleteIconBtn.setGlyphName("TRASH");
-        deleteIconBtn.setSize("1.5em");
-        deleteIconBtn.setLayoutX(475);
-        deleteIconBtn.setLayoutY(25);
-        deleteIconBtn.setFill(Color.BLACK);
-
-        deleteIconBtn.setOnMouseClicked(event -> {
-            if (page == 1) {
-                CommentsService.deleteSubjectComment(String.valueOf(comment_id)).thenAccept(success -> {
-                    if (success) {
-                        Platform.runLater(this::refreshComments);
-                    } else {
-                        showErrorDialog("Failed to delete comment");
-                    }
-                });
-            }else if (page == 2){
-                CommentsService.deleteTeacherComment(String.valueOf(comment_id)).thenAccept(success -> {
-                    if (success) {
-                        Platform.runLater(this::refreshComments);
-                    } else {
-                        showErrorDialog("Failed to delete comment");
-                    }
-                });
-            } else {
-                showErrorDialog("Invalid type");
-            }
-        });
-
-        if(UserService.getInstance().getCurrentUser().isAdmin()){
-            modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText,comment_idText,deleteIconBtn);
-        }else {
-            modulePane.getChildren().addAll(userLabel, ratingBox, descriptionText);
+        // ADMIN (Delete button)
+        if (UserService.getInstance().getCurrentUser().isAdmin()) {
+            Label commentIdText = createCommentIdLabel(commentId);
+            FontAwesomeIcon deleteIconBtn = createDeleteButton(commentId);
+            modulePane.getChildren().addAll(commentIdText, deleteIconBtn);
         }
 
-        // Dynamically adjust module height based on description text
+        // Dinamic height adjustment
         descriptionText.heightProperty().addListener((obs, oldVal, newVal) -> {
             modulePane.setPrefHeight(newVal.doubleValue() + 70);
         });
@@ -452,9 +420,111 @@ public class CommentsPageController implements LanguageSupport {
         return modulePane;
     }
 
+
+    private void applyCardStyle(AnchorPane pane, int levelAccess) {
+        String borderColor;
+        String backgroundColor = switch (levelAccess) {
+            case 1 -> {
+                // Gold style for premium users
+                borderColor = BORDER_PREMIUM;
+                yield STYLE_PREMIUM;
+            }
+            case 2 -> {
+                // Purple style for admins
+                borderColor = BORDER_ADMIN;
+                yield STYLE_ADMIN;
+            }
+            default -> {
+                // White style for regular users
+                borderColor = BORDER_REGULAR;
+                yield STYLE_REGULAR;
+            }
+        };
+
+        pane.setStyle(
+                "-fx-background-color: " + backgroundColor + "; " +
+                        "-fx-border-color: " + borderColor + "; " +
+                        "-fx-border-width: 2; " +
+                        "-fx-border-radius: 5; " +
+                        "-fx-background-radius: 5; "
+        );
+    }
+
+
+    private Label createUserLabel(String name) {
+        Label userLabel = new Label(name);
+        userLabel.setLayoutX(10);
+        userLabel.setLayoutY(10);
+        userLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: black;");
+        return userLabel;
+    }
+
+
+    private Label createDescriptionLabel(String description) {
+        Label descriptionText = new Label(description);
+        descriptionText.setLayoutX(10);
+        descriptionText.setLayoutY(65);
+        descriptionText.setWrapText(true);
+        descriptionText.setPrefWidth(399);
+        descriptionText.setStyle("-fx-text-fill: black;");
+        return descriptionText;
+    }
+
+
+    private Label createCommentIdLabel(int commentId) {
+        Label commentIdText = new Label(String.valueOf(commentId));
+        commentIdText.setLayoutX(450);
+        commentIdText.setLayoutY(10);
+        commentIdText.setStyle("-fx-text-fill: black;");
+        int paddingValue = commentIdText.getText().length() * 5;
+        commentIdText.setPadding(new Insets(0, paddingValue, 0, 0));
+        return commentIdText;
+    }
+
+
+    private FontAwesomeIcon createDeleteButton(int commentId) {
+        FontAwesomeIcon deleteIconBtn = new FontAwesomeIcon();
+        deleteIconBtn.setGlyphName("TRASH");
+        deleteIconBtn.setSize("1.5em");
+        deleteIconBtn.setLayoutX(475);
+        deleteIconBtn.setLayoutY(25);
+        deleteIconBtn.setFill(Color.BLACK);
+
+        deleteIconBtn.setOnMouseClicked(event -> deleteComment(commentId));
+
+        return deleteIconBtn;
+    }
+
+
+    private void deleteComment(int commentId) {
+        CompletableFuture<Boolean> deleteResult;
+
+        if (page == SUBJECT_PAGE) {
+            deleteResult = CommentsService.deleteSubjectComment(String.valueOf(commentId));
+        } else if (page == TEACHER_PAGE) {
+            deleteResult = CommentsService.deleteTeacherComment(String.valueOf(commentId));
+        } else {
+            showErrorDialog("Invalid type");
+            return;
+        }
+
+        deleteResult.thenAccept(success -> {
+            if (success) {
+                Platform.runLater(this::refreshComments);
+            } else {
+                showErrorDialog("Failed to delete comment");
+            }
+        });
+    }
+
+
     private HBox createRatingStars(double rating) {
         HBox starsBox = new HBox(5);
-        starsBox.setStyle("-fx-alignment: center-left;"); // Align stars to the left
+        starsBox.setStyle("-fx-alignment: center-left;");
+        starsBox.setLayoutX(10);
+        starsBox.setLayoutY(35);
+
+        // Add start
         for (int i = 1; i <= 5; i++) {
             FontAwesomeIcon starIcon = new FontAwesomeIcon();
             starIcon.setGlyphName("STAR");
@@ -472,6 +542,7 @@ public class CommentsPageController implements LanguageSupport {
             starsBox.getChildren().add(starIcon);
         }
 
+        // Add rating label text
         Label ratingLabel = new Label(String.format(" %.1f", rating).replace(".", ","));
         ratingLabel.setStyle("-fx-font-size: 1.2em; -fx-text-fill: black;");
         starsBox.getChildren().add(ratingLabel);
@@ -483,5 +554,4 @@ public class CommentsPageController implements LanguageSupport {
     public void refreshComments() {
         loadComments();
     }
-
 }
