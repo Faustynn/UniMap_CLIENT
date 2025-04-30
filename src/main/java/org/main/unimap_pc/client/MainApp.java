@@ -2,142 +2,128 @@ package org.main.unimap_pc.client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.image.Image;
+import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import lombok.Getter;
+
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.controllers.SceneController;
 import org.main.unimap_pc.client.services.AuthService;
 import org.main.unimap_pc.client.services.CheckClientConnection;
-
-import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.controllers.LoadingScreenController;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 import static org.main.unimap_pc.client.utils.ErrorScreens.showErrorScreen;
 
 public class MainApp extends Application {
-    @Getter
-    private static SceneController sceneController;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final UserService userService = UserService.getInstance();
 
-    // Метод для проверки наличия кеш-файлов
+    // Check if cache files exist
     private boolean areCacheFilesPresent() {
         String[] cacheFilesPath = {AppConfig.getPREFS_FILE(), AppConfig.getCACHE_FILE()};
-
-        for (String cacheFilePath : cacheFilesPath) {
-            File cacheFile = new File(cacheFilePath);
-            if (cacheFile.exists() && cacheFile.isFile() && cacheFile.length() > 0) {
-                return true;
-            }
-        }
-        return false;
+        return Stream.of(cacheFilesPath)
+                .map(File::new)
+                .anyMatch(file -> file.exists() && file.isFile() && file.length() > 0);
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle(AppConfig.getAppTitle());
+        stage.setTitle(AppConfig.getAPP_TITLE());
         stage.initStyle(javafx.stage.StageStyle.UNDECORATED);
 
         loadFonts();
 
-        sceneController = new SceneController(stage);
         LoadingScreenController.showLoadScreen(stage);
 
-        UserService userService = UserService.getInstance();
         String refreshToken = (String) PreferenceServise.get("REFRESH_TOKEN");
 
-        // Проверяем наличие кеша и соединения с сервером
         checkConnectionAndProceed(stage, refreshToken);
     }
 
     private void checkConnectionAndProceed(Stage stage, String refreshToken) {
-        CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
+        CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
                 .thenAccept(isServerConnected -> {
                     boolean hasCacheFiles = areCacheFilesPresent();
 
-                    Platform.runLater(() -> {
-                        try {
-                            if (hasCacheFiles && !isServerConnected) {
-                                // Есть кеш, но нет интернета - автологин без проверки
-                                if (refreshToken != null) {
-                                    userService.autoLogin(stage);
-                                } else {
-                                    showLoadingScreen(stage, "Нет подключения к интернету");
-                                }
-                            } else if (hasCacheFiles && isServerConnected) {
-                                // Есть кеш и интернет - полный автологин
-                                if (refreshToken != null) {
-                                    AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
-                                        if (isTokenRefreshed) {
-                                            try {
-                                                userService.autoLogin(stage);
-                                            } catch (IOException e) {
-                                                handleLoginPageFallback(stage);
-                                            }
-                                        } else {
-                                            handleLoginPageFallback(stage);
-                                        }
-                                    });
-                                } else {
-                                    handleLoginPageFallback(stage);
-                                }
-                            } else if (!hasCacheFiles && isServerConnected) {
-                                // Нет кеша, есть интернет - открываем страницу логина
-                                sceneController.changeScene(AppConfig.getLoginPagePath());
-                            } else {
-                                // Нет кеша, нет интернета - показываем экран загрузки
-                                showLoadingScreen(stage, "Нет подключения к серверу");
-                            }
-                        } catch (IOException e) {
-                            Logger.error("Error during loading the application" + e.getMessage());
-                            showErrorScreen("Error during loading the application");
-                        }
-                    });
+                    Platform.runLater(() -> handleConnection(stage, refreshToken, isServerConnected, hasCacheFiles));
                 })
                 .exceptionally(ex -> {
-                    // В случае ошибки подключения
-                    Platform.runLater(() -> {
-                        try {
-                            boolean hasCacheFiles = areCacheFilesPresent();
-
-                            if (hasCacheFiles && refreshToken != null) {
-                                // Есть кеш - автологин без проверки
-                                userService.autoLogin(stage);
-                            } else {
-                                // Нет кеша - показываем экран загрузки
-                                showLoadingScreen(stage, "Нет подключения к серверу");
-                            }
-                        } catch (IOException e) {
-                            Logger.error("Error during loading the application" + e.getMessage());
-                            showErrorScreen("Ошибка при загрузке приложения");
-                        }
-                    });
+                    Platform.runLater(() -> handleConnectionOnFailure(stage, refreshToken));
                     return null;
                 });
     }
 
-    private void handleLoginPageFallback(Stage stage) {
-        Platform.runLater(() -> {
-            try {
-                sceneController.changeScene(AppConfig.getLoginPagePath());
-            } catch (IOException e) {
-                Logger.error("Failed to load login page: " + e.getMessage());
-                showErrorScreen("Failed to load login page");
+    private void handleConnection(Stage stage, String refreshToken, boolean isServerConnected, boolean hasCacheFiles) {
+        try {
+            if (hasCacheFiles && !isServerConnected) {
+                // Кеш есть, интернета нет: автологин без проверки
+                if (refreshToken != null) userService.autoLogin(stage);
+                else showLoadingScreen(stage, "Нет подключения к интернету");
+            } else if (hasCacheFiles && isServerConnected) {
+                // Кеш есть, интернет есть: полный автологин
+                if (refreshToken != null) {
+                    AuthService.refreshAccessToken().thenAccept(isTokenRefreshed -> {
+                        if (isTokenRefreshed) {
+                            try {
+                                userService.autoLogin(stage);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        else handleLoginPageFallback(stage);
+                    });
+                } else handleLoginPageFallback(stage);
+            } else if (!hasCacheFiles && isServerConnected) {
+                // Кеша нет, интернет есть: открываем страницу логина
+                showLoginPage(stage);
+            } else {
+                showLoadingScreen(stage, "Нет подключения к серверу");
             }
-        });
+        } catch (IOException e) {
+            Logger.error("Error during loading the application: "+ e);
+            showErrorScreen("Error during loading the application");
+        }
+    }
+
+    private void handleConnectionOnFailure(Stage stage, String refreshToken) {
+        try {
+            boolean hasCacheFiles = areCacheFilesPresent();
+            if (hasCacheFiles && refreshToken != null) {
+                userService.autoLogin(stage);
+            } else {
+                showLoadingScreen(stage, "Нет подключения к серверу");
+            }
+        } catch (IOException e) {
+            Logger.error("Error during loading the application: "+ e);
+            showErrorScreen("Ошибка при загрузке приложения");
+        }
+    }
+
+    private void handleLoginPageFallback(Stage stage) {
+        Platform.runLater(() -> showLoginPage(stage));
+    }
+
+    private void showLoginPage(Stage stage) {
+        try {
+            Scene loginScene = new Scene(LoadingScreenController.loadLoginPage());
+            stage.setScene(loginScene);
+            stage.show();
+        } catch (IOException e) {
+            Logger.error("Failed to load login page: "+ e);
+            showErrorScreen("Failed to load login page");
+        }
     }
 
     private void showLoadingScreen(Stage stage, String message) {
@@ -145,12 +131,11 @@ public class MainApp extends Application {
             try {
                 LoadingScreenController.showLoadScreen(stage, message);
             } catch (IOException e) {
-                Logger.error("Failed to load the loading screen: " + e.getMessage());
+                Logger.error("Failed to load the loading screen: "+ e);
                 throw new RuntimeException(e);
             }
         });
     }
-
 
     @Override
     public void stop() {
@@ -158,15 +143,15 @@ public class MainApp extends Application {
         scheduler.shutdown();
         try {
             if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
-                Logger.warning("ExecutorService did not terminate in time, forcing shutdown.");
+                Logger.info("ExecutorService did not terminate in time, forcing shutdown.");
                 executorService.shutdownNow();
             }
             if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
-                Logger.warning("Scheduler did not terminate in time, forcing shutdown.");
+                Logger.info("Scheduler did not terminate in time, forcing shutdown.");
                 scheduler.shutdownNow();
             }
         } catch (InterruptedException e) {
-            Logger.error("Thread interrupted while shutting down executors: " + e.getMessage());
+            Logger.error("Thread interrupted while shutting down executors: "+ e);
             executorService.shutdownNow();
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
@@ -179,15 +164,13 @@ public class MainApp extends Application {
             paths.filter(Files::isRegularFile).forEach(path -> {
                 try {
                     Font.loadFont(Files.newInputStream(path), 10);
-                    System.out.println("Loaded font: " + path.getFileName());
+                    Logger.info("Loaded font: "+ path.getFileName());
                 } catch (IOException e) {
-                    Logger.error("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
-                    System.err.println("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
+                    Logger.error("Failed to load font:"+ path.getFileName()+" - "+ e.getMessage());
                 }
             });
-        } catch (Exception e) {
-            Logger.error("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
-            System.err.println("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
+        } catch (IOException | URISyntaxException e) {
+            Logger.error("Failed to load fonts from directory: "+fontsDir+" - "+ e.getMessage());
         }
     }
 

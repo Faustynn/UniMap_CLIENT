@@ -20,7 +20,7 @@ public class Logger {
 
     private static final LevelofLogs CONFIGURED_LEVEL = LevelofLogs.valueOf(AppConfig.getLogLevel().toUpperCase());
     private static int userId = 120;
-    private static final String serverUrl = AppConfig.getLogPagePath();
+    private static final String serverUrl = AppConfig.getLOG_URL();
     private static boolean logToConsole = false;
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 

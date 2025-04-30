@@ -6,10 +6,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -20,103 +20,84 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.Logger;
+import org.main.unimap_pc.client.utils.WindowDragHandler;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LoadingScreenController implements LanguageSupport {
-
-    @FXML
-    private AnchorPane dragArea;
-    private double xOffset = 0;
-    private double yOffset = 0;
-
-    @FXML
-    private ProgressIndicator loadingIndicator;
-    @FXML
-    private Label loadingText;
-    private String defLang;
+    @FXML private AnchorPane dragArea;
+    @FXML private ProgressIndicator loadingIndicator;
+    @FXML private Label loadingText;
 
     private ScheduledExecutorService connectionCheckService;
-    private SceneController sceneController;
+    private final WindowDragHandler windowDragHandler = new WindowDragHandler();
 
-    @FXML
-    private void handleMousePressed(MouseEvent event) {
-        xOffset = event.getSceneX();
-        yOffset = event.getSceneY();
-    }
-
-    @FXML
-    private void handleMouseDragged(MouseEvent event) {
-        Stage stage = (Stage) dragArea.getScene().getWindow();
-        stage.setX(event.getScreenX() - xOffset);
-        stage.setY(event.getScreenY() - yOffset);
-    }
 
     @FXML
     private void initialize() {
-        // Existing loading animation setup
+        try {
+            startLoadingAnimation();
+            configureLayout();
+            initializeLanguage();
+            windowDragHandler.setupWindowDragging(dragArea);
+            Platform.runLater(this::startConnectionCheck);
+        } catch (Exception e) {
+            Logger.error("Error during loading page initializing: " + e.getMessage());
+        }
+    }
+
+    private void startLoadingAnimation() {
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(0), event -> loadingText.setText("Loading, please wait")),
-                new KeyFrame(Duration.seconds(0.5), event -> loadingText.setText("Loading, please wait.")),
-                new KeyFrame(Duration.seconds(1), event -> loadingText.setText("Loading, please wait..")),
-                new KeyFrame(Duration.seconds(1.5), event -> loadingText.setText("Loading, please wait..."))
+                new KeyFrame(Duration.seconds(0), e -> loadingText.setText("Loading, please wait")),
+                new KeyFrame(Duration.seconds(0.5), e -> loadingText.setText("Loading, please wait.")),
+                new KeyFrame(Duration.seconds(1), e -> loadingText.setText("Loading, please wait..")),
+                new KeyFrame(Duration.seconds(1.5), e -> loadingText.setText("Loading, please wait..."))
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
 
+    private void configureLayout() {
         StackPane.setMargin(loadingIndicator, new Insets(-50, 0, 0, 0));
         StackPane.setMargin(loadingText, new Insets(100, 0, 0, 0));
+    }
 
+    private void initializeLanguage() {
         try {
-            defLang = (String) PreferenceServise.get("LANGUAGE");
-            if (defLang != null) {
-                LanguageManager.changeLanguage(defLang.toString());
-            } else {
-                defLang = "en"; // Def. language
-                LanguageManager.changeLanguage(defLang);
-            }
+            String defLang = Optional.ofNullable((String) PreferenceServise.get("LANGUAGE")).orElse("en");
             LanguageManager.changeLanguage(defLang);
             LanguageManager.getInstance().registerController(this);
             updateUILanguage(LanguageManager.getCurrentBundle());
-
-            // Start periodic server connection check
-            Platform.runLater(this::startConnectionCheck);
         } catch (Exception e) {
-            Logger.error("Error during load screen initializing" + e.getMessage());
+            Logger.error("Error during loading page initializing: " + e.getMessage());
         }
     }
 
     private void startConnectionCheck() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
-        Stage currentStage = (Stage) dragArea.getScene().getWindow();
+        Stage stage = (Stage) dragArea.getScene().getWindow();
 
-        connectionCheckService.scheduleAtFixedRate(() -> {
-            CheckClientConnection.checkConnectionAsync(AppConfig.getCheckConnectionUrl())
-                    .thenAccept(isConnected -> {
-                        if (isConnected) {
-                            Platform.runLater(() -> {
-                                try {
-                                    // Stop checking connection
-                                    connectionCheckService.shutdown();
-
-                                    // Initialize SceneController if not already done
-                                    if (sceneController == null) {
-                                        sceneController = new SceneController(currentStage);
+        connectionCheckService.scheduleAtFixedRate(() ->
+                CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
+                        .thenAccept(isConnected -> {
+                            if (isConnected) {
+                                Platform.runLater(() -> {
+                                    try {
+                                        connectionCheckService.shutdown();
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH()));
+                                        Scene newScene = new Scene(loader.load());
+                                        stage.setScene(newScene);
+                                    } catch (IOException e) {
+                                        Logger.error("Error switching scene: " + e.getMessage());
                                     }
-
-                                    // Change to login scene
-                                    sceneController.changeScene(AppConfig.getLoginPagePath());
-                                } catch (IOException e) {
-                                    Logger.error("Error in startConnectionCheck(): " + e.getMessage());
-                                }
-                            });
-                        }
-                    });
-        }, 0, 5, TimeUnit.SECONDS);  // Check every 5 seconds
+                                });
+                            }
+                        }), 0, 5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -125,21 +106,25 @@ public class LoadingScreenController implements LanguageSupport {
     }
 
     public static void showLoadScreen(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource("/org/main/unimap_pc/views/LoadingScreen.fxml"));
-        AnchorPane root = loader.load();
-        Scene loadingScene = new Scene(root);
-        stage.setScene(loadingScene);
-        stage.show();
+        showLoadScreen(stage, null);
     }
 
     public static void showLoadScreen(Stage stage, String message) throws IOException {
-        FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource("/org/main/unimap_pc/views/LoadingScreen.fxml"));
+        FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource(AppConfig.getLOADING_PAGE_PATH()));
         AnchorPane root = loader.load();
-        LoadingScreenController controller = loader.getController();
-        controller.loadingText.setText(message);
         Scene loadingScene = new Scene(root);
+
+        if (message != null) {
+            LoadingScreenController controller = loader.getController();
+            controller.loadingText.setText(message);
+        }
+
         stage.setScene(loadingScene);
         stage.show();
     }
 
+    public static Parent loadLoginPage() throws IOException {
+        FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource(AppConfig.getLOGIN_PAGE_PATH()));
+        return loader.load();
+    }
 }

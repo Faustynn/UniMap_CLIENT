@@ -1,11 +1,11 @@
 package org.main.unimap_pc.client.services;
 
 import org.main.unimap_pc.client.configs.AppConfig;
+import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.main.unimap_pc.client.utils.Logger;
 
 public class PreferenceServise {
     private static final Map<String, Object> prefs = new ConcurrentHashMap<>();
@@ -21,16 +21,16 @@ public class PreferenceServise {
 
     public static void put(String key, Object value) {
         prefs.put(key, value);
-        if (Boolean.TRUE.equals(PreferenceServise.get("REMEMBER"))) {
+        if (Boolean.TRUE.equals(get("REMEMBER"))) {
             savePreferences();
-        }else {
+        } else {
             deletePreferences();
         }
     }
 
     public static void remove(String key) {
         prefs.remove(key);
-        if (Boolean.TRUE.equals(PreferenceServise.get("REMEMBER"))) {
+        if (Boolean.TRUE.equals(get("REMEMBER"))) {
             savePreferences();
         } else {
             deletePreferences();
@@ -42,25 +42,25 @@ public class PreferenceServise {
     }
 
     private static void savePreferences() {
-        File file = new File(PREFS_FILE);
-        File parentDir = file.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
-        }
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+        ensureDirectoryExists();
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PREFS_FILE))) {
             oos.writeObject(prefs);
         } catch (IOException e) {
             Logger.error("Error saving preferences to file: " + e.getMessage());
         }
     }
+
     private static void loadPreferences() {
         File file = new File(PREFS_FILE);
         if (!file.exists()) {
-            savePreferences(); // Create an empty preferences file if it does not exist
+            savePreferences();
+            return;
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            Map<String, Object> loadedPrefs = (Map<String, Object>) ois.readObject();
-            prefs.putAll(loadedPrefs);
+            Object readObject = ois.readObject();
+            if (readObject instanceof Map<?, ?> map) {
+                prefs.putAll((Map<String, Object>) map);
+            }
         } catch (IOException | ClassNotFoundException e) {
             Logger.error("Error loading preferences: " + e.getMessage());
         }
@@ -68,15 +68,18 @@ public class PreferenceServise {
 
     public static void deletePreferences() {
         File file = new File(PREFS_FILE);
-        if (file.exists()) {
-            if (file.delete()) {
-                System.out.println("Preferences file deleted successfully.");
-            } else {
-                Logger.error("Failed to delete preferences file.");
-                System.err.println("Failed to delete preferences file.");
-            }
+        if (file.exists() && file.delete()) {
+            Logger.info("Preferences file deleted successfully.");
         } else {
-            System.out.println("Preferences file does not exist.");
+            Logger.info("Preferences file not found or failed to delete.");
+        }
+    }
+
+    private static void ensureDirectoryExists() {
+        File file = new File(PREFS_FILE);
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
+            Logger.error("Failed to create preferences directory: " + parentDir);
         }
     }
 }

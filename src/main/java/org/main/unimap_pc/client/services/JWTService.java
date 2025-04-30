@@ -44,7 +44,7 @@ public class JWTService {
     private void redirectToLoginPage() {
         try {
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getLoginPagePath())));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH())));
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

@@ -43,7 +43,7 @@ public class UserService {
     public void autoLogin(Stage curr_stage) throws IOException {
         System.out.println("Auto login with refresh token");
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMainPagePath())));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMAIN_PAGE_PATH())));
         Scene mainScene = new Scene(root);
         Platform.runLater(() -> {
             curr_stage.setScene(mainScene);
