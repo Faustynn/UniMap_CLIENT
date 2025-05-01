@@ -12,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.*;
 import org.main.unimap_pc.client.utils.*;
@@ -30,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LogInController implements LanguageSupport {
+    @Setter  private Stage stage;
 
     @FXML private AnchorPane dragArea;
     @FXML private FontAwesomeIcon closeApp;
@@ -43,6 +45,7 @@ public class LogInController implements LanguageSupport {
     private final SecurityService securityService = new SecurityService();
     private ScheduledExecutorService connectionCheckService;
     private final WindowDragHandler windowDragHandler = new WindowDragHandler();
+    private final SseManager sseManager = new SseManager();
 
     @FXML
     private void initialize() {
@@ -87,6 +90,7 @@ public class LogInController implements LanguageSupport {
         AuthService.login(username, password).thenAccept(success -> Platform.runLater(() -> {
             if (success) {
                 stopConnectionCheck();
+                sseManager.connectToSSEServer();
                 switchToMainPage();
             } else {
                 infoMess.setText("Failed to log in. Please check your username and password.");
@@ -187,34 +191,61 @@ public class LogInController implements LanguageSupport {
 
     @FXML
     private void handleCheckTerms() {
-        // Placeholder for terms logic
+        // TODO: Implement terms
     }
 
     @FXML
     private void handleCloseApp() {
         stopConnectionCheck();
+        sseManager.closeConnection();
+
         ((Stage) closeApp.getScene().getWindow()).close();
         System.exit(0);
     }
 
     private void startConnectionCheck() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
+
         connectionCheckService.scheduleAtFixedRate(() ->
                 CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
-                        .thenAccept(connected -> {
-                            if (!connected) Platform.runLater(this::handleLostConnection);
+                        .thenAccept(isConnected -> {
+                            if (isConnected) {
+                                Platform.runLater(() -> {
+                                    try {
+                                        if (stage != null) {
+                                            connectionCheckService.shutdown();
+                                            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH()));
+                                            Parent root = loader.load();
+                                            LogInController controller = loader.getController();
+                                            controller.setStage(stage); // Pass the Stage here
+                                            Scene scene = new Scene(root);
+                                            stage.setScene(scene);
+                                            stage.show();
+                                        } else {
+                                            Logger.error("Stage is null. Ensure it is properly initialized.");
+                                        }
+                                    } catch (IOException e) {
+                                        Logger.error("Error switching scene: " + e.getMessage());
+                                    }
+                                });
+                            }
                         }), 0, 5, TimeUnit.SECONDS);
     }
 
     private void stopConnectionCheck() {
-        if (connectionCheckService != null) connectionCheckService.shutdown();
+        if (connectionCheckService != null && !connectionCheckService.isShutdown()) {
+            connectionCheckService.shutdown();
+        }
     }
 
     private void handleLostConnection() {
         stopConnectionCheck();
+        sseManager.closeConnection();
+
         try {
             Stage stage = (Stage) btnSignin.getScene().getWindow();
             LoadingScreenController.showLoadScreen(stage, "Потеряно подключение к интернету");
+
         } catch (IOException e) {
             Logger.error("Error in handleLostConnection: "+ e.getMessage());
             ErrorScreens.showErrorScreen("Ошибка загрузки экрана ожидания");
