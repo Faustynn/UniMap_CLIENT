@@ -60,23 +60,20 @@ public class DataFetcher {
     }
 
     public static CompletableFuture<String> fetchNews() {
+        String accessToken = (String) PreferenceServise.get("ACCESS_TOKEN");
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(AppConfig.getGET_NEWS_URL()))
-                .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
+                .header("Authorization", "Bearer " + accessToken)
                 .GET()
                 .build();
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
                     if (response.statusCode() == 200) {
-                        try {
-                           return response.body();
-                        } catch (Exception e) {
-                            Logger.error("Failed to parse news JSON response: " + e.getMessage());
-                            return null;
-                        }
+                        return response.body();
                     } else {
-                        Logger.error("Failed to fetch news with status code: " + response.statusCode());
+                        Logger.error("Failed to fetch news. HTTP status code: " + response.statusCode());
                         return null;
                     }
                 })

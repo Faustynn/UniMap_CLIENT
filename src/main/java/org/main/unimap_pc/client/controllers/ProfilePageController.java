@@ -274,7 +274,7 @@ public class ProfilePageController implements LanguageSupport {
 
         loadAvatars(standardTilePane, customTilePane);
 
-        Button uploadAvatarButton = new Button("Upload New Avatar");
+        Button uploadAvatarButton = new Button("Upload");
         uploadAvatarButton.setOnAction(event -> uploadNewAvatar(stage, customTilePane));
 
         VBox mainContainer = new VBox(20,
@@ -309,8 +309,7 @@ public class ProfilePageController implements LanguageSupport {
 
     private void loadAvatarsFromResources(TilePane standardTilePane, TilePane customTilePane) {
         try {
-            String directoryPath = "/org/main/unimap_pc/images/avatares";
-            File folder = new File(getClass().getResource(directoryPath).toURI());
+            File folder = new File(standardAvatarsFolder);
 
             if (folder.exists() && folder.isDirectory()) {
                 File[] files = folder.listFiles((dir, name) ->
@@ -319,9 +318,8 @@ public class ProfilePageController implements LanguageSupport {
                                 name.toLowerCase().endsWith(".jpeg"));
 
                 boolean hasStandardAvatars = false;
-                boolean hasCustomAvatars = false;
 
-                if (files != null && files.length > 0) {
+                if (files != null) {
                     for (File file : files) {
                         String fileName = file.getName();
                         String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -329,30 +327,24 @@ public class ProfilePageController implements LanguageSupport {
                         // Check if filename is a digit from 0 to 9
                         boolean isStandardAvatar = baseFileName.matches("[0-9]");
 
-                        TilePane targetPane = isStandardAvatar ? standardTilePane : customTilePane;
                         if (isStandardAvatar) {
                             hasStandardAvatars = true;
-                        } else {
-                            hasCustomAvatars = true;
+                            String imagePath = new File(standardAvatarsFolder, file.getName()).toURI().toString();
+                            Image image = new Image(imagePath);
+
+                            StackPane avatarContainer = createAvatarContainer(image, file);
+                            standardTilePane.getChildren().add(avatarContainer);
                         }
-
-                        String imagePath = directoryPath + "/" + file.getName();
-                        Image image = new Image(getClass().getResourceAsStream(imagePath));
-
-                        StackPane avatarContainer = createAvatarContainer(image, file);
-                        targetPane.getChildren().add(avatarContainer);
                     }
                 }
 
                 // Add placeholders if no avatars found
                 addPlaceholderIfEmpty(standardTilePane, hasStandardAvatars, "No standard avatars found");
-                addPlaceholderIfEmpty(customTilePane, hasCustomAvatars, "No custom avatars found");
             }
         } catch (Exception e) {
             Logger.error("Error loading resource avatars: " + e.getMessage());
         }
     }
-
     private void loadCustomAvatarsFromFileSystem(TilePane customTilePane) {
         try {
             File customAvatarsDir = new File(customAvatarsFolder);
@@ -368,6 +360,9 @@ public class ProfilePageController implements LanguageSupport {
                         StackPane avatarContainer = createAvatarContainer(image, file);
                         customTilePane.getChildren().add(avatarContainer);
                     }
+                    addPlaceholderIfEmpty(customTilePane, true, "No custom avatars found");
+                } else {
+                    addPlaceholderIfEmpty(customTilePane, false, "No custom avatars found");
                 }
             }
         } catch (Exception e) {

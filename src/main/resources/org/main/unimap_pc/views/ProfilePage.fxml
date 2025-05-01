@@ -138,16 +138,16 @@
             </Pane>
             </children>
         </VBox>
-        <ComboBox fx:id="languageComboBox" layoutX="781.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+        <ComboBox fx:id="languageComboBox" layoutX="751.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
             <styleClass>
                 <String fx:value="custom-combo-box" />
             </styleClass>
             <stylesheets>
                 <URL value="@../views/style/style.css" />
             </stylesheets>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
         </ComboBox>
         <ImageView id="profile-picture" fx:id="navi_avatar" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true" x="1021.0" y="17.0" AnchorPane.topAnchor="17.0">
             <image>

@@ -178,7 +178,7 @@
       </ScrollPane>
 
       <HBox spacing="16.0" />
-      <ComboBox fx:id="languageComboBox" layoutX="719.0" layoutY="21.0" prefHeight="24.0" prefWidth="148.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
+      <ComboBox fx:id="languageComboBox" layoutX="751.0" layoutY="21.0" prefHeight="24.0" prefWidth="109.0" promptText="Language" style="-fx-border-width: 0; -fx-background-color: transparent; -fx-mark-color: white; -fx-prompt-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 0; -fx-text-fill: white;">
          <styleClass>
             <String fx:value="custom-combo-box" />
          </styleClass>
