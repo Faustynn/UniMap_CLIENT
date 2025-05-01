@@ -171,26 +171,29 @@ public class HomePageController implements LanguageSupport {
     }
 
     private void loadNews() {
- //       System.out.println("Loading news...");
         CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
 
         newsJsonFuture.thenAccept(newsJson -> {
-            if (newsJson != null) {
+        //    System.out.println("Fetched news: " + newsJson);
+
+            if (newsJson != null && !newsJson.isEmpty()) {
                 try {
                     List<NewsModel> newsList = objectMapper.readValue(newsJson, new TypeReference<List<NewsModel>>() {});
                     Platform.runLater(() -> {
-                        displayLoadingIndicator();
                         displayNews(newsList);
                     });
                 } catch (Exception e) {
                     Logger.error("Failed to parse news JSON: " + e.getMessage());
-                    System.err.println("Failed to parse news JSON: " + e.getMessage());
+                    Platform.runLater(this::displayNewsLoadError);
                 }
             } else {
-                Logger.error("Failed to load news.");
-                System.err.println("Failed to load news.");
+                Logger.error("News response is empty or null.");
                 Platform.runLater(this::displayNewsLoadError);
             }
+        }).exceptionally(ex -> {
+            Logger.error("Error fetching news: " + ex.getMessage());
+            Platform.runLater(this::displayNewsLoadError);
+            return null;
         });
     }
 
