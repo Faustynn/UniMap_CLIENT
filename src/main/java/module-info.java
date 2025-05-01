@@ -12,6 +12,8 @@ module org.main.unimap_pc {
     requires javafx.graphics;
     requires javafx.base;
     requires javax.websocket.api;
+    requires okhttp3;
+    requires okhttp3.sse;
 
 
     exports org.main.unimap_pc.client.models;

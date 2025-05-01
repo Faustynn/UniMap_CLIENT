@@ -30,6 +30,9 @@ public class AppConfig {
     @Getter private final String STU_LOGO_PATH = IMAGE_BASE_PATH + "app/stu_logo_white.png";
     private final String AVATAR_PATH = IMAGE_BASE_PATH + "avatares/";
 
+    // SSE settings
+    @Getter private final String SSE_URL = "http://localhost:8080/api/unimap_pc/sse";
+    @Getter private final String SSE_SUBSCRIBE_URL = SSE_URL + "/subscribe";
 
     // fxml paths
     private static final String VIEWS_PATH = "/org/main/unimap_pc/views/";

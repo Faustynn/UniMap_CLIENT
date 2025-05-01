@@ -50,6 +50,13 @@
       <version>${jackson.version}</version>
     </dependency>
 
+    <!-- SSE -->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp-sse</artifactId>
+      <version>4.12.0</version>
+    </dependency>
+
 
     <!-- Websocket -->
     <dependency>

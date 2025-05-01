@@ -40,10 +40,7 @@ import org.main.unimap_pc.client.services.CacheService;
 import org.main.unimap_pc.client.services.DataFetcher;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
-import org.main.unimap_pc.client.utils.LanguageManager;
-import org.main.unimap_pc.client.utils.LanguageSupport;
-import org.main.unimap_pc.client.utils.Logger;
-import org.main.unimap_pc.client.utils.WindowDragHandler;
+import org.main.unimap_pc.client.utils.*;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -91,7 +88,15 @@ public class HomePageController implements LanguageSupport {
             windowDragHandler.setupWindowDragging(dragArea);
             setupSceneResizeListeners();
 
+            SseManager sseManager = new SseManager();
+            sseManager.registerHomePageController(this);
+            sseManager.connectToSSEServer();
+
+            sseManager.addNewsListener(this::updateNews);
+
+            displayLoadingIndicator();
             loadNews();
+
             if (!isLanguageSupportInitialized) {
                 setupLanguageSelector();
                 isLanguageSupportInitialized = true;
@@ -171,31 +176,45 @@ public class HomePageController implements LanguageSupport {
     }
 
     private void loadNews() {
-        CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
+        SseManager sseManager = new SseManager();
+        sseManager.registerHomePageController(this);
+        sseManager.connectToSSEServer();
 
-        newsJsonFuture.thenAccept(newsJson -> {
-        //    System.out.println("Fetched news: " + newsJson);
-
-            if (newsJson != null && !newsJson.isEmpty()) {
-                try {
-                    List<NewsModel> newsList = objectMapper.readValue(newsJson, new TypeReference<List<NewsModel>>() {});
-                    Platform.runLater(() -> {
-                        displayNews(newsList);
-                    });
-                } catch (Exception e) {
-                    Logger.error("Failed to parse news JSON: " + e.getMessage());
-                    Platform.runLater(this::displayNewsLoadError);
-                }
+        sseManager.addNewsListener(newsList -> Platform.runLater(() -> {
+            if (newsList != null && !newsList.isEmpty()) {
+                displayNews(newsList);
             } else {
-                Logger.error("News response is empty or null.");
-                Platform.runLater(this::displayNewsLoadError);
+                displayNoNewsMessage(new VBox());
             }
-        }).exceptionally(ex -> {
-            Logger.error("Error fetching news: " + ex.getMessage());
-            Platform.runLater(this::displayNewsLoadError);
-            return null;
-        });
+        }));
     }
+
+//    private void loadNews() {
+//        CompletableFuture<String> newsJsonFuture = DataFetcher.fetchNews();
+//
+//        newsJsonFuture.thenAccept(newsJson -> {
+//        //    System.out.println("Fetched news: " + newsJson);
+//
+//            if (newsJson != null && !newsJson.isEmpty()) {
+//                try {
+//                    List<NewsModel> newsList = objectMapper.readValue(newsJson, new TypeReference<List<NewsModel>>() {});
+//                    Platform.runLater(() -> {
+//                        displayNews(newsList);
+//                    });
+//                } catch (Exception e) {
+//                    Logger.error("Failed to parse news JSON: " + e.getMessage());
+//                    Platform.runLater(this::displayNewsLoadError);
+//                }
+//            } else {
+//                Logger.error("News response is empty or null.");
+//                Platform.runLater(this::displayNewsLoadError);
+//            }
+//        }).exceptionally(ex -> {
+//            Logger.error("Error fetching news: " + ex.getMessage());
+//            Platform.runLater(this::displayNewsLoadError);
+//            return null;
+//        });
+//    }
 
     private void displayLoadingIndicator() {
         Label loadingLabel = new Label("Loading news...");
@@ -404,6 +423,8 @@ public class HomePageController implements LanguageSupport {
 
     @FXML
     private void handleRefreshNewsClick() {
+        pane_for_news.getChildren().clear();
+        displayLoadingIndicator();
         loadNews();
     }
 
@@ -465,5 +486,11 @@ public class HomePageController implements LanguageSupport {
         descriptFXcom.setText(languageBundle.getString("descriptFXcom"));
         descriptMladost.setText(languageBundle.getString("descriptMladost"));
         descriptFIITTelegram.setText(languageBundle.getString("descriptFIITTelegram"));
+    }
+
+    public void updateNews(List<NewsModel> newsList) {
+        Platform.runLater(() -> {
+            displayNews(newsList);
+        });
     }
 }
