@@ -8,11 +8,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="dragArea" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="500.0" style="-fx-background-color: #191C22;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.unimap_pc.client.controllers.TeacherSubPageController">
     <children>
-        <Label fx:id="teacher_aisID_text" layoutX="58.0" layoutY="81.0" style="-fx-text-fill: #9fa6b7;" text="AIS ID:">
+        <Label fx:id="teacher_aisID_text" layoutX="58.0" layoutY="81.0" prefHeight="23.0" prefWidth="85.0" style="-fx-text-fill: #9fa6b7;" text="AIS ID:">
             <font>
                 <Font name="Outfit Bold" size="18.0" />
             </font>
@@ -22,7 +23,7 @@
                 <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-        <Label fx:id="teacher_fullname" layoutX="151.0" layoutY="106.0" prefHeight="21.0" prefWidth="328.0" style="-fx-text-fill: #9fa6b7;" text="Ing. Meredov Nazar">
+        <Label fx:id="teacher_fullname" alignment="CENTER_RIGHT" layoutX="182.0" layoutY="105.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="24.0" prefWidth="271.0" style="-fx-text-fill: #9fa6b7;" text="Ing. Meredov Nazar">
             <font>
                 <Font name="Outfit Regular" size="16.0" />
             </font>
@@ -42,27 +43,27 @@
                 <Font name="Outfit Bold" size="18.0" />
             </font>
         </Label>
-      <Label fx:id="teacher_aisID" layoutX="117.0" layoutY="81.0" prefHeight="23.0" prefWidth="141.0" style="-fx-text-fill: #9fa6b7;" text="12345678">
+      <Label fx:id="teacher_aisID" alignment="CENTER_RIGHT" layoutX="148.0" layoutY="82.0" prefHeight="23.0" prefWidth="305.0" style="-fx-text-fill: #9fa6b7;" text="12345678">
          <font>
             <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="teacher_fullname_text" layoutX="58.0" layoutY="106.0" prefHeight="23.0" prefWidth="91.0" style="-fx-text-fill: #9fa6b7;" text="Full name:">
+      <Label fx:id="teacher_fullname_text" layoutX="58.0" layoutY="106.0" prefHeight="23.0" prefWidth="159.0" style="-fx-text-fill: #9fa6b7;" text="Full name:">
          <font>
             <Font name="Outfit Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="teacher_email" layoutX="119.0" layoutY="131.0" prefHeight="23.0" prefWidth="165.0" style="-fx-text-fill: #9fa6b7;" text="xmeredov@stuba.sk">
+      <Label fx:id="teacher_email" alignment="CENTER_RIGHT" layoutX="228.0" layoutY="131.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="23.0" prefWidth="226.0" style="-fx-text-fill: #9fa6b7;" text="xmeredov@stuba.sk">
          <font>
             <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="teacher_phone" layoutX="124.0" layoutY="156.0" prefHeight="23.0" prefWidth="121.0" style="-fx-text-fill: #9fa6b7;" text="+4219502222">
+      <Label fx:id="teacher_phone" alignment="CENTER_RIGHT" layoutX="331.0" layoutY="158.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="23.0" prefWidth="121.0" style="-fx-text-fill: #9fa6b7;" text="+4219502222">
          <font>
             <Font name="Outfit Regular" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="teacher_office" layoutX="122.0" layoutY="181.0" prefHeight="23.0" prefWidth="129.0" style="-fx-text-fill: #9fa6b7;" text="6.02">
+      <Label fx:id="teacher_office" alignment="CENTER_RIGHT" layoutX="323.0" layoutY="182.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="23.0" prefWidth="129.0" style="-fx-text-fill: #9fa6b7;" text="6.02">
          <font>
             <Font name="Outfit Regular" size="16.0" />
          </font>
@@ -99,5 +100,10 @@
             <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: transparent;" vbarPolicy="NEVER" />
          </children>
       </AnchorPane>
+      <Line endX="303.5" layoutX="150.0" layoutY="105.0" startX="-100.0" stroke="WHITE" />
+      <Line endX="303.5" layoutX="150.0" layoutY="131.0" startX="-100.0" stroke="WHITE" />
+      <Line endX="303.5" layoutX="149.0" layoutY="156.0" startX="-100.0" stroke="WHITE" />
+      <Line endX="303.5" layoutX="149.0" layoutY="180.0" startX="-100.0" stroke="WHITE" />
+      <Line endX="303.5" layoutX="149.0" layoutY="205.0" startX="-100.0" stroke="WHITE" />
     </children>
 </AnchorPane>

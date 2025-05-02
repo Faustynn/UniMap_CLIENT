@@ -108,7 +108,7 @@ public class CommentsPageController implements LanguageSupport {
      */
     public void setDatas(Integer pageType, String id) {
         if (pageType != null && id != null) {
-            System.out.println("Page type: " + pageType + " ID: " + id);
+       //     System.out.println("Page type: " + pageType + " ID: " + id);
             this.page = pageType;
             this.lookingParentID = id;
 

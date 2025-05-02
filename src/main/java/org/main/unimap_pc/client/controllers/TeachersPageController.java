@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -35,11 +34,8 @@ import org.main.unimap_pc.client.utils.WindowDragHandler;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.HashMap;
 
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
@@ -360,6 +356,7 @@ public class TeachersPageController implements LanguageSupport {
             currentStage.setScene(mainScene);
             currentStage.show();
         } catch (IOException e) {
+        //    System.out.println(Arrays.toString(e.getStackTrace()));
             Logger.error("Failed to load page: " + e.getMessage());
             showErrorDialog("Error loading the application. Please try again later.");
         }

@@ -6,7 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -27,6 +29,7 @@ import org.main.unimap_pc.client.utils.WindowDragHandler;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -235,13 +238,6 @@ public class SettingsPageController implements LanguageSupport {
     }
 
 
-    @FXML
-    private void handleStartDeleteAcc() {
-        String userId = UserService.getInstance().getCurrentUser().getId();
-        deleteUserAccount(userId);
-    }
-
-
     private void deleteUserAccount(String userId) {
         CompletableFuture<Boolean> deleteResult = UserService.delete_user(userId);
 
@@ -254,9 +250,53 @@ public class SettingsPageController implements LanguageSupport {
         });
     }
 
+    private Optional<ButtonType> showConfirmationDialog(String title, String headerText, String contentText, String confirmButtonText) {
+        Alert confirmDialog = new Alert(Alert.AlertType.WARNING);
+        confirmDialog.setTitle(title);
+        confirmDialog.setHeaderText(headerText);
+        confirmDialog.setContentText(contentText);
+
+        ButtonType confirmButton = new ButtonType(confirmButtonText);
+        ButtonType cancelButton = ButtonType.CANCEL;
+        confirmDialog.getButtonTypes().setAll(confirmButton, cancelButton);
+
+        return confirmDialog.showAndWait();
+    }
+
+    @FXML
+    private void handleStartDeleteAcc() {
+        Optional<ButtonType> result = showConfirmationDialog(
+                "Confirm account deletion",
+                "You sure you want to delete your account?",
+                "This action will delete your account. This action cannot be undone.",
+                "Delete account"
+        );
+
+        if (result.isPresent() && result.get().getText().equals("Delete account")) {
+            String userId = UserService.getInstance().getCurrentUser().getId();
+            deleteUserAccount(userId);
+        }
+    }
+
+    @FXML
+    private void handleStartDeleteComments() {
+        Optional<ButtonType> result = showConfirmationDialog(
+                "Confirm comment deletion",
+                "You sure you want to delete all your comments?",
+                "This action will delete all your comments. This action cannot be undone.",
+                "Delete comments"
+        );
+
+        if (result.isPresent() && result.get().getText().equals("Delete comments")) {
+            String userId = UserService.getInstance().getCurrentUser().getId();
+            deleteUserComments(userId);
+        }
+    }
+
 
     private void handleSuccessfulAccountDeletion() {
         clearUserData();
+        showInfoDialog("Your account has been successfully deleted!");
         try {
             navigateToLoginPage();
         } catch (IOException e) {
@@ -271,21 +311,13 @@ public class SettingsPageController implements LanguageSupport {
         showErrorDialog("Failed to delete account. Please try again later.");
     }
 
-
-    @FXML
-    private void handleStartDeleteComments() {
-        String userId = UserService.getInstance().getCurrentUser().getId();
-        deleteUserComments(userId);
-    }
-
-
     private void deleteUserComments(String userId) {
         CompletableFuture<Boolean> deleteResult = UserService.delete_all_user_comments(userId);
 
         deleteResult.thenAccept(success -> {
             Platform.runLater(() -> {
                 if (success) {
-                    showInfoDialog("Comments deleted successfully.");
+                    showInfoDialog("All your comments have been successfully deleted!");
                 } else {
                     Logger.warning("Failed to delete comments. Please try again later.");
                     showErrorDialog("Failed to delete comments. Please try again later.");

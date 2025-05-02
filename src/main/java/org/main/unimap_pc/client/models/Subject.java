@@ -46,33 +46,33 @@ public class Subject {
         code = getString(jsonBase, "code");
         name = getString(jsonBase, "name");
         type = getString(jsonBase, "type");
-        credits = getInt(jsonBase, "credits", -1);
+        credits = getInt(jsonBase, "credits", 0);
         studyType = getString(jsonBase, "studyType");
         semester = getString(jsonBase, "semester");
+        languages = getStringList(jsonBase, "languages");
         completionType = getString(jsonBase, "completionType");
         studentCount = getInt(jsonBase, "studentCount", -1);
+        evaluation = getString(jsonBase, "evaluation");
         assesmentMethods = getString(jsonBase, "assesmentMethods");
         learningOutcomes = getString(jsonBase, "learningOutcomes");
         courseContents = getString(jsonBase, "courseContents");
+        plannedActivities = getString(jsonBase, "plannedActivities");
+        evaluationMethods = getString(jsonBase, "evaluationMethods");
         aScore = getString(jsonBase, "ascore");
         bScore = getString(jsonBase, "bscore");
         cScore = getString(jsonBase, "cscore");
         dScore = getString(jsonBase, "dscore");
         eScore = getString(jsonBase, "escore");
         fxScore = getString(jsonBase, "fxscore");
-        plannedActivities = getString(jsonBase, "plannedActivities");
-        evaluationMethods = getString(jsonBase, "evaluationMethods");
-        evaluation = getString(jsonBase, "evaluation");
-        garant = FilterService.subSearchForGarant(code);
-        languages = getStringList(jsonBase, "languages");
         parseTeachers(jsonTeachers);
     }
+
 
     private String getString(JSONObject json, String key) {
         try {
             return json.getString(key);
         } catch (Exception e) {
-            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+         //   Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
             return "";
         }
     }
@@ -81,7 +81,7 @@ public class Subject {
         try {
             return json.getInt(key);
         } catch (Exception e) {
-            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+        //    Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
             return defaultValue;
         }
     }
@@ -92,7 +92,7 @@ public class Subject {
                     .map(Object::toString)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
+          //  Logger.error("Error parsing '" + key + "' in Subject: " + e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -122,7 +122,7 @@ public class Subject {
                 }
             }
         } catch (Exception e) {
-            Logger.error("Error parsing JSON in teachers processing: " + e.getMessage());
+     //       Logger.error("Error parsing JSON in teachers processing: " + e.getMessage());
         }
     }
 }

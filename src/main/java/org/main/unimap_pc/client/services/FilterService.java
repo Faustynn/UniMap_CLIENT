@@ -33,7 +33,7 @@ public class FilterService {
 
     private void getSubjects() {
         Object subjects = CacheService.get("SUBJECTS");
-        System.out.println("HAAAAAA"+subjects);
+        System.out.println(subjects);
 
         if (subjects instanceof String) {
             try {
@@ -51,7 +51,7 @@ public class FilterService {
 
     private void getTeachers() {
         Object teachers = CacheService.get("TEACHERS");
-        System.out.println("HAAAAAA"+teachers);
+     //   System.out.println(teachers);
 
         if (teachers instanceof String) {
             try {
@@ -144,7 +144,7 @@ public class FilterService {
                             JSONArray roles = subject.getJSONArray("roles");
                             for (int j = 0; j < roles.length(); j++) {
                                 String role = roles.getString(j);
-                                System.out.println("CHECKING ROLE FOR " + teacher.getString("name") + ": " + role);
+                              //  System.out.println("CHECKING ROLE FOR " + teacher.getString("name") + ": " + role);
                                 if (removeDiacritics(role).equalsIgnoreCase(targetRoleName)) {
                                     System.out.println("found a match");
                                     return true;

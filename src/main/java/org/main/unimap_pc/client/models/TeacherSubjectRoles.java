@@ -61,4 +61,9 @@ public class TeacherSubjectRoles {
     public String getFormattedRoles() {
         return roles == null ? "" : String.join(", ", roles);
     }
+
+    @Override
+    public String toString() {
+        return roles.toString();
+    }
 }
