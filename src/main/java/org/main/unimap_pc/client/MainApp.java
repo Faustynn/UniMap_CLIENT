@@ -156,6 +156,7 @@ public class MainApp extends Application {
     public void stop() {
         executorService.shutdown();
         scheduler.shutdown();
+        Logger.shutdown();
         try {
             if (!executorService.awaitTermination(10, TimeUnit.SECONDS)) {
                 Logger.warning("ExecutorService did not terminate in time, forcing shutdown.");
