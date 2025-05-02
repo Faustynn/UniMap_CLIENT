@@ -8,9 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -25,19 +22,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.NewsModel;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
-import org.main.unimap_pc.client.services.DataFetcher;
 import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.utils.*;
@@ -331,25 +324,24 @@ public class HomePageController implements LanguageSupport {
             String username = jsonNode.get("username").asText();
             boolean admin = jsonNode.get("admin").asBoolean();
             boolean premium = jsonNode.get("premium") != null && jsonNode.get("premium").asBoolean();
-            String avatarBinary = jsonNode.get("avatarBinary").asText();
+            byte[] avatarBinary = jsonNode.get("avatarBinary").asToken().asByteArray();
             String avatarFileName = jsonNode.get("avatarName").asText();
 
-            if (avatarBinary != null && !avatarBinary.isEmpty() && !avatarBinary.equals("null")) {
+            if (avatarBinary != null) {
                 avatarFileName = processAndSaveAvatar(avatarBinary, avatarFileName);
             } else if (avatarFileName == null || avatarFileName.isEmpty() || avatarFileName.equals("null")) {
                 avatarFileName = "2.png"; // Default if no name
             }
 
-            return new UserModel(id, username, email, login, admin, premium, avatarBinary.getBytes(), avatarFileName);
+            return new UserModel(id, username, email, login, admin, premium, avatarBinary, avatarFileName);
         } catch (Exception e) {
             Logger.error("Error parsing user data: " + e.getMessage());
             return null;
         }
     }
 
-    private String processAndSaveAvatar(String avatarBinary, String avatarFileName) {
+    private String processAndSaveAvatar(byte[] avatarBinary, String avatarFileName) {
         try {
-            byte[] avatarBytes = java.util.Base64.getDecoder().decode(avatarBinary);
             String avatarFolderPath = determineAvatarFolderPath(avatarFileName);
             File avatarFolder = new File(avatarFolderPath);
 
@@ -360,7 +352,7 @@ public class HomePageController implements LanguageSupport {
 
             File avatarFile = new File(avatarFolder, avatarFileName);
             try (FileOutputStream fos = new FileOutputStream(avatarFile)) {
-                fos.write(avatarBytes);
+                fos.write(avatarBinary);
         //        System.out.println("Avatar saved to: " + avatarFile.getAbsolutePath());
                 return avatarFileName;
             } catch (IOException e) {

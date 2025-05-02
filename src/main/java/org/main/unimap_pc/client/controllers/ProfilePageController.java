@@ -14,6 +14,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,10 +30,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
-import org.main.unimap_pc.client.models.PasswordChangeRequest;
 import org.main.unimap_pc.client.utils.Logger;
 import org.main.unimap_pc.client.models.UserModel;
 import org.main.unimap_pc.client.services.CacheService;
@@ -39,6 +43,7 @@ import org.main.unimap_pc.client.utils.LanguageManager;
 import org.main.unimap_pc.client.utils.LanguageSupport;
 import org.main.unimap_pc.client.utils.WindowDragHandler;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -76,12 +81,10 @@ public class ProfilePageController implements LanguageSupport {
     @FXML private Label change_private_text;
 
     @FXML private Button btnChangePicture;
-    @FXML private Button btnConfirmChangeEmal;
-    @FXML private Button btnConfirmChangePass;
+    @FXML private Button btnConfirmChangeEmail;
+    @FXML private Button btnForgotPass;
 
     @FXML private TextField changeEmailField;
-    @FXML private PasswordField changePasswordField;
-    @FXML private PasswordField changeConfirmPasswordField;
 
     @FXML private ComboBox<String> languageComboBox;
 
@@ -228,25 +231,49 @@ public class ProfilePageController implements LanguageSupport {
             return;
         }
 
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("login", currentUser.getLogin());
-        requestBody.put("email", newEmail);
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Email Change");
+        confirmDialog.setHeaderText("Change Email Address");
+        confirmDialog.setContentText("Are you sure you want to change your email to: " + newEmail + "?");
 
-        sendApiRequest(AppConfig.getApiUrl() + "change_email", requestBody, HttpRequest.Builder::PUT,
-                response -> {
-                    try {
-                        currentUser.setEmail(newEmail);
-                        UserService.getInstance().setCurrentUser(currentUser);
-                        PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
-                        Platform.runLater(() -> {
-                            changeEmailField.clear();
-                            showErrorDialog("Email updated successfully.");
-                        });
-                    } catch (Exception e) {
-                        Logger.error("Failed to update email: " + e.getMessage());
-                    }
-                });
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // User confirmed, proceed with email change
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("login", currentUser.getLogin());
+            requestBody.put("email", newEmail);
+
+            sendApiRequest(AppConfig.getApiUrl() + "change_email", requestBody, HttpRequest.Builder::PUT,
+                    response -> {
+                        try {
+                            currentUser.setEmail(newEmail);
+                            UserService.getInstance().setCurrentUser(currentUser);
+                            PreferenceServise.put("USER_DATA", objectMapper.writeValueAsString(currentUser));
+                            Platform.runLater(() -> {
+                                changeEmailField.clear();
+
+                                // Show dialog
+                                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                                successAlert.setTitle("Success");
+                                successAlert.setHeaderText(null);
+                                successAlert.setContentText("Email has been successfully updated to: " + newEmail);
+                                successAlert.showAndWait();
+                            });
+                        } catch (Exception e) {
+                            Logger.error("Failed to update email: " + e.getMessage());
+                            Platform.runLater(() -> {
+                                showErrorDialog("Failed to update email: " + e.getMessage());
+                            });
+                        }
+                    });
+        } else {
+            // cancelled
+            Platform.runLater(() -> {
+                changeEmailField.clear();
+            });
+        }
     }
+
 
     @FXML
     private void handleChangeAvatar() {
@@ -541,51 +568,7 @@ public class ProfilePageController implements LanguageSupport {
 
     @FXML
     private void handleChangePass() {
-        try {
-            String newPassword = changePasswordField.getText();
-            String confirmPassword = changeConfirmPasswordField.getText();
-
-            if (newPassword == null || newPassword.isEmpty()) {
-                showErrorDialog("Please enter a new password.");
-                return;
-            }
-
-            if (!newPassword.equals(confirmPassword)) {
-                showErrorDialog("Passwords do not match.");
-                return;
-            }
-
-            String email = UserService.getInstance().getCurrentUser().getEmail();
-
-            PasswordChangeRequest request = new PasswordChangeRequest();
-            request.setEmail(email);
-            request.setNewPassword(newPassword);
-
-            String requestBody = objectMapper.writeValueAsString(request);
-
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(AppConfig.getCHANGE_PASSWORD()))
-                    .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                showErrorDialog("Password changed successfully.");
-                changePasswordField.clear();
-                changeConfirmPasswordField.clear();
-            } else if (response.statusCode() == 404) {
-                showErrorDialog("User not found.");
-            } else {
-                showErrorDialog("Failed to change password: " + response.statusCode());
-            }
-        } catch (Exception e) {
-            Logger.error("An error occurred while changing the password: " + e.getMessage());
-            showErrorDialog("An error occurred while changing the password: " + e.getMessage());
-        }
+        openModal(AppConfig.getFORGOT_PASS_PAGE_PATH(), "Forgot Password", "Forgot password window failed");
     }
 
     private void loadCurrentLanguage() {
@@ -704,4 +687,37 @@ public class ProfilePageController implements LanguageSupport {
         stage.setScene(mainScene);
         stage.show();
     }
+
+
+    private void openModal(String fxml, String title, String errorMessage) {
+        try {
+            Stage parentStage = (Stage) dragArea.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            loader.setResources(LanguageManager.getCurrentBundle());
+            AnchorPane pane = loader.load();
+
+            Stage modal = new Stage(StageStyle.TRANSPARENT);
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(parentStage);
+            modal.setTitle(title);
+            modal.setScene(new Scene(pane));
+
+            StackPane overlay = createOverlay(parentStage);
+            ((AnchorPane) parentStage.getScene().getRoot()).getChildren().add(overlay);
+            modal.setOnHidden(e -> ((AnchorPane) parentStage.getScene().getRoot()).getChildren().remove(overlay));
+            modal.showAndWait();
+
+        } catch (IOException e) {
+            Logger.error(errorMessage +": "+ e.getMessage());
+            showErrorDialog(errorMessage);
+        }
+    }
+    private StackPane createOverlay(Stage parentStage) {
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+        overlay.setPrefSize(parentStage.getWidth(), parentStage.getHeight());
+        overlay.setOnMouseClicked(e -> Toolkit.getDefaultToolkit().beep());
+        return overlay;
+    }
+
 }

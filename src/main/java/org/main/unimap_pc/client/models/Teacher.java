@@ -32,6 +32,11 @@ public class Teacher {
         subjects = parseSubjects(jsonBase);
     }
 
+    @Override
+    public String toString() {
+        return "{" + name + " : " + subjects.toString() + "}";
+    }
+
     private String getString(JSONObject json, String key) {
         try {
             return json.has(key) && !json.isNull(key) ? json.get(key).toString() : "";

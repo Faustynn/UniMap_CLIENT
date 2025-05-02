@@ -18,7 +18,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.models.Subject;
 import org.main.unimap_pc.client.models.UserModel;
@@ -40,7 +41,8 @@ import java.util.ResourceBundle;
 import static org.main.unimap_pc.client.controllers.LogInController.showErrorDialog;
 
 @Getter
-@RequiredArgsConstructor
+@Setter
+@Accessors(chain = true)
 public class SubjectsPageController implements LanguageSupport {
     private static final String ALL_TYPES = "All Types";
     private static final String ALL_LEVELS = "All Levels";
@@ -48,62 +50,77 @@ public class SubjectsPageController implements LanguageSupport {
     private static final String ACTIVE_FILTER_STYLE = "-fx-text-fill: #1976D2;";
     private static final String DEFAULT_FILTER_STYLE = "-fx-text-fill: black;";
     private static final String CARD_STYLE = "-fx-background-color: #2f3541;";
-    private static final String ERROR_LOADING_PAGE = "Error loading the application. Please try again later.";
 
-    @FXML private AnchorPane dragArea;
-    @FXML private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code,
+    @FXML
+    private AnchorPane dragArea;
+    @FXML
+    private Label navi_username_text, navi_login_text, subj_list, abreviature, name_code,
             garant, student_amount, study_level_text, subject_type_text,
             semester_text, filter_subject_text, semester, type;
-    @FXML private ImageView navi_avatar;
-    @FXML private ComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
-    @FXML private TextField searchField;
-    @FXML private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage,
+    @FXML
+    private ImageView navi_avatar;
+    @FXML
+    private ComboBox<String> languageComboBox, subjectTypeCombo, studyLevelCombo, semesterCombo;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private MFXButton logoutbtn, btn_homepage, btn_profilepage, btn_subjectpage,
             btn_teacherspage, btn_settingspage;
-    @FXML private ScrollPane scrollPane;
-    @FXML private AnchorPane anchorScrollPane;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private AnchorPane anchorScrollPane;
 
     private Label noResultsLabel;
-    private String defaultLanguage;
+    private String defLang;
     private final WindowDragHandler windowDragHandler = new WindowDragHandler();
 
     @FXML
     private void initialize() {
-        setupLanguageSelector();
-        displayUserInfo();
+     //   System.out.println("Starting initialization of SubjectsPageController");
+        initializeLanguageSupport();
+    //    System.out.println("Language support initialized");
+        initializeUserData();
+     //   System.out.println("User data initialized");
+        windowDragHandler.setupWindowDragging(dragArea);
+     //   System.out.println("Window dragging setup completed");
+
+        subjectTypeCombo.setValue(ALL_TYPES);
+        studyLevelCombo.setValue(ALL_LEVELS);
+        semesterCombo.setValue(ALL_SEMESTERS);
+
         setupFilters();
-        initializeWindowDragging();
-        applyFilters();
-        setupWindowResizeListeners();
+     //   System.out.println("Filters setup completed");
+        setupWindowResizing();
+     //   System.out.println("Finished initialization of SubjectsPageController");
     }
 
-    private void setupLanguageSelector() {
+
+    private void initializeLanguageSupport() {
+        defLang = PreferenceServise.get("LANGUAGE").toString();
         languageComboBox.getItems().addAll("English", "Українська", "Slovenský");
-        defaultLanguage = PreferenceServise.get("LANGUAGE").toString();
         loadCurrentLanguage();
-        LanguageManager.changeLanguage(defaultLanguage);
+        LanguageManager.changeLanguage(defLang);
         LanguageManager.getInstance().registerController(this);
         updateUILanguage(LanguageManager.getCurrentBundle());
     }
 
     private void loadCurrentLanguage() {
-        languageComboBox.setValue(defaultLanguage);
+        languageComboBox.setValue(defLang);
 
         languageComboBox.setOnAction(event -> {
             try {
                 String newLanguage = languageComboBox.getValue();
                 String languageCode = AppConfig.getLANGUAGE_CODES().get(newLanguage);
                 LanguageManager.changeLanguage(languageCode);
-                PreferenceServise.put("LANGUAGE", languageCode);
                 updateUILanguage(LanguageManager.getCurrentBundle());
             } catch (Exception e) {
                 Logger.error("Error changing language: " + e.getMessage());
-                System.out.println("Error changing language: " + e.getMessage());
-                showErrorDialog("Failed to change language: " + e.getMessage());
             }
         });
     }
 
-    private void displayUserInfo() {
+    private void initializeUserData() {
         UserModel user = UserService.getInstance().getCurrentUser();
         if (user != null) {
             navi_username_text.setText(user.getUsername());
@@ -112,11 +129,7 @@ public class SubjectsPageController implements LanguageSupport {
         }
     }
 
-    private void initializeWindowDragging() {
-        windowDragHandler.setupWindowDragging(dragArea);
-    }
-
-    private void setupWindowResizeListeners() {
+    private void setupWindowResizing() {
         Scene scene = dragArea.getScene();
         if (scene != null) {
             scene.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -129,63 +142,107 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
     private void setupFilters() {
-        // Initialize filter combos
-        initializeFilterCombo(subjectTypeCombo, List.of(ALL_TYPES, "povinny", "povinne volitelny", "volitelny"));
-        initializeFilterCombo(studyLevelCombo, List.of(ALL_LEVELS, "bakalarsky", "inziniersky"));
-        initializeFilterCombo(semesterCombo, List.of(ALL_SEMESTERS, "ZS", "LS"));
+        subjectTypeCombo.getItems().setAll(ALL_TYPES, "povinny", "povinne volitelny", "volitelny");
+        studyLevelCombo.getItems().setAll(ALL_LEVELS, "bakalarsky", "inziniersky");
+        semesterCombo.getItems().setAll(ALL_SEMESTERS, "ZS", "LS");
 
-        // Set filter change listeners
+
+        subjectTypeCombo.setValue(ALL_TYPES);
+        studyLevelCombo.setValue(ALL_LEVELS);
+        semesterCombo.setValue(ALL_SEMESTERS);
+
+
         subjectTypeCombo.setOnAction(event -> applyFilters());
         studyLevelCombo.setOnAction(event -> applyFilters());
         semesterCombo.setOnAction(event -> applyFilters());
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-    }
 
-    private void initializeFilterCombo(ComboBox<String> combo, List<String> items) {
-        combo.getItems().setAll(items);
-        combo.setValue(items.get(0));
+     //   System.out.println("Filters initialized");
+        applyFilters();
     }
 
     private void applyFilters() {
         String searchText = searchField.getText().trim().isEmpty() ? "" : searchField.getText().trim();
 
+     //   System.out.println("Applying filters with search text: " + searchText);
         FilterService.subjectSearchForm.subjectTypeEnum subjectTypeEnum = getSubjectTypeEnum();
-        FilterService.subjectSearchForm.studyTypeEnum studyTypeEnum = getStudyTypeEnum();
-        FilterService.subjectSearchForm.semesterEnum semesterEnum = getSemesterEnum();
+        FilterService.subjectSearchForm.studyTypeEnum studyLevelTypeEnum = getStudyTypeEnum();
+        FilterService.subjectSearchForm.semesterEnum semesterTypeEnum = getSemesterEnum();
 
-        FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(
-                searchText, subjectTypeEnum, studyTypeEnum, semesterEnum
-        );
-        List<Subject> filteredSubjects = FilterService.filterSubjects(searchForm);
-    //    System.out.println("Filtered subjects: " + filteredSubjects.size());
+     //   System.out.println("Subject Type: " + subjectTypeEnum);
 
-        updateSubjectList(filteredSubjects);
-        updateSelectedFiltersText();
+        try {
+            FilterService.subjectSearchForm searchForm = new FilterService.subjectSearchForm(
+                    searchText, subjectTypeEnum, studyLevelTypeEnum, semesterTypeEnum
+            );
+
+            FilterService filterService = new FilterService();
+            List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
+        //    System.out.println("Filtered subjects: " + filteredSubjects);
+
+            updateSubjectList(filteredSubjects);
+            updateSelectedFiltersText();
+
+        //    System.out.println("Filters applied");
+        } catch (Exception e) {
+         //   System.out.println("Error creating search form: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private FilterService.subjectSearchForm.subjectTypeEnum getSubjectTypeEnum() {
-        return switch (subjectTypeCombo.getValue()) {
-            case "povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
-            case "povinne volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
-            case "volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
-            default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
-        };
+        try {
+            String value = subjectTypeCombo.getValue();
+            if (value == null) {
+                return FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+            }
+
+            return switch (value) {
+                case "povinny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV;
+                case "povinne volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.POV_VOL;
+                case "volitelny" -> FilterService.subjectSearchForm.subjectTypeEnum.VOL;
+                default -> FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+            };
+        } catch (Exception e) {
+        //    System.out.println("Error in getSubjectTypeEnum: " + e.getMessage());
+            return FilterService.subjectSearchForm.subjectTypeEnum.NONE;
+        }
     }
 
     private FilterService.subjectSearchForm.studyTypeEnum getStudyTypeEnum() {
-        return switch (studyLevelCombo.getValue()) {
-            case "bakalarsky" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
-            case "inziniersky" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
-            default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
-        };
+        try {
+            String value = studyLevelCombo.getValue();
+            if (value == null) {
+                return FilterService.subjectSearchForm.studyTypeEnum.NONE;
+            }
+
+            return switch (value) {
+                case "bakalarsky" -> FilterService.subjectSearchForm.studyTypeEnum.BC;
+                case "inziniersky" -> FilterService.subjectSearchForm.studyTypeEnum.ING;
+                default -> FilterService.subjectSearchForm.studyTypeEnum.NONE;
+            };
+        } catch (Exception e) {
+        //    System.out.println("Error in getStudyTypeEnum: " + e.getMessage());
+            return FilterService.subjectSearchForm.studyTypeEnum.NONE;
+        }
     }
 
     private FilterService.subjectSearchForm.semesterEnum getSemesterEnum() {
-        return switch (semesterCombo.getValue()) {
-            case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
-            case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
-            default -> FilterService.subjectSearchForm.semesterEnum.NONE;
-        };
+        try {
+            String value = semesterCombo.getValue();
+            if (value == null) {
+                return FilterService.subjectSearchForm.semesterEnum.NONE;
+            }
+
+            return switch (value) {
+                case "LS" -> FilterService.subjectSearchForm.semesterEnum.LS;
+                case "ZS" -> FilterService.subjectSearchForm.semesterEnum.ZS;
+                default -> FilterService.subjectSearchForm.semesterEnum.NONE;
+            };
+        } catch (Exception e) {
+            System.out.println("Error in getSemesterEnum: " + e.getMessage());
+            return FilterService.subjectSearchForm.semesterEnum.NONE;
+        }
     }
 
     private void updateSelectedFiltersText() {
@@ -318,58 +375,67 @@ public class SubjectsPageController implements LanguageSupport {
         openModalWindow(
                 AppConfig.getSUBJECTS_SUB_PAGE_PATH(),
                 "Subject: " + subject.getCode(),
+                "Error loading the subject details window",
                 subject
         );
     }
 
-    private void openModalWindow(String fxmlPath, String windowTitle, Subject subject) {
+    private void openModalWindow(String fxmlPath, String windowTitle, String errorMessage, Subject subject) {
         try {
-            Stage parentStage = (Stage) (windowTitle.startsWith("Subject") ?
-                    btn_subjectpage : btn_settingspage).getScene().getWindow();
+            Stage parentStage = (Stage) btn_subjectpage.getScene().getWindow();
 
-            if (getClass().getResource(fxmlPath) == null) {
-                showErrorDialog("Resource not found: " + fxmlPath);
-                return;
+            if (parentStage == null) {
+                throw new IllegalStateException("Stage is null. Ensure it is properly initialized.");
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            if (LanguageManager.getCurrentBundle() != null) {
+
+            FXMLLoader loader = new FXMLLoader();
+            AnchorPane modalPane = null;
+            try {
+                loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 loader.setResources(LanguageManager.getCurrentBundle());
+                modalPane = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            AnchorPane modalPane = loader.load();
             SubjectsSubPageController controller = loader.getController();
+            System.out.println("Controller loaded successfully");
             controller.setSubject(subject);
+            System.out.println("Subject set in controller");
 
-            createAndShowModalStage(modalPane, windowTitle, parentStage);
-        } catch (IOException e) {
-            System.out.println("Failed to load FXML: " + e.getMessage());
-            Logger.error("Failed to load FXML from path: " + fxmlPath);
-            showErrorDialog("Error loading the subject details window" + ": " + e.getMessage());
+            System.out.println("Controller initialized");
+
+            Scene modalScene = new Scene(modalPane);
+            Stage modalStage = new Stage();
+
+            System.out.println("Setting up modal stage");
+
+            modalStage.initStyle(StageStyle.TRANSPARENT);
+            modalStage.initModality(Modality.WINDOW_MODAL);
+            modalStage.initOwner(parentStage);
+            modalStage.setTitle(windowTitle);
+            modalStage.setScene(modalScene);
+
+            System.out.println("Modal stage set up successfully");
+            StackPane overlay = createOverlay(parentStage);
+
+            System.out.println("Adding overlay to parent stage");
+
+            Scene parentScene = parentStage.getScene();
+            AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
+            parentRoot.getChildren().add(overlay);
+
+            System.out.println("Showing modal stage");
+            modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
+
+            System.out.println("Modal stage shown");
+            modalStage.showAndWait();
         } catch (Exception e) {
             System.out.println("Unexpected error in openModalWindow: " + e.getMessage());
-            Logger.error("Unexpected error in openModalWindow");
-            showErrorDialog("Error loading the subject details window" + ": " + e.getMessage());
+            Logger.error("Unexpected error in openModalWindow: " + e.getMessage());
+            showErrorDialog(errorMessage + ": " + e.getMessage());
         }
-    }
-
-    private void createAndShowModalStage(Parent modalPane, String windowTitle, Stage parentStage) {
-        Scene modalScene = new Scene(modalPane);
-        Stage modalStage = new Stage();
-
-        modalStage.initStyle(StageStyle.TRANSPARENT);
-        modalStage.initModality(Modality.WINDOW_MODAL);
-        modalStage.initOwner(parentStage);
-        modalStage.setTitle(windowTitle);
-        modalStage.setScene(modalScene);
-
-        StackPane overlay = createOverlay(parentStage);
-        Scene parentScene = parentStage.getScene();
-        AnchorPane parentRoot = (AnchorPane) parentScene.getRoot();
-        parentRoot.getChildren().add(overlay);
-
-        modalStage.setOnHidden(event -> parentRoot.getChildren().remove(overlay));
-        modalStage.showAndWait();
     }
 
     private StackPane createOverlay(Stage parentStage) {
@@ -436,15 +502,19 @@ public class SubjectsPageController implements LanguageSupport {
 
     private void navigateToPage(String resourcePath) {
         try {
-            Stage currentStage = (Stage) btn_homepage.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(resourcePath)));
-            Scene mainScene = new Scene(root);
-            currentStage.setScene(mainScene);
-            currentStage.show();
+            if (btn_homepage.getScene() != null && btn_homepage.getScene().getWindow() != null) {
+                Stage currentStage = (Stage) btn_homepage.getScene().getWindow();
+                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(resourcePath)));
+                Scene mainScene = new Scene(root);
+                currentStage.setScene(mainScene);
+                currentStage.show();
+            } else {
+                Logger.error("Scene or Window is null");
+                showErrorDialog("UI components not fully initialized. Please try again.");
+            }
         } catch (IOException e) {
-            System.out.println("Failed to load page: " + e.getMessage());
             Logger.error("Failed to load page: " + e.getMessage());
-            showErrorDialog(ERROR_LOADING_PAGE);
+            showErrorDialog("Error loading the application. Please try again later.");
         }
     }
 

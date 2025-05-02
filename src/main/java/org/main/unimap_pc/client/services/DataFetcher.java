@@ -16,7 +16,7 @@ public class DataFetcher {
 
     public CompletableFuture<Void> fetchData() {
         return fetchSubjects()
-                .thenCompose(subjectsFetched -> fetchTeachers())
+                .thenCompose(teacherFetched -> fetchTeachers())
                 .thenCompose(newsfetch -> fetchNews())
                 .thenAccept(teachersFetched -> {
                     System.out.println("Data fetching completed.");
@@ -32,29 +32,39 @@ public class DataFetcher {
                 .header("Authorization", "Bearer " + PreferenceServise.get("ACCESS_TOKEN"))
                 .GET()
                 .build();
-        System.out.println("Subjects token sended "+PreferenceServise.get("ACCESS_TOKEN"));
+
+        System.out.println("Subjects token sent: " + PreferenceServise.get("ACCESS_TOKEN"));
 
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
+             //       System.out.println("Response status: " + response.statusCode());
+               //     System.out.println("Response body: " + response.body());
+
                     if (response.statusCode() == 200) {
                         try {
+                            String contentType = response.headers().firstValue("Content-Type").orElse("");
+                            if (!contentType.contains("application/json")) {
+                       //         Logger.error("Unexpected Content-Type: " + contentType);
+                                return false;
+                            }
+
                             ObjectMapper objectMapper = new ObjectMapper();
                             JsonNode jsonNode = objectMapper.readTree(response.body());
 
-                            System.out.println(jsonNode);
+                         //   System.out.println("Parsed JSON: " + jsonNode);
                             CacheService.put("SUBJECTS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
-                            Logger.error("Failed to parse JSON response: " + e.getMessage());
+                      //      Logger.error("Failed to parse JSON response: " + e.getMessage());
                             return false;
                         }
                     } else {
-                        Logger.error("Failed to fetch subjects with status code: " + response.statusCode());
+                     //   Logger.error("Failed to fetch subjects with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    Logger.error("Subjects fetch request failed: " + throwable.getMessage());
+                  //  Logger.error("Subjects fetch request failed: " + throwable.getMessage());
                     return false;
                 });
     }
@@ -73,12 +83,12 @@ public class DataFetcher {
                     if (response.statusCode() == 200) {
                         return response.body();
                     } else {
-                        Logger.error("Failed to fetch news. HTTP status code: " + response.statusCode());
+                 //       Logger.error("Failed to fetch news. HTTP status code: " + response.statusCode());
                         return null;
                     }
                 })
                 .exceptionally(throwable -> {
-                    Logger.error("News fetch request failed: " + throwable.getMessage());
+              //      Logger.error("News fetch request failed: " + throwable.getMessage());
                     return null;
                 });
     }
@@ -103,16 +113,16 @@ public class DataFetcher {
                             CacheService.put("TEACHERS", jsonNode.toString());
                             return true;
                         } catch (Exception e) {
-                            Logger.error("Failed to parse JSON response: " + e.getMessage());
+                      //      Logger.error("Failed to parse JSON response: " + e.getMessage());
                             return false;
                         }
                     } else {
-                        Logger.error("Failed to fetch teachers with status code: " + response.statusCode());
+                    //    Logger.error("Failed to fetch teachers with status code: " + response.statusCode());
                         return false;
                     }
                 })
                 .exceptionally(throwable -> {
-                    Logger.error("Teachers fetch request failed: " + throwable.getMessage());
+                  //  Logger.error("Teachers fetch request failed: " + throwable.getMessage());
                     return false;
                 });
     }
