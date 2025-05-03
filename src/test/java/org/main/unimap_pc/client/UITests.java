@@ -83,7 +83,7 @@ public class UITests {
     // subject does not exist yet, we should clearly state this fact
 
     @Test
-    void testSubjectsEmpty(FxRobot robot) throws Exception {
+    void testTeachersEmpty(FxRobot robot) throws Exception {
         login(robot);
 
         robot.sleep(1100);
@@ -184,7 +184,7 @@ public class UITests {
 
         // The feedback should be more instant than when we succeed
         // As the wrong credentials do not generate additional gui
-        // except for one label, which should be thrown in less than 200 ms
+        // except for one label, which should be thrown in less than 500 ms
         // for my opinion for an outstanding usability
         robot.sleep(500);
 
