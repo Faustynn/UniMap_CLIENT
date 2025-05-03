@@ -137,6 +137,7 @@ public class AuthService {
 
     public static CompletableFuture<Boolean> refreshAccessToken() {
         String refreshToken = String.valueOf(PreferenceServise.get("REFRESH_TOKEN"));
+
         if (refreshToken == null || refreshToken.isBlank()) return CompletableFuture.completedFuture(false);
 
         JSONObject requestBody = new JSONObject().put("refreshToken", refreshToken);

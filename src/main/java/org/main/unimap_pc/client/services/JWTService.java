@@ -30,6 +30,7 @@ public class JWTService {
             });
     }
 
+
     private void handleInvalidToken() {
         if (tokenRefresher != null) {
             tokenRefresher.stopTokenRefreshTask();
@@ -40,6 +41,10 @@ public class JWTService {
 
         redirectToLoginPage();
     }
+
+
+
+
 
     private void redirectToLoginPage() {
         try {
