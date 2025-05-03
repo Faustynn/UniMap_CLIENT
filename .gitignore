@@ -50,3 +50,4 @@ build/
 /src/main/resources/org/main/unimap_pc/cashe/preferences.ser
 /src/main/resources/org/main/unimap_pc/images/avatares.zip
 /src/main/resources/org/main/unimap_pc/.env
+/target/

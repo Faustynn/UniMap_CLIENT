@@ -33,7 +33,7 @@ public class FilterService {
 
     private void getSubjects() {
         Object subjects = CacheService.get("SUBJECTS");
-        System.out.println(subjects);
+        System.out.println("HAAAAAA"+subjects);
 
         if (subjects instanceof String) {
             try {
@@ -51,7 +51,7 @@ public class FilterService {
 
     private void getTeachers() {
         Object teachers = CacheService.get("TEACHERS");
-     //   System.out.println(teachers);
+        System.out.println("HAAAAAA"+teachers);
 
         if (teachers instanceof String) {
             try {
@@ -116,7 +116,6 @@ public class FilterService {
     public static class teacherSearchForm {
         private final Predicate<JSONObject> nameSearch;
         private final Predicate<JSONObject> teachesSubject;
-        private final Predicate<JSONObject> hasTargetRole;
         private final Predicate<JSONObject> filterPredicate; //THIS ONE SHOULD BE USED
         public enum roleEnum{
             GARANT,
@@ -126,9 +125,9 @@ public class FilterService {
             NONE
         }
 
-        public teacherSearchForm(String searchTerm, roleEnum targetRole, boolean isStrict) {
+        public teacherSearchForm(String searchTerm, roleEnum targetRole,boolean ignoreSubjects) {
             teachesSubject = teacher -> {
-                if(searchTerm.isBlank() && targetRole == roleEnum.NONE && isStrict){return true;}
+                if(searchTerm.isBlank() && targetRole == roleEnum.NONE){return true;}
                 JSONArray subjects = teacher.getJSONArray("subjects");
                 for (int i = 0; i < subjects.length(); i++) {
                     JSONObject subject = subjects.getJSONObject(i);
@@ -144,7 +143,7 @@ public class FilterService {
                             JSONArray roles = subject.getJSONArray("roles");
                             for (int j = 0; j < roles.length(); j++) {
                                 String role = roles.getString(j);
-                              //  System.out.println("CHECKING ROLE FOR " + teacher.getString("name") + ": " + role);
+                                System.out.println("CHECKING ROLE FOR " + teacher.getString("name") + ": " + role);
                                 if (removeDiacritics(role).equalsIgnoreCase(targetRoleName)) {
                                     System.out.println("found a match");
                                     return true;
@@ -165,39 +164,10 @@ public class FilterService {
                 String normalizedSearchTerm = removeDiacritics(searchTerm).toLowerCase();
                 return normalizedName.contains(normalizedSearchTerm);
             };
-
-            // For strict mode when targetRole is specified
-            hasTargetRole = teacher -> {
-                JSONArray subjects = teacher.getJSONArray("subjects");
-                String targetRoleName = switch (targetRole) {
-                    case GARANT -> "zodpovedny za predmet";
-                    case CVICIACI -> "cviciaci";
-                    case SKUSAJUCI -> "skusajuci";
-                    case PREDNASAJUCI -> "prednasajuci";
-                    default -> "";
-                };
-
-                for (int i = 0; i < subjects.length(); i++) {
-                    JSONObject subject = subjects.getJSONObject(i);
-                    JSONArray roles = subject.getJSONArray("roles");
-                    for (int j = 0; j < roles.length(); j++) {
-                        String role = roles.getString(j);
-                        if (removeDiacritics(role).equalsIgnoreCase(targetRoleName)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            };
-
-            if (searchTerm.isBlank()) {
-                filterPredicate = teachesSubject;
-            } else {
-                if (isStrict && targetRole != roleEnum.NONE) {
-                    filterPredicate = teachesSubject.or(nameSearch.and(hasTargetRole));
-                } else {
-                    filterPredicate = teachesSubject.or(nameSearch);
-                }
+            if(ignoreSubjects){
+                filterPredicate = nameSearch;
+            }else{
+                filterPredicate = teachesSubject.or(nameSearch);
             }
         }
     }
@@ -213,7 +183,7 @@ public class FilterService {
         private final Predicate<JSONObject> semesterPredicate;
         private Predicate<JSONObject> finalPredicate;
         public subjectSearchForm(String searchTerm, subjectTypeEnum subjectType, studyTypeEnum studyType,semesterEnum semester){
-            List<String> filteredTeachers = filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT,false))
+            List<String> filteredTeachers = filterTeachers(new teacherSearchForm(searchTerm, teacherSearchForm.roleEnum.GARANT,true))
                     .stream().map(Teacher::getName)
                     .toList();
             nameSearch = subject -> {
