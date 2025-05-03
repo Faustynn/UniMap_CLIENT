@@ -36,7 +36,7 @@ public class LoadingScreenController implements LanguageSupport {
 
     private ScheduledExecutorService connectionCheckService;
     private final WindowDragHandler windowDragHandler = new WindowDragHandler();
-
+    private String previousScene;
 
     @FXML
     private void initialize() {
@@ -80,7 +80,6 @@ public class LoadingScreenController implements LanguageSupport {
 
     private void startConnectionCheck() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
-        Stage stage = (Stage) dragArea.getScene().getWindow();
 
         connectionCheckService.scheduleAtFixedRate(() ->
                 CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
@@ -88,16 +87,41 @@ public class LoadingScreenController implements LanguageSupport {
                             if (isConnected) {
                                 Platform.runLater(() -> {
                                     try {
-                                        connectionCheckService.shutdown();
-                                        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH()));
-                                        Scene newScene = new Scene(loader.load());
-                                        stage.setScene(newScene);
+                                        stopConnectionCheck();
+                                        if (dragArea == null || dragArea.getScene() == null) {
+                                            Logger.error("Unable to get scene or window reference");
+                                            return;
+                                        }
+
+                                        Stage stage = (Stage) dragArea.getScene().getWindow();
+                                        if (stage == null) {
+                                            Logger.error("Stage is null, cannot switch scenes");
+                                            return;
+                                        }
+
+                                        if (previousScene != null && !previousScene.isEmpty()) {
+                                            FXMLLoader loader = new FXMLLoader(getClass().getResource(previousScene));
+                                            Scene returnScene = new Scene(loader.load());
+                                            stage.setScene(returnScene);
+                                        } else {
+                                            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH()));
+                                            Scene newScene = new Scene(loader.load());
+                                            stage.setScene(newScene);
+                                        }
                                     } catch (IOException e) {
                                         Logger.error("Error switching scene: " + e.getMessage());
+                                    } catch (Exception e) {
+                                        Logger.error("Unexpected error when switching scenes: " + e.getMessage());
                                     }
                                 });
                             }
                         }), 0, 5, TimeUnit.SECONDS);
+    }
+
+    public void stopConnectionCheck() {
+        if (connectionCheckService != null && !connectionCheckService.isShutdown()) {
+            connectionCheckService.shutdown();
+        }
     }
 
     @Override
@@ -106,17 +130,26 @@ public class LoadingScreenController implements LanguageSupport {
     }
 
     public static void showLoadScreen(Stage stage) throws IOException {
-        showLoadScreen(stage, null);
+        showLoadScreen(stage, null, null);
     }
 
     public static void showLoadScreen(Stage stage, String message) throws IOException {
+        showLoadScreen(stage, message, null);
+    }
+
+    public static void showLoadScreen(Stage stage, String message, String previousScenePath) throws IOException {
         FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource(AppConfig.getLOADING_PAGE_PATH()));
         AnchorPane root = loader.load();
         Scene loadingScene = new Scene(root);
 
+        LoadingScreenController controller = loader.getController();
+
         if (message != null) {
-            LoadingScreenController controller = loader.getController();
             controller.loadingText.setText(message);
+        }
+
+        if (previousScenePath != null) {
+            controller.previousScene = previousScenePath;
         }
 
         stage.setScene(loadingScene);
@@ -127,4 +160,7 @@ public class LoadingScreenController implements LanguageSupport {
         FXMLLoader loader = new FXMLLoader(LoadingScreenController.class.getResource(AppConfig.getLOGIN_PAGE_PATH()));
         return loader.load();
     }
+
+
+
 }
