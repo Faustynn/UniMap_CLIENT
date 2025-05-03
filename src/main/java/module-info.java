@@ -14,6 +14,7 @@ module org.main.unimap_pc {
     requires javax.websocket.api;
     requires okhttp3;
     requires okhttp3.sse;
+    requires io.github.cdimascio.dotenv.java;
 
 
     exports org.main.unimap_pc.client.models;
