@@ -159,18 +159,32 @@ public class MainApp extends Application {
     }
 
     private void loadFonts() {
-        String fontsDir = "org/main/unimap_pc/views/style/fonts";
-        try (Stream<Path> paths = Files.walk(Paths.get(getClass().getClassLoader().getResource(fontsDir).toURI()))) {
-            paths.filter(Files::isRegularFile).forEach(path -> {
-                try {
-                    Font.loadFont(Files.newInputStream(path), 10);
-                    Logger.info("Loaded font: "+ path.getFileName());
-                } catch (IOException e) {
-                    Logger.error("Failed to load font:"+ path.getFileName()+" - "+ e.getMessage());
-                }
-            });
-        } catch (IOException | URISyntaxException e) {
-            Logger.error("Failed to load fonts from directory: "+fontsDir+" - "+ e.getMessage());
+        String fontsDir = "/org/main/unimap_pc/views/style/fonts";
+        try {
+            // Get all font files in the directory
+            var fontResources = getClass().getResource(fontsDir);
+            if (fontResources == null) {
+                Logger.error("Font directory not found: " + fontsDir);
+                return;
+            }
+
+            // Load each font file
+            try (Stream<Path> paths = Files.walk(Paths.get(fontResources.toURI()))) {
+                paths.filter(Files::isRegularFile).forEach(path -> {
+                    try (var fontStream = getClass().getResourceAsStream(fontsDir + "/" + path.getFileName())) {
+                        if (fontStream != null) {
+                            Font.loadFont(fontStream, 10);
+                            Logger.info("Loaded font: " + path.getFileName());
+                        } else {
+                            Logger.error("Font file not found: " + path.getFileName());
+                        }
+                    } catch (IOException e) {
+                        Logger.error("Failed to load font: " + path.getFileName() + " - " + e.getMessage());
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Logger.error("Failed to load fonts from directory: " + fontsDir + " - " + e.getMessage());
         }
     }
 
