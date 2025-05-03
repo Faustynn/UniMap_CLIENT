@@ -12,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lombok.Setter;
 import org.main.unimap_pc.client.configs.AppConfig;
 import org.main.unimap_pc.client.services.*;
 import org.main.unimap_pc.client.utils.*;
@@ -47,6 +46,7 @@ public class LogInController implements LanguageSupport {
     private final WindowDragHandler windowDragHandler = new WindowDragHandler();
     private final SseManager sseManager = new SseManager();
     private static final String CURRENT_PAGE = AppConfig.getLOGIN_PAGE_PATH();
+    private final oAuth2ClientService oAuth2ClientService = new oAuth2ClientService();
 
     @FXML
     private void initialize() {
@@ -121,6 +121,7 @@ public class LogInController implements LanguageSupport {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(AppConfig.getMAIN_PAGE_PATH())));
             stage.setScene(new Scene(root));
         } catch (IOException e) {
+          //  System.out.println("Main page loading failed: " + e.getMessage());
             Logger.error("Main page loading failed: "+ e.getMessage());
             showErrorDialog("Main page loading failed.");
         }
@@ -175,12 +176,30 @@ public class LogInController implements LanguageSupport {
 
     @FXML
     private void handleSignByGoogle() {
-        openUrl(AppConfig.getOAUTH2_GOOGLE(), "Google Auth");
+        oAuth2ClientService.startServer("google");
+        oAuth2ClientService.openAuthorizationPage("google");
+      //  System.out.println("Google sign in");
+
+        oAuth2ClientService.successfullProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                System.out.println("I see changed");
+                switchToMainPage();
+            }
+        });
     }
 
     @FXML
     private void handleSignByFacebook() {
-        openUrl(AppConfig.getOAUTH2_FACEBOOK(), "Facebook Auth");
+        oAuth2ClientService.startServer("facebook");
+        oAuth2ClientService.openAuthorizationPage("facebook");
+     //   System.out.println("facebook sign in");
+
+        oAuth2ClientService.successfullProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                System.out.println("I see changed");
+                switchToMainPage();
+            }
+        });
     }
 
     private void openUrl(String url, String name) {
