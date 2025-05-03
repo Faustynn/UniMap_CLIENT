@@ -26,12 +26,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LogInController implements LanguageSupport {
-    @Setter  private Stage stage;
 
     @FXML private AnchorPane dragArea;
     @FXML private FontAwesomeIcon closeApp;
@@ -46,6 +46,7 @@ public class LogInController implements LanguageSupport {
     private ScheduledExecutorService connectionCheckService;
     private final WindowDragHandler windowDragHandler = new WindowDragHandler();
     private final SseManager sseManager = new SseManager();
+    private static final String CURRENT_PAGE = AppConfig.getLOGIN_PAGE_PATH();
 
     @FXML
     private void initialize() {
@@ -54,7 +55,7 @@ public class LogInController implements LanguageSupport {
         initLanguage();
         windowDragHandler.setupWindowDragging(dragArea);
         LanguageManager.getInstance().registerController(this);
-        Platform.runLater(this::startConnectionCheck);
+        Platform.runLater(this::startConnectionMonitoring);
     }
 
     private void initLanguage() {
@@ -94,6 +95,13 @@ public class LogInController implements LanguageSupport {
                 switchToMainPage();
             } else {
                 infoMess.setText("Failed to log in. Please check your username and password.");
+
+                CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
+                        .thenAccept(connected -> {
+                            if (!connected) {
+                                Platform.runLater(this::handleLostConnection);
+                            }
+                        });
             }
         })).exceptionally(ex -> {
             Platform.runLater(() -> {
@@ -203,36 +211,26 @@ public class LogInController implements LanguageSupport {
         System.exit(0);
     }
 
-    private void startConnectionCheck() {
+    private void startConnectionMonitoring() {
         connectionCheckService = Executors.newSingleThreadScheduledExecutor();
 
-        connectionCheckService.scheduleAtFixedRate(() ->
+        connectionCheckService.schedule(() -> {
+            connectionCheckService.scheduleAtFixedRate(() -> {
                 CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL())
                         .thenAccept(isConnected -> {
-                            if (isConnected) {
+                            if (!isConnected) {
                                 Platform.runLater(() -> {
-                                    try {
-                                        if (stage != null) {
-                                            connectionCheckService.shutdown();
-                                            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConfig.getLOGIN_PAGE_PATH()));
-                                            Parent root = loader.load();
-                                            LogInController controller = loader.getController();
-                                            controller.setStage(stage); // Pass the Stage here
-                                            Scene scene = new Scene(root);
-                                            stage.setScene(scene);
-                                            stage.show();
-                                        } else {
-                                            Logger.error("Stage is null. Ensure it is properly initialized.");
-                                        }
-                                    } catch (IOException e) {
-                                        Logger.error("Error switching scene: " + e.getMessage());
-                                    }
+                                    if (dragArea != null && dragArea.getScene() != null) {
+                                        handleLostConnection();
+                                    } else {Logger.error("Cant handle lost connection - UI not ready"); }
                                 });
                             }
-                        }), 0, 5, TimeUnit.SECONDS);
+                        });
+            }, 0, 5, TimeUnit.SECONDS);
+        }, 1, TimeUnit.SECONDS);
     }
 
-    private void stopConnectionCheck() {
+    public void stopConnectionCheck() {
         if (connectionCheckService != null && !connectionCheckService.isShutdown()) {
             connectionCheckService.shutdown();
         }
@@ -243,12 +241,40 @@ public class LogInController implements LanguageSupport {
         sseManager.closeConnection();
 
         try {
-            Stage stage = (Stage) btnSignin.getScene().getWindow();
-            LoadingScreenController.showLoadScreen(stage, "Потеряно подключение к интернету");
+            if (dragArea == null || dragArea.getScene() == null) {
+                Logger.error("UI components are not ready when handling lost connection");
+                ErrorScreens.showErrorScreen("Cant handle lost connection - UI not ready");
+                return;
+            }
 
-        } catch (IOException e) {
-            Logger.error("Error in handleLostConnection: "+ e.getMessage());
-            ErrorScreens.showErrorScreen("Ошибка загрузки экрана ожидания");
+            Stage stage = (Stage) dragArea.getScene().getWindow();
+            if (stage == null) {
+                Logger.error("Cant get stage reference when handling lost connection");
+                ErrorScreens.showErrorScreen("Cant handle lost connection - Stage reference unavailable");
+                return;
+            }
+
+            LoadingScreenController.showLoadScreen(stage, "Lost connection with server", CURRENT_PAGE);
+
+            ScheduledExecutorService reconnectService = Executors.newSingleThreadScheduledExecutor();
+            reconnectService.scheduleAtFixedRate(() -> {
+                CompletableFuture<Boolean> isConnected = CheckClientConnection.checkConnectionAsync(AppConfig.getCHECK_CONNECTION_URL());
+                isConnected.thenAccept(connected -> {
+                    if (connected) {
+                        Platform.runLater(() -> {
+                            try {
+                                reconnectService.shutdown();
+                            } catch (Exception e) {
+                                Logger.error("Error restoring connection: " + e.getMessage());
+                            }
+                        });
+                    }
+                });
+            }, 0, 5, TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+            Logger.error("Error in handleLostConnection: " + e.getMessage());
+            ErrorScreens.showErrorScreen("Error while handling lost connection");
         }
     }
 
