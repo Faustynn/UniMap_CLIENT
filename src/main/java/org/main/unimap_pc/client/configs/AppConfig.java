@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.main.unimap_pc.client.utils.EnvLoader;
 import org.main.unimap_pc.client.utils.Logger;
 
 import java.io.IOException;
@@ -59,14 +60,27 @@ public class AppConfig {
     @Getter private final String FIND_USER_BY_EMAIL_URL = API_URL + "user/email/";
     @Getter private final String CONFIRM_CODE_TO_EMAIL = API_URL + "user/email/code";
     @Getter private final String CHANGE_PASSWORD = API_URL + "user/email/change_pass";
-    @Getter private final String OAUTH2_GOOGLE = API_URL + "authenticate/google";
-    @Getter private final String OAUTH2_FACEBOOK = API_URL + "authenticate/facebook";
     @Getter private final String REFRESH_TOKENS_URL = API_URL + "refresh";
     @Getter private final String SUBJECTS_URL = API_URL + "resources/subjects";
     @Getter private final String TEACHERS_URL = API_URL + "resources/teachers";
     @Getter private final String LOG_URL = API_URL + "log";
     @Getter private final String COMMENTS_URL = API_URL + "comments/";
 
+
+
+    //oAuth2 settings
+    // Google
+    @Getter private static final String GOOGLE_CLIENT_ID = EnvLoader.getGoogleClientId();
+    @Getter private static final String GOOGLE_CLIENT_SECRET = EnvLoader.getGoogleClientSecret();
+    @Getter private final String OAUTH2_GOOGLE_REDIR = "http://localhost:3000/api/unimap_pc/oauth2/google";
+
+    // Facebook
+    @Getter private static final String FACEBOOK_CLIENT_ID = EnvLoader.getFacebookClientId();
+    @Getter private static final String FACEBOOK_CLIENT_SECRET = EnvLoader.getFacebookClientSecret();
+    @Getter private final String OAUTH2_FACEBOOK_REDIR = "http://localhost:3000/api/unimap_pc/oauth2/facebook";
+
+    // OAuth2 login URL
+    @Getter private final String OAUTH2_LOGIN_URL = "http://localhost:8080/api/unimap_pc/oauth2/login";
 
     // Comment API endpoints
     private static final String ALL_TEACHERS_URL = API_URL + "comments/teacher/";

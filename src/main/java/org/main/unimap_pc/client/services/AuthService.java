@@ -172,4 +172,32 @@ public class AuthService {
                     return false;
                 });
     }
+
+    public static void handleSuccessfulAuth2Login(String response, String refreshToken) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode json = mapper.readTree(response);
+            JsonNode user = json.get("user");
+            String accessToken = json.get("accessToken").asText();
+
+            if (accessToken != null && refreshToken != null) {
+                PreferenceServise.put("ACCESS_TOKEN", accessToken);
+                PreferenceServise.put("REFRESH_TOKEN", refreshToken);
+
+                handleAvatar(user);
+
+                PreferenceServise.put("USER_DATA", user.toString());
+                tokenRefresher = new TokenRefresher(new JWTService());
+                tokenRefresher.startTokenRefreshTask();
+                dataFetcher.fetchData();
+            } else {
+                Logger.error("Tokens not found in the response.");
+            }
+        } catch (Exception e) {
+            Logger.error("Failed to parse JSON response: " + e.getMessage());
+        }
+    }
+
+
+
 }
