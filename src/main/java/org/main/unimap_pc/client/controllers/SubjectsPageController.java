@@ -178,7 +178,7 @@ public class SubjectsPageController implements LanguageSupport {
 
             FilterService filterService = new FilterService();
             List<Subject> filteredSubjects = filterService.filterSubjects(searchForm);
-        //    System.out.println("Filtered subjects: " + filteredSubjects);
+            System.out.println("Filtered subjects TEST: " + filteredSubjects);
 
             updateSubjectList(filteredSubjects);
             updateSelectedFiltersText();
@@ -288,6 +288,8 @@ public class SubjectsPageController implements LanguageSupport {
 
     private void addSubjectCards(VBox container, List<Subject> subjects) {
         for (Subject subject : subjects) {
+            System.out.println("Subject guarant name TEST: " + subject.getGarant());
+            System.out.println("Subject name TEST: " + subject.getName());
             AnchorPane subjectCard = createSubjectCard(subject);
             container.getChildren().add(subjectCard);
         }
@@ -332,6 +334,7 @@ public class SubjectsPageController implements LanguageSupport {
     }
 
     private void addSubjectGuarantor(AnchorPane card, String guarantor) {
+        System.out.println("Guarantor TEST: " + guarantor);
         String displayGuarantor = guarantor;
         if (guarantor != null && guarantor.length() > 30) {
             displayGuarantor = guarantor.substring(0, 30) + "...";

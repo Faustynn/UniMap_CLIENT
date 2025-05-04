@@ -182,7 +182,7 @@ public class LogInController implements LanguageSupport {
 
         oAuth2ClientService.successfullProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                System.out.println("I see changed");
+             //   System.out.println("I see changed");
                 switchToMainPage();
             }
         });
