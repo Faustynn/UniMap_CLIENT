@@ -42,6 +42,7 @@ public class Subject {
     private List<TeacherSubjectRoles> teachers_roles = new ArrayList<>();
     private List<Teacher> teachers = new ArrayList<>();
 
+
     public Subject(JSONObject jsonBase, JSONObject jsonTeachers) {
         code = getString(jsonBase, "code");
         name = getString(jsonBase, "name");
@@ -64,6 +65,7 @@ public class Subject {
         dScore = getString(jsonBase, "dscore");
         eScore = getString(jsonBase, "escore");
         fxScore = getString(jsonBase, "fxscore");
+        garant = FilterService.subSearchForGarant(code);
         parseTeachers(jsonTeachers);
     }
 
