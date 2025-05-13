@@ -1,6 +1,5 @@
 package org.main.unimap_pc.client.models;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +13,36 @@ public class NewsModel {
     private int id;
     private String title;
     private String content;
+    private Coordinates coordinates;
     private String date_of_creation;
 
     @Override
     public String toString() {
-        return "ArticleModel{" +
+        return "NewsModel{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", date='" + date_of_creation + '\'' +
+                ", coordinates=" + coordinates +
+                ", date_of_creation='" + date_of_creation + '\'' +
                 '}';
+    }
+
+
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Coordinates {
+        private double latitude;
+        private double longitude;
+
+        @Override
+        public String toString() {
+            return "Coordinates{" +
+                    "latitude=" + latitude +
+                    ", longitude=" + longitude +
+                    '}';
+        }
     }
 }

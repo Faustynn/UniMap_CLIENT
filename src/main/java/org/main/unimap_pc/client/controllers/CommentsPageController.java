@@ -264,8 +264,9 @@ public class CommentsPageController implements LanguageSupport {
 
 
     private void sendCommentToServer(String jsonComment) {
-        CompletableFuture<Boolean> result;
 
+        CompletableFuture<Boolean> result;
+        System.out.println("JSON Comment: " + jsonComment);
         if (page == SUBJECT_PAGE) {
             result = CommentsService.putNewSubjectComment(jsonComment);
         } else if (page == TEACHER_PAGE) {
