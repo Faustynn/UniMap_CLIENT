@@ -181,6 +181,7 @@ public class SseManager {
         connectionListeners.clear();
     }
 
+    // vloženy class
     private class SseEventListener extends EventSourceListener {
         @Override
         public void onOpen(EventSource eventSource, Response response) {

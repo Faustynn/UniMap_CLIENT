@@ -16,6 +16,7 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.controllers.LoadingScreenController;
 import org.main.unimap_pc.client.utils.Logger;
+import org.main.unimap_pc.client.utils.ParserUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -189,6 +190,8 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
+        ParserUtil.startParsingSchedule();
+
         launch(args);
     }
 }

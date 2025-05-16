@@ -23,6 +23,7 @@ org/main/unimap_pc/client/utils/LanguageManager.class
 org/main/unimap_pc/client/models/Teacher.class
 org/main/unimap_pc/client/controllers/SettingsPageController.class
 org/main/unimap_pc/client/services/FilterService$teacherSearchForm$roleEnum.class
+org/main/unimap_pc/client/models/NewsModel$Coordinates.class
 org/main/unimap_pc/client/models/Subject.class
 org/main/unimap_pc/client/services/RegistrationService.class
 org/main/unimap_pc/client/services/EmailService.class

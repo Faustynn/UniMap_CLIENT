@@ -17,6 +17,8 @@ import java.util.Set;
 
 @UtilityClass
 public class AppConfig {
+    // Parther file paths
+    @Getter private final String PARTHER_FILE = "src/main/resources/org/main/unimap_pc/parser.py";
     // Files paths
     @Getter private final String PREFS_FILE = "src/main/resources/org/main/unimap_pc/cashe/preferences.ser";
     @Getter private final String CACHE_FILE = "src/main/resources/org/main/unimap_pc/cashe/cache.ser";
@@ -80,7 +82,7 @@ public class AppConfig {
     @Getter private final String OAUTH2_FACEBOOK_REDIR = "http://localhost:3000/api/unimap_pc/oauth2/facebook";
 
     // OAuth2 login URL
-    @Getter private final String OAUTH2_LOGIN_URL = "";
+    @Getter private final String OAUTH2_LOGIN_URL = "http://localhost:8080/api/unimap_pc/oauth2/login";
 
     // Comment API endpoints
     private static final String ALL_TEACHERS_URL = API_URL + "comments/teacher/";
