@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.main.unimap_pc.client.configs.AppConfig;
@@ -16,7 +15,6 @@ import org.main.unimap_pc.client.services.PreferenceServise;
 import org.main.unimap_pc.client.services.UserService;
 import org.main.unimap_pc.client.controllers.LoadingScreenController;
 import org.main.unimap_pc.client.utils.Logger;
-import org.main.unimap_pc.client.utils.ParserUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -190,8 +188,6 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
-        ParserUtil.startParsingSchedule();
-
         launch(args);
     }
 }

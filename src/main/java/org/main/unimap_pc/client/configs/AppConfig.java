@@ -17,8 +17,6 @@ import java.util.Set;
 
 @UtilityClass
 public class AppConfig {
-    // Parther file paths
-    @Getter private final String PARTHER_FILE = "src/main/resources/org/main/unimap_pc/parser.py";
     // Files paths
     @Getter private final String PREFS_FILE = "src/main/resources/org/main/unimap_pc/cashe/preferences.ser";
     @Getter private final String CACHE_FILE = "src/main/resources/org/main/unimap_pc/cashe/cache.ser";
